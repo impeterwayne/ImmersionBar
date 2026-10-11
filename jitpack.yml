@@ -1,2 +1,5 @@
-jdk:
-  - openjdk21
+before_install:
+  - git config --global --add safe.directory /build
+  - sed -i 's/sdkman_healthcheck_enable=true/sdkman_healthcheck_enable=false/g' ~/.sdkman/etc/config
+  - sdk install java 21.0.2-open
+  - sdk use java 21.0.2-open
