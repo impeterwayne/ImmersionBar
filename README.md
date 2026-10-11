@@ -44,7 +44,7 @@ In your app module `build.gradle`:
 ```groovy
 dependencies {
     // Core library (includes Java core & Kotlin extensions)
-    implementation 'com.github.impeterwayne:immersionbar:1.0.0'
+    implementation 'com.github.impeterwayne:ImmersionBar:1.0.0'
 }
 ```
 
@@ -53,7 +53,7 @@ Or in Kotlin DSL (`build.gradle.kts`):
 ```kotlin
 dependencies {
     // Core library (includes Java core & Kotlin extensions)
-    implementation("com.github.impeterwayne:immersionbar:1.0.0")
+    implementation("com.github.impeterwayne:ImmersionBar:1.0.0")
 }
 ```
 

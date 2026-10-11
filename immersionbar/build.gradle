@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id 'maven-publish'
 }
 
 android {
@@ -26,7 +27,9 @@ android {
         abortOnError false
     }
     publishing {
-        singleVariant('release')
+        singleVariant('release') {
+            withSourcesJar()
+        }
     }
 }
 
@@ -34,4 +37,17 @@ dependencies {
     compileOnly libs.kotlin.stdlib
     compileOnly libs.androidx.appcompat
     implementation libs.devicecompat
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.github.impeterwayne'
+                artifactId = 'ImmersionBar'
+                version = rootProject.ext.immersionbar_version
+            }
+        }
+    }
 }
