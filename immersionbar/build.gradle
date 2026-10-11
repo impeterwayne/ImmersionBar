@@ -46,7 +46,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.impeterwayne'
                 artifactId = 'ImmersionBar'
-                version = rootProject.ext.immersionbar_version
+                version = project.findProperty('version') ?: rootProject.ext.immersionbar_version
             }
         }
     }
