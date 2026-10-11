@@ -17,7 +17,7 @@ import android.os.Build;
 import android.provider.Settings;
 
 /**
- * 手势utils
+ * Gesture navigation utility class.
  *
  * @author: ifan
  * @date: 8/13/21
@@ -25,10 +25,10 @@ import android.provider.Settings;
 class GestureUtils {
 
     /**
-     * 获取全面屏相关信息
+     * Retrieves full screen and gesture navigation information.
      *
      * @param context Context
-     * @return FullScreenBean
+     * @return GestureBean containing gesture mode and navigation bar type
      */
     public static GestureBean getGestureBean(Context context) {
         GestureBean gestureBean = new GestureBean();
@@ -125,7 +125,7 @@ class GestureUtils {
                     isGesture = true;
                     checkNavigation = true;
                 } else if (Build.VERSION.SDK_INT < Version.Q) {
-                    // Android 10 之前不存在手势导航，读不到 navigation_mode 时按经典导航键处理
+                    // Prior to Android 10, gesture navigation did not exist; treat as classic navigation keys when navigation_mode cannot be read
                     navigationBarType = NavigationBarType.CLASSIC;
                     isGesture = false;
                 }
@@ -139,15 +139,15 @@ class GestureUtils {
 
     static class GestureBean {
         /**
-         * 是否有手势操作
+         * Whether gesture navigation is enabled.
          */
         public boolean isGesture = false;
         /**
-         * 需要校验导航栏高度，需要检查的机型，小米，三星，原生
+         * Whether the navigation bar height requires verification (e.g. Xiaomi, Samsung, Stock Android).
          */
         public boolean checkNavigation = false;
         /**
-         * 手势类型
+         * Navigation bar type.
          */
         public NavigationBarType type;
 

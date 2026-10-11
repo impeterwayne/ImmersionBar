@@ -84,7 +84,7 @@ class BarConfig {
 
     /**
      * Instantiates a new Bar config.
-     * 以Window为核心，同时支持Activity、Fragment和Dialog。
+     * Window-centric constructor supporting Activity, Fragment, and Dialog simultaneously.
      *
      * @param window the window
      */
@@ -93,8 +93,9 @@ class BarConfig {
     }
 
     /**
-     * 使用运行时监听得到的导航栏可见性创建快照。该提示仅用于当前回调快照，
-     * 避免旧系统重新读取hasNavBar时丢失已经观察到的临时显示状态。
+     * Creates a snapshot using the runtime navigation bar visibility hint obtained from listeners.
+     * This hint is used solely for the current callback snapshot to avoid losing temporarily
+     * observed visibility states on older systems when re-evaluating hasNavBar.
      */
     BarConfig(@NonNull Window window, Boolean navigationBarVisibleHint) {
         Context context = window.getContext();
@@ -122,12 +123,14 @@ class BarConfig {
     }
 
     /**
-     * 计算导航栏是否在底部。
-     * android 11(API 30)起WindowInsets可用，优先用其实际方向判断（底部有inset即在底部，否则在侧边），
-     * 比老的“手机横屏导航栏在侧边”启发式更准；insets不可用或低版本时回退到原启发式。
+     * Calculates whether the navigation bar is positioned at the bottom.
+     * On Android 11 (API 30) and above, WindowInsets is available and preferred to check actual
+     * inset directions (bottom inset indicates bottom placement, otherwise side placement),
+     * which is more accurate than the legacy "landscape phone puts navigation bar on the side"
+     * heuristic; falls back to the legacy heuristic if insets are unavailable or on older APIs.
      *
      * @param window window
-     * @return true表示导航栏在底部，false表示在侧边
+     * @return true if the navigation bar is at the bottom, false if on the side
      */
     private boolean computeNavigationAtBottom(Window window) {
         if (Build.VERSION.SDK_INT >= Version.R) {
@@ -216,9 +219,10 @@ class BarConfig {
     }
 
     /**
-     * 获取导航栏高度，忽略运行时可见性（隐藏时也返回其实际尺寸）。
-     * 手势导航（且厂商不可检测导航栏存在性）与hasNavBar一致视为无导航栏返回0；
-     * API 30+用getInsetsIgnoringVisibility，低版本用与可见性无关的静态资源高度。
+     * Gets the navigation bar height ignoring runtime visibility (returns its actual size even when hidden).
+     * If gesture navigation is enabled (and the OEM does not allow detecting navigation bar existence),
+     * this returns 0 consistent with hasNavBar; API 30+ uses getInsetsIgnoringVisibility, while older APIs
+     * fall back to the static resource height independent of visibility.
      */
     @SuppressLint("ObsoleteSdkInt")
     @androidx.annotation.RequiresApi(Version.ICE_CREAM_SANDWICH)
@@ -306,12 +310,13 @@ class BarConfig {
     }
 
     /**
-     * 获取系统导航栏的WindowInsets（API 30+，挖孔屏/edge-to-edge下比DisplayMetrics差值更可靠的导航栏尺寸来源）。
-     * 优先使用WindowMetrics（不依赖视图是否attach），其次回退到decorView的rootWindowInsets。
-     * 接收Window而非Activity，以同时支持Activity和Dialog。
+     * Gets the WindowInsets of the system navigation bar (API 30+, a more reliable source of navigation bar
+     * dimensions under display cutouts and edge-to-edge than DisplayMetrics differences).
+     * Prefers WindowMetrics (independent of whether the view is attached), falling back to decorView rootWindowInsets.
+     * Accepts a Window rather than an Activity to support both Activity and Dialog.
      *
      * @param window window
-     * @return 导航栏insets，不可用时返回null
+     * @return navigation bar insets, or null if unavailable
      */
     @RequiresApi(Version.R)
     private static Insets getNavigationBarInsets(Window window) {
@@ -329,10 +334,11 @@ class BarConfig {
     }
 
     /**
-     * 获取系统导航栏的WindowInsets（忽略可见性，隐藏时也返回其实际尺寸）。获取途径同{@link #getNavigationBarInsets}。
+     * Gets the WindowInsets of the system navigation bar ignoring visibility (returns actual size even when hidden).
+     * Resolution path is the same as {@link #getNavigationBarInsets}.
      *
      * @param window window
-     * @return 导航栏insets，不可用时返回null
+     * @return navigation bar insets, or null if unavailable
      */
     @RequiresApi(Version.R)
     private static Insets getNavigationBarInsetsIgnoringVisibility(Window window) {
@@ -350,11 +356,12 @@ class BarConfig {
     }
 
     /**
-     * 获取系统状态栏的WindowInsets（API 30+，挖孔屏等机型下比资源status_bar_height更可靠的状态栏尺寸来源）。
-     * 使用getInsetsIgnoringVisibility以获取状态栏的实际物理尺寸，无论其是否被隐藏。
+     * Gets the WindowInsets of the system status bar (API 30+, a more reliable status bar dimension source
+     * on cutout displays than the status_bar_height resource).
+     * Uses getInsetsIgnoringVisibility to retrieve the actual physical dimensions of the status bar regardless of visibility.
      *
      * @param window window
-     * @return 状态栏insets，不可用时返回null
+     * @return status bar insets, or null if unavailable
      */
     @RequiresApi(Version.R)
     private static Insets getStatusBarInsetsIgnoringVisibility(Window window) {
@@ -466,7 +473,7 @@ class BarConfig {
     }
 
     /**
-     * 获取导航栏高度，忽略运行时可见性（隐藏时也返回其实际尺寸）。
+     * Gets the navigation bar height ignoring runtime visibility (returns its actual size even when hidden).
      *
      * @return The height of the navigation bar (in pixels), regardless of its current visibility.
      */
@@ -493,8 +500,7 @@ class BarConfig {
     }
 
     /**
-     * 获得导航栏高度
-     *
+     * Gets the internal dimension size for navigation bar height.
      */
     static int getNavigationBarHeightInternal(@NonNull Context context) {
         String key;

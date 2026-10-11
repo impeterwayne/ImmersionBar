@@ -7,7 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * 状态栏信息
+ * Status bar information snapshot.
  *
  * @author geyifeng
  * @date 2026 /7/19
@@ -32,23 +32,23 @@ public class StatusBar {
     }
 
     /**
-     * 状态栏当前是否可见
+     * Whether the status bar is currently visible.
      */
     private final boolean visible;
     /**
-     * 状态栏当前高度，隐藏时为0
+     * Current status bar height in pixels, or 0 when hidden.
      */
     private final int height;
     /**
-     * 忽略可见性的状态栏高度（隐藏时也返回其实际尺寸）
+     * Status bar height ignoring visibility (returns actual size even when hidden) in pixels.
      */
     private final int heightIgnoringVisibility;
     /**
-     * 是否为首次回调（首次快照派发时为true）
+     * Whether this is the first callback dispatched to the listener.
      */
     private final boolean firstCallback;
     /**
-     * 相对上一次回调发生变化的属性位
+     * Bitmask flags indicating properties that changed relative to the previous callback.
      */
     @Change
     private final int changedFlags;
@@ -83,16 +83,16 @@ public class StatusBar {
     }
 
     /**
-     * 状态栏当前是否可见
+     * Whether the status bar is currently visible.
      *
-     * @return true表示可见
+     * @return true if visible, false otherwise
      */
     public boolean isVisible() {
         return visible;
     }
 
     /**
-     * 状态栏当前高度，隐藏时为0，单位为px
+     * Current status bar height in pixels, or 0 when hidden.
      *
      * @return the current status bar height
      */
@@ -101,7 +101,7 @@ public class StatusBar {
     }
 
     /**
-     * 状态栏高度（忽略可见性，隐藏时也返回其实际尺寸），单位为px
+     * Status bar height ignoring visibility (returns actual size even when hidden) in pixels.
      *
      * @return the status bar height ignoring visibility
      */
@@ -110,20 +110,21 @@ public class StatusBar {
     }
 
     /**
-     * 是否为首次回调（首次快照派发）
+     * Whether this is the first callback dispatched to the listener.
      *
-     * @return true表示这是监听器收到的首次回调
+     * @return true if this is the first callback dispatched to the listener
      */
     public boolean isFirstCallback() {
         return firstCallback;
     }
 
     /**
-     * 判断指定属性是否相对上一次回调发生变化。传入多个常量按位或时，任一属性变化即返回true。
-     * 首次回调没有历史快照，所有属性均视为变化。
+     * Determines whether the specified property changed relative to the previous callback.
+     * When multiple flags are bitwise-ORed, returns true if any property changed.
+     * On the first callback without historical snapshot, all properties are considered changed.
      *
-     * @param change 一个或多个CHANGE_*常量
-     * @return true表示指定属性中至少有一个发生变化
+     * @param change one or more CHANGE_* constants bitwise-ORed
+     * @return true if at least one specified property has changed
      */
     public boolean hasChanged(@Change int change) {
         return (changedFlags & change) != 0;

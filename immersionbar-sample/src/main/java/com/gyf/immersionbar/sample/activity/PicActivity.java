@@ -44,7 +44,7 @@ public class PicActivity extends SwipeBackActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 float alpha = (float) progress / 100;
-                binding.textView.setText("透明度:" + alpha + "f");
+                binding.textView.setText(getString(R.string.text_alpha_format, String.valueOf(alpha)));
                 ImmersionBar.with(PicActivity.this)
                         .addViewSupportTransformColor(binding.toolbar, R.color.colorPrimary)
                         .navigationBarColorTransform(R.color.orange)

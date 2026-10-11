@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
-        app:title="彩色状态栏 + 彩色导航栏"
+        app:title="@string/text_color"
         app:titleTextColor="@android:color/white" />
 
     <LinearLayout
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="40dp"
-            android:text="透明度:0.0f"
+            android:text="@string/text_alpha_format"
             android:textColor="@color/colorAccent"
             android:textSize="20sp" />
 
@@ -71,5 +71,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="我是底部" />
+        android:text="@string/text_i_am_bottom" />
 </LinearLayout>

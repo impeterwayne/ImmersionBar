@@ -19,8 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * 刘海屏判断
- * The type Notch utils.
+ * Notch and display cutout detection utility.
  *
  * @author geyifeng
  * @date 2018 /11/14 12:09 AM
@@ -28,40 +27,34 @@ import java.lang.reflect.Method;
 public class NotchUtils {
 
     /**
-     * 系统属性
-     * The constant SYSTEM_PROPERTIES.
+     * System properties class name.
      */
     private static final String SYSTEM_PROPERTIES = "android.os.SystemProperties";
     /**
-     * 小米刘海
-     * The constant NOTCH_XIAO_MI.
+     * Xiaomi notch property key.
      */
     private static final String NOTCH_XIAO_MI = "ro.miui.notch";
     /**
-     * 华为刘海
-     * The constant NOTCH_HUA_WEI.
+     * Huawei notch size utility class name.
      */
     private static final String NOTCH_HUA_WEI = "com.huawei.android.util.HwNotchSizeUtil";
     /**
-     * VIVO刘海
-     * The constant NOTCH_VIVO.
+     * Vivo notch feature class name.
      */
     private static final String NOTCH_VIVO = "android.util.FtFeature";
     /**
-     * OPPO刘海
-     * The constant NOTCH_OPPO.
+     * Oppo notch feature name.
      */
     private static final String NOTCH_OPPO = "com.oppo.feature.screen.heteromorphism";
     /**
-     * Lenovo刘海
-     * The Notch lenovo.
+     * Lenovo notch resource name.
      */
     private static final String NOTCH_LENOVO = "config_screen_has_notch";
 
     private static final String NOTCH_MEIZU = "flyme.config.FlymeFeature";
 
     /**
-     * 判断是否是刘海屏
+     * Checks whether the screen has a notch / display cutout.
      * Has notch screen boolean.
      *
      * @param activity the activity
@@ -73,7 +66,7 @@ public class NotchUtils {
     }
 
     /**
-     * 判断是否是刘海屏
+     * Checks whether the screen has a notch / display cutout.
      * Has notch screen boolean.
      *
      * @param fragment the fragment
@@ -84,7 +77,7 @@ public class NotchUtils {
     }
 
     /**
-     * 判断是否是刘海屏
+     * Checks whether the screen has a notch / display cutout.
      * Has notch screen boolean.
      *
      * @param fragment the fragment
@@ -95,7 +88,7 @@ public class NotchUtils {
     }
 
     /**
-     * 判断是否是刘海屏
+     * Checks whether the screen has a notch / display cutout.
      * Has notch screen boolean.
      *
      * @param context the context
@@ -106,7 +99,7 @@ public class NotchUtils {
     }
 
     /**
-     * 判断是否是刘海屏
+     * Checks whether the screen has a notch / display cutout.
      * Has notch screen boolean.
      *
      * @param dialog the dialog
@@ -117,7 +110,7 @@ public class NotchUtils {
     }
 
     /**
-     * 判断是否是刘海屏
+     * Checks whether the screen has a notch / display cutout.
      * Has notch screen boolean.
      *
      * @param window the window
@@ -142,7 +135,7 @@ public class NotchUtils {
     }
 
     /**
-     * 判断是否是刘海屏
+     * Checks whether the screen has a notch / display cutout.
      * Has notch screen boolean.
      *
      * @param view the view
@@ -173,8 +166,7 @@ public class NotchUtils {
     }
 
     /**
-     * Android P 刘海屏判断
-     * Has notch at android p boolean.
+     * Checks whether the device has a display cutout on Android P (API 28) and above.
      *
      * @param activity the activity
      * @return the boolean
@@ -185,8 +177,7 @@ public class NotchUtils {
 
 
     /**
-     * 获得DisplayCutout
-     * Gets display cutout.
+     * Gets DisplayCutout.
      *
      * @param activity the activity
      * @return the display cutout
@@ -208,11 +199,10 @@ public class NotchUtils {
     }
 
     /**
-     * 小米刘海屏判断.
-     * Has notch at xiao mi int.
+     * Checks whether the device has a notch on Xiaomi.
      *
      * @param context the context
-     * @return the int
+     * @return the boolean
      */
 
     @SuppressLint("PrivateApi")
@@ -237,8 +227,7 @@ public class NotchUtils {
     }
 
     /**
-     * 华为刘海屏判断
-     * Has notch at hua wei boolean.
+     * Checks whether the device has a notch on Huawei.
      *
      * @param context the context
      * @return the boolean
@@ -261,8 +250,7 @@ public class NotchUtils {
     }
 
     /**
-     * VIVO刘海屏判断
-     * Has notch at vivo boolean.
+     * Checks whether the device has a notch on Vivo.
      *
      * @param context the context
      * @return the boolean
@@ -285,8 +273,7 @@ public class NotchUtils {
     }
 
     /**
-     * OPPO刘海屏判断
-     * Has notch at oppo boolean.
+     * Checks whether the device has a notch on Oppo.
      *
      * @param context the context
      * @return the boolean
@@ -304,8 +291,7 @@ public class NotchUtils {
 
 
     /**
-     * Lenovo刘海屏判断
-     * Has notch at lenovo boolean.
+     * Checks whether the device has a notch on Lenovo.
      *
      * @param context the context
      * @return the boolean
@@ -321,8 +307,7 @@ public class NotchUtils {
     }
 
     /**
-     * 魅族刘海屏判断
-     * Has notch at meizu boolean.
+     * Checks whether the device has a notch on Meizu.
      *
      * @return the boolean
      */
@@ -340,7 +325,7 @@ public class NotchUtils {
     }
 
     /**
-     * 获得刘海屏高度
+     * Gets the notch height in pixels.
      * Notch height int.
      *
      * @param activity the activity
@@ -354,7 +339,7 @@ public class NotchUtils {
     }
 
     /**
-     * 获得刘海屏高度
+     * Gets the notch height in pixels.
      * Notch height int.
      *
      * @param fragment the fragment
@@ -365,7 +350,7 @@ public class NotchUtils {
     }
 
     /**
-     * 获得刘海屏高度
+     * Gets the notch height in pixels.
      * Notch height int.
      *
      * @param fragment the fragment
@@ -376,7 +361,7 @@ public class NotchUtils {
     }
 
     /**
-     * 获得刘海屏高度
+     * Gets the notch height in pixels.
      * Notch height int.
      *
      * @param context the context
@@ -387,7 +372,7 @@ public class NotchUtils {
     }
 
     /**
-     * 获得刘海屏高度
+     * Gets the notch height in pixels.
      * Notch height int.
      *
      * @param view the view
@@ -398,7 +383,7 @@ public class NotchUtils {
     }
 
     /**
-     * 获得刘海屏高度
+     * Gets the notch height in pixels.
      * Notch height int.
      *
      * @param dialog the dialog
@@ -409,7 +394,7 @@ public class NotchUtils {
     }
 
     /**
-     * 获得刘海屏高度
+     * Gets the notch height in pixels.
      * Notch height int.
      *
      * @param window the window
@@ -467,7 +452,7 @@ public class NotchUtils {
     }
 
     /**
-     * 获得刘海屏高度
+     * Gets the notch height in pixels.
      * Gets notch height.
      *
      * @param activity the activity
@@ -484,7 +469,7 @@ public class NotchUtils {
     }
 
     /**
-     * 获得刘海屏高度
+     * Gets the notch height in pixels.
      * Gets notch height.
      *
      * @param fragment the fragment
@@ -495,7 +480,7 @@ public class NotchUtils {
     }
 
     /**
-     * 获得刘海屏高度
+     * Gets the notch height in pixels.
      * Gets notch height.
      *
      * @param fragment the fragment
@@ -506,7 +491,7 @@ public class NotchUtils {
     }
 
     /**
-     * 获得刘海屏高度
+     * Gets the notch height in pixels.
      * Gets notch height.
      *
      * @param context  the context
@@ -517,7 +502,7 @@ public class NotchUtils {
     }
 
     /**
-     * 获得刘海屏高度
+     * Gets the notch height in pixels.
      * Gets notch height.
      *
      * @param view     the view
@@ -528,7 +513,7 @@ public class NotchUtils {
     }
 
     /**
-     * 获得刘海屏高度
+     * Gets the notch height in pixels.
      * Gets notch height.
      *
      * @param dialog   the dialog
@@ -539,7 +524,7 @@ public class NotchUtils {
     }
 
     /**
-     * 获得刘海屏高度
+     * Gets the notch height in pixels.
      * Gets notch height.
      *
      * @param window   the window
@@ -598,8 +583,7 @@ public class NotchUtils {
     }
 
     /**
-     * 获得联想刘海屏高度
-     * Gets lenovo notch height.
+     * Gets the notch height on Lenovo devices in pixels.
      *
      * @param context the context
      * @return the lenovo notch height
@@ -614,8 +598,7 @@ public class NotchUtils {
     }
 
     /**
-     * 获得魅族刘海屏高度
-     * Gets meizu notch height.
+     * Gets the notch height on Meizu devices in pixels.
      *
      * @param context the context
      * @return the meizu notch height

@@ -43,10 +43,7 @@ public class HomeFiveFragment extends BaseFiveFragment {
     @Override
     protected void initView() {
         super.initView();
-        binding.text.setText("使用Fragmentation框架要实现沉浸式，建议在加载Fragment的Activity中进行沉浸式初始化；解决布局重叠问题" +
-                "，建议使用readme里第四种或者第五种方法解决，参考BaseFiveFragment的onViewCreated方法；" +
-                "如果使用fitsSystemWindows(true)方法解决布局重叠问题，由于是采用单Activity多Fragment实现交互，Fragment之间切换就没那么丝滑了，" +
-                "如果要在Fragment单独使用沉浸式，请在onSupportVisible方法中实现。参考BaseFiveFragment的onSupportVisible方法");
+        binding.text.setText(getString(R.string.text_home_five_desc));
         Glide.with(this).asBitmap().load(Utils.getPic())
                 .apply(new RequestOptions().placeholder(R.mipmap.test))
                 .into(binding.iv);

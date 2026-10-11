@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="点我解决" />
+            android:text="@string/text_click_to_fix" />
     </LinearLayout>
 
     <EditText
@@ -39,6 +39,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="我是底部" />
+        android:text="@string/text_i_am_bottom" />
 
 </LinearLayout>

@@ -41,7 +41,7 @@ public class ColorActivity extends BaseActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 float alpha = (float) progress / 100;
-                binding.textView.setText("透明度:" + alpha + "f");
+                binding.textView.setText(getString(R.string.text_alpha_format, String.valueOf(alpha)));
                 ImmersionBar.with(ColorActivity.this).barAlpha(alpha)
                         .statusBarColorTransform(R.color.btn14)
                         .navigationBarColorTransform(R.color.btn3)

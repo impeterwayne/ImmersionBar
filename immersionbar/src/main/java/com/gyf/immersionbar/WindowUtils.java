@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 /**
- * Window工具类
+ * Window utility class.
  *
  * @author gyf
  */
@@ -21,7 +21,7 @@ class WindowUtils {
     }
 
     /**
-     * 获取Window。
+     * Gets the Window.
      *
      * @param activity the activity
      * @return the window
@@ -32,7 +32,7 @@ class WindowUtils {
     }
 
     /**
-     * 获取Window。
+     * Gets the Window.
      *
      * @param dialog the dialog
      * @return the window
@@ -51,7 +51,7 @@ class WindowUtils {
     }
 
     /**
-     * 获取Window。
+     * Gets the Window.
      *
      * @param fragment the fragment
      * @return the window
@@ -66,7 +66,7 @@ class WindowUtils {
     }
 
     /**
-     * 获取Window。
+     * Gets the Window.
      *
      * @param fragment the fragment
      * @return the window
@@ -81,7 +81,7 @@ class WindowUtils {
     }
 
     /**
-     * 获取Window。
+     * Gets the Window.
      *
      * @param view the view
      * @return the window
@@ -92,7 +92,7 @@ class WindowUtils {
     }
 
     /**
-     * 获取Window。
+     * Gets the Window.
      *
      * @param context the context
      * @return the window

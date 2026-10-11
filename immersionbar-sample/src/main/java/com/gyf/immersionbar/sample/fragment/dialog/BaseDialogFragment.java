@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 
 
 /**
- * DialogFragment 实现沉浸式的基类
+ * Base class for implementing ImmersionBar in DialogFragment
  *
  * @author geyifeng
  * @date 2017 /8/26
@@ -46,7 +46,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //全屏
+        // Full screen
         setStyle(DialogFragment.STYLE_NORMAL, R.style.MyDialog);
     }
 
@@ -54,7 +54,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
     public void onStart() {
         super.onStart();
         Dialog dialog = getDialog();
-        //点击外部消失
+        // Dismiss when touching outside
         dialog.setCanceledOnTouchOutside(true);
         mWindow = dialog.getWindow();
         mWidthAndHeight = Utils.getWidthAndHeight(mWindow);
@@ -93,7 +93,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
     }
 
     /**
-     * 初始化ViewBinding
+     * Initialize ViewBinding
      */
     protected void initViewBinding(View view) {
     }
@@ -106,7 +106,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
     protected abstract int setLayoutId();
 
     /**
-     * 是否在Fragment使用沉浸式
+     * Whether to use ImmersionBar in Fragment
      *
      * @return the boolean
      */
@@ -115,7 +115,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
     }
 
     /**
-     * 初始化沉浸式
+     * Initialize ImmersionBar
      */
     protected void initImmersionBar() {
         ImmersionBar.with(this).init();
@@ -123,14 +123,14 @@ public abstract class BaseDialogFragment extends DialogFragment {
 
 
     /**
-     * 初始化数据
+     * Initialize data
      */
     protected void initData() {
 
     }
 
     /**
-     * view与数据绑定
+     * Bind views and data
      */
     protected void initView() {
         ImageView iv = mRootView.findViewById(R.id.iv);
@@ -142,7 +142,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
     }
 
     /**
-     * 设置监听
+     * Set listeners
      */
     protected void setListener() {
 

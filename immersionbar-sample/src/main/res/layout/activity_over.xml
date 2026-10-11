@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        app:title="解决布局顶部和状态栏重叠问题"
+        app:title="@string/text_over"
         app:titleTextColor="@android:color/white" />
 
     <TextView
@@ -35,32 +35,32 @@
             <Button
                 android:id="@+id/btn_one"
                 style="@style/btn"
-                android:text="方法一" />
+                android:text="@string/text_method_1" />
 
             <Button
                 android:id="@+id/btn_two"
                 style="@style/btn"
-                android:text="方法二" />
+                android:text="@string/text_method_2" />
 
             <Button
                 android:id="@+id/btn_three"
                 style="@style/btn"
-                android:text="方法三" />
+                android:text="@string/text_method_3" />
 
             <Button
                 android:id="@+id/btn_four"
                 style="@style/btn"
-                android:text="方法四" />
+                android:text="@string/text_method_4" />
 
             <Button
                 android:id="@+id/btn_five"
                 style="@style/btn"
-                android:text="方法五" />
+                android:text="@string/text_method_5" />
 
             <Button
                 android:id="@+id/btn_six"
                 style="@style/btn"
-                android:text="方法六" />
+                android:text="@string/text_method_6" />
         </LinearLayout>
     </ScrollView>
 

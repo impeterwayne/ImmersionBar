@@ -7,22 +7,22 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.gyf.immersionbar.ImmersionBar;
-import com.gyf.immersionbar.components.SimpleImmersionFragment;
 import com.gyf.immersionbar.sample.R;
 
 
 /**
- * 可以使用沉浸式的Fragment基类
+ * Base Fragment with ImmersionBar support
  *
  * @author geyifeng
  * @date 2017/4/7
  */
-public abstract class BaseImmersionFragment extends SimpleImmersionFragment {
+public abstract class BaseImmersionFragment extends Fragment {
 
     protected String mTag = this.getClass().getSimpleName();
 
@@ -70,10 +70,32 @@ public abstract class BaseImmersionFragment extends SimpleImmersionFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (immersionBarEnabled()) {
+            initImmersionBar();
+        }
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden && immersionBarEnabled()) {
+            initImmersionBar();
+        }
+    }
+
+    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        //旋转屏幕为什么要重新设置布局与状态栏重叠呢？因为旋转屏幕有可能使状态栏高度不一样，如果你是使用的静态方法修复的，所以要重新调用修复
+        // Why reconfigure layout overlap on screen rotation? Because status bar height may change on orientation switch, so call fix method again if using static methods
         fitsLayoutOverlap();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ImmersionBar.destroy(this);
     }
 
     protected void initDataBeforeView(Bundle savedInstanceState) {
@@ -81,7 +103,7 @@ public abstract class BaseImmersionFragment extends SimpleImmersionFragment {
     }
 
     /**
-     * 初始化ViewBinding
+     * Initialize ViewBinding
      */
     protected void initViewBinding(View view) {
     }
@@ -93,28 +115,30 @@ public abstract class BaseImmersionFragment extends SimpleImmersionFragment {
      */
     protected abstract int getLayoutId();
 
-
-    @Override
     public void initImmersionBar() {
         ImmersionBar.with(this).keyboardEnable(true).init();
     }
 
+    public boolean immersionBarEnabled() {
+        return true;
+    }
+
     /**
-     * 初始化数据
+     * Initialize data
      */
     protected void initData() {
 
     }
 
     /**
-     * view与数据绑定
+     * Bind views and data
      */
     protected void initView() {
 
     }
 
     /**
-     * 设置监听
+     * Set listeners
      */
     protected void setListener() {
 

@@ -50,7 +50,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
- * android 4.4以上沉浸式以及bar的管理
+ * Immersion and bar management for Android 4.4 and above.
  *
  * @author gyf
  * @date 2017 /05/09
@@ -70,115 +70,115 @@ public final class ImmersionBar implements Runnable {
     private ImmersionBar mParentBar;
 
     /**
-     * 是否是在Fragment里使用
+     * Whether used in a Fragment.
      */
     private boolean mIsFragment = false;
     /**
-     * 是否是DialogFragment
+     * Whether it is a DialogFragment.
      */
     private boolean mIsDialogFragment = false;
     /**
-     * 是否是在Dialog里使用
+     * Whether used in a Dialog.
      */
     private boolean mIsDialog = false;
     /**
-     * 用户配置的bar参数
+     * User-configured bar parameters.
      */
     private BarParams mBarParams;
     /**
-     * 当前Window在ImmersionBar接管前的导航栏颜色。
+     * Navigation bar color of the current Window prior to being taken over by ImmersionBar.
      */
     private int mDefaultNavigationBarColor = Color.BLACK;
     /**
-     * 当前Window在ImmersionBar接管前是否使用深色导航栏图标。
+     * Whether the current Window used dark navigation bar icons prior to being taken over by ImmersionBar.
      */
     private boolean mDefaultNavigationBarDarkIcon = false;
     /**
-     * 最近一次通过getBarParams暴露给调用方的参数对象，用于兼容直接修改公开字段的用法。
+     * The most recent params instance exposed to callers via getBarParams(), used to support legacy usage that directly modifies public fields.
      */
     private WeakReference<BarParams> mExposedBarParams;
     private int mExposedNavigationBarColor;
     private boolean mExposedNavigationBarDarkIcon;
     /**
-     * 系统bar相关信息
+     * System bar information.
      */
     private BarConfig mBarConfig;
     /**
-     * ActionBar的高度
+     * Height of the ActionBar.
      */
     private int mActionBarHeight = 0;
     /**
-     * 软键盘监听相关
+     * Soft keyboard listener.
      */
     private FitsKeyboard mFitsKeyboard = null;
     /**
-     * 系统栏（状态栏/导航栏）运行时显隐监听，per-window。
+     * System bar (status bar / navigation bar) runtime visibility listener, per-window.
      */
     private BarVisibilityObserver mBarVisibilityObserver = null;
     /**
-     * Dialog假状态栏/假导航栏的decorView布局监听，用于在Dialog窗口尺寸变化后按几何关系纠正假栏可见性与padding。
-     * 仅Dialog、API 30+场景创建，可能为null。
+     * Layout change listener for Dialog fake status bar / fake navigation bar on decorView, used to correct fake bar visibility and padding based on geometric relations after Dialog window size changes.
+     * Created only for Dialog on API 30+; may be null.
      */
     private View.OnLayoutChangeListener mFakeBarLayoutListener = null;
     /**
-     * 持有此ImmersionBar的delegate，用于在运行时系统栏显隐变化时反向刷新BarProperties快照。
-     * 仅Activity/Fragment场景下由{@link ImmersionDelegate}回传，可能为null。
+     * The delegate holding this ImmersionBar, used to refresh the BarProperties snapshot when system bar visibility changes at runtime.
+     * Passed back by {@link ImmersionDelegate} only in Activity/Fragment scenarios; may be null.
      */
     private ImmersionDelegate mImmersionDelegate = null;
     /**
-     * Bar属性变化监听器集合。使用CopyOnWriteArraySet支持监听器在回调期间安全地添加或移除。
+     * Collection of bar property change listeners. Uses CopyOnWriteArraySet to support safely adding or removing listeners during callbacks.
      */
     private final Set<OnBarPropertiesChangedListener> mOnBarPropertiesChangedListeners =
             new CopyOnWriteArraySet<>();
     /**
-     * 软键盘变化监听器集合。使用CopyOnWriteArraySet支持监听器在回调期间安全地添加或移除。
+     * Collection of soft keyboard change listeners. Uses CopyOnWriteArraySet to support safely adding or removing listeners during callbacks.
      */
     private final Set<OnKeyboardChangedListener> mOnKeyboardChangedListeners = new CopyOnWriteArraySet<>();
     /**
-     * 状态栏变化监听器集合。使用CopyOnWriteArraySet支持监听器在回调期间安全地添加或移除。
+     * Collection of status bar change listeners. Uses CopyOnWriteArraySet to support safely adding or removing listeners during callbacks.
      */
     private final Set<OnStatusBarChangedListener> mOnStatusBarChangedListeners = new CopyOnWriteArraySet<>();
     /**
-     * 导航栏变化监听器集合。使用CopyOnWriteArraySet支持监听器在回调期间安全地添加或移除。
+     * Collection of navigation bar change listeners. Uses CopyOnWriteArraySet to support safely adding or removing listeners during callbacks.
      */
     private final Set<OnNavigationBarChangedListener> mOnNavigationBarChangedListeners = new CopyOnWriteArraySet<>();
     /**
-     * 内部默认的状态栏变化回调，注册到mOnStatusBarChangedListeners。
-     * 同步一切依赖状态栏的view：假状态栏视图显隐与高度，以及titleBar/titleBarMarginTop/statusBarView
-     * 设置的重叠适配view（状态栏高度可变，如旋转后需按当前高度重新适配，三个静态方法按tag差量应用，重放幂等）。
+     * Internal default status bar change callback, registered to mOnStatusBarChangedListeners.
+     * Synchronizes all views depending on the status bar: fake status bar view visibility and height, as well as views adapted via titleBar/titleBarMarginTop/statusBarView
+     * for overlap (the status bar height is variable, e.g. after rotation it must re-adapt to the current height; the three static methods are applied differentially by tag and replayed idempotently).
      */
     private final OnStatusBarChangedListener mStatusBarSync = statusBar -> {
-        //先刷新BarConfig，假状态栏与重叠适配view才能拿到当前状态栏高度
+        // Refresh BarConfig first so fake status bar and overlap adaptation views can obtain current status bar height
         mBarConfig = new BarConfig(mActivity);
         syncStatusBarView(statusBar.isVisible());
         fitsWindows();
     };
     /**
-     * 内部默认的导航栏变化回调，注册到mOnNavigationBarChangedListeners，
-     * 用于同步假导航栏视图（隐藏时GONE，显示时重新按mBarParams上色）。
+     * Internal default navigation bar change callback, registered to mOnNavigationBarChangedListeners,
+     * used to synchronize fake navigation bar views (GONE when hidden, re-tinted according to mBarParams when shown).
      */
     private final OnNavigationBarChangedListener mFakeNavigationBarSync =
             navigationBar -> syncNavigationBarView(navigationBar.isVisible());
     /**
-     * 内部导航模式切换监听（三键⇄手势等设置项变化），注册到NavigationBarObserver。
-     * 只负责触发BarProperties快照刷新，由快照统一分发，不直接回调任何用户监听器。
+     * Internal navigation mode change listener (3-button ⇄ gesture navigation setting changes, etc.), registered to NavigationBarObserver.
+     * Only responsible for triggering BarProperties snapshot refresh, dispatched uniformly by snapshot; does not directly invoke user listeners.
      */
     final OnNavigationBarListener mNavigationModeChangeListener = ImmersionBar.this::onNavigationBarListener;
 
     /**
-     * 用户使用tag增加的bar参数的集合
+     * Collection of bar parameters added by users using tags.
      */
     private final Map<String, BarParams> mTagMap = new HashMap<>();
     /**
-     * 当前顶部布局和状态栏重叠是以哪种方式适配的
+     * The adaptation method currently used for top layout and status bar overlap.
      */
     private int mFitsStatusBarType = FLAG_FITS_DEFAULT;
     /**
-     * 是否已经调用过init()方法了
+     * Whether init() has already been called.
      */
     private boolean mInitialized = false;
     /**
-     * ActionBar是否是在LOLLIPOP下设备使用
+     * Whether ActionBar is used on devices below LOLLIPOP.
      */
     private boolean mIsActionBarBelowLOLLIPOP = false;
 
@@ -187,7 +187,7 @@ public final class ImmersionBar implements Runnable {
     private int mPaddingLeft = 0, mPaddingTop = 0, mPaddingRight = 0, mPaddingBottom = 0;
 
     /**
-     * 在Activity使用
+     * Used in Activity.
      * With immersion bar.
      *
      * @param activity the activity
@@ -198,10 +198,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 在Activity使用
+     * Used in Activity.
      *
      * @param activity the activity
-     * @param isOnly   the is only fragment实例对象是否唯一，默认是false，不唯一，isOnly影响tag以何种形式生成
+     * @param isOnly   the is only whether the Fragment instance is unique; default is false (not unique); isOnly affects how tags are generated
      * @return the immersion bar
      */
     public static ImmersionBar with(@NonNull Activity activity, boolean isOnly) {
@@ -209,7 +209,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 在Fragment使用
+     * Used in Fragment.
      * With immersion bar.
      *
      * @param fragment the fragment
@@ -220,11 +220,11 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 在Fragment使用
+     * Used in Fragment.
      * With immersion bar.
      *
      * @param fragment the fragment
-     * @param isOnly   the is only fragment实例对象是否唯一，默认是false，不唯一，isOnly影响tag以何种形式生成
+     * @param isOnly   the is only whether the Fragment instance is unique; default is false (not unique); isOnly affects how tags are generated
      * @return the immersion bar
      */
     public static ImmersionBar with(@NonNull Fragment fragment, boolean isOnly) {
@@ -232,7 +232,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 在Fragment使用
+     * Used in Fragment.
      * With immersion bar.
      *
      * @param fragment the fragment
@@ -243,11 +243,11 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 在Fragment使用
+     * Used in Fragment.
      * With immersion bar.
      *
      * @param fragment the fragment
-     * @param isOnly   the is only fragment实例对象是否唯一，默认是false，不唯一，isOnly影响tag以何种形式生成
+     * @param isOnly   the is only whether the Fragment instance is unique; default is false (not unique); isOnly affects how tags are generated
      * @return the immersion bar
      */
     public static ImmersionBar with(@NonNull android.app.Fragment fragment, boolean isOnly) {
@@ -255,7 +255,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 在DialogFragment使用
+     * Used in DialogFragment.
      * With immersion bar.
      *
      * @param dialogFragment the dialog fragment
@@ -266,10 +266,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 在DialogFragment使用
+     * Used in DialogFragment.
      *
      * @param dialogFragment the dialog fragment
-     * @param isOnly         the is only fragment实例对象是否唯一，默认是false，不唯一，isOnly影响tag以何种形式生成
+     * @param isOnly         the is only whether the Fragment instance is unique; default is false (not unique); isOnly affects how tags are generated
      * @return the immersion bar
      */
     public static ImmersionBar with(@NonNull DialogFragment dialogFragment, boolean isOnly) {
@@ -277,7 +277,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 在DialogFragment使用
+     * Used in DialogFragment.
      * With immersion bar.
      *
      * @param dialogFragment the dialog fragment
@@ -288,10 +288,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 在DialogFragment使用
+     * Used in DialogFragment.
      *
      * @param dialogFragment the dialog fragment
-     * @param isOnly         the is only fragment实例对象是否唯一，默认是false，不唯一，isOnly影响tag以何种形式生成
+     * @param isOnly         the is only whether the Fragment instance is unique; default is false (not unique); isOnly affects how tags are generated
      * @return the immersion bar
      */
     public static ImmersionBar with(@NonNull android.app.DialogFragment dialogFragment, boolean isOnly) {
@@ -299,7 +299,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 在dialog里使用
+     * Used in Dialog.
      * With immersion bar.
      *
      * @param activity the activity
@@ -311,11 +311,11 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 在dialog里使用
+     * Used in Dialog.
      *
      * @param activity the activity
      * @param dialog   the dialog
-     * @param isOnly   the is only fragment实例对象是否唯一，默认是false，不唯一，isOnly影响tag以何种形式生成
+     * @param isOnly   the is only whether the Fragment instance is unique; default is false (not unique); isOnly affects how tags are generated
      * @return the immersion bar
      */
     public static ImmersionBar with(@NonNull Activity activity, @NonNull Dialog dialog, boolean isOnly) {
@@ -323,7 +323,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 在dialog里使用，自动从dialog解析所属Activity，无需再显式传入。
+     * Used in Dialog, automatically resolving the owning Activity from the Dialog without explicit passing.
      * With immersion bar.
      *
      * @param dialog the dialog
@@ -334,10 +334,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 在dialog里使用，自动从dialog解析所属Activity，无需再显式传入。
+     * Used in Dialog, automatically resolving the owning Activity from the Dialog without explicit passing.
      *
      * @param dialog the dialog
-     * @param isOnly the is only fragment实例对象是否唯一，默认是false，不唯一，isOnly影响tag以何种形式生成
+     * @param isOnly the is only whether the Fragment instance is unique; default is false (not unique); isOnly affects how tags are generated
      * @return the immersion bar
      */
     public static ImmersionBar with(@NonNull Dialog dialog, boolean isOnly) {
@@ -345,10 +345,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 销毁Fragment
+     * Destroy Fragment.
      *
      * @param fragment the Fragment
-     * @deprecated Fragment销毁时会跟随自身childFragmentManager自动销毁，无需再手动调用本方法。
+     * @deprecated When the Fragment is destroyed, it will automatically be destroyed along with its childFragmentManager; no need to call this manually.
      */
     @Deprecated
     public static void destroy(@NonNull Fragment fragment) {
@@ -356,11 +356,11 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 销毁Fragment
+     * Destroy Fragment.
      *
      * @param fragment the Fragment
-     * @param isOnly   the is only fragment实例对象是否唯一，默认是false，不唯一，isOnly影响tag以何种形式生成
-     * @deprecated Fragment销毁时会跟随自身childFragmentManager自动销毁，无需再手动调用本方法。
+     * @param isOnly   the is only whether the Fragment instance is unique; default is false (not unique); isOnly affects how tags are generated
+     * @deprecated When the Fragment is destroyed, it will automatically be destroyed along with its childFragmentManager; no need to call this manually.
      */
     @Deprecated
     public static void destroy(@NonNull Fragment fragment, boolean isOnly) {
@@ -368,10 +368,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 销毁Fragment
+     * Destroy Fragment.
      *
      * @param fragment the android.app.Fragment
-     * @deprecated Fragment销毁时会跟随自身childFragmentManager自动销毁，无需再手动调用本方法。
+     * @deprecated When the Fragment is destroyed, it will automatically be destroyed along with its childFragmentManager; no need to call this manually.
      */
     @Deprecated
     public static void destroy(@NonNull android.app.Fragment fragment) {
@@ -380,11 +380,11 @@ public final class ImmersionBar implements Runnable {
 
 
     /**
-     * 销毁Fragment
+     * Destroy Fragment.
      *
      * @param fragment the android.app.Fragment
-     * @param isOnly   the is only fragment实例对象是否唯一，默认是false，不唯一，isOnly影响tag以何种形式生成
-     * @deprecated Fragment销毁时会跟随自身childFragmentManager自动销毁，无需再手动调用本方法。
+     * @param isOnly   the is only whether the Fragment instance is unique; default is false (not unique); isOnly affects how tags are generated
+     * @deprecated When the Fragment is destroyed, it will automatically be destroyed along with its childFragmentManager; no need to call this manually.
      */
     @Deprecated
     public static void destroy(@NonNull android.app.Fragment fragment, boolean isOnly) {
@@ -392,11 +392,11 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 在Dialog里销毁，不包括DialogFragment
+     * Destroy in Dialog, excluding DialogFragment.
      *
      * @param activity the activity
      * @param dialog   the dialog
-     * @deprecated 自{@link #with(Activity, Dialog)}起，Dialog消失时会自动销毁，无需再手动调用本方法。
+     * @deprecated Since {@link #with(Activity, Dialog)}, it will be destroyed automatically when the Dialog dismisses; no need to call this manually.
      */
     @Deprecated
     public static void destroy(@NonNull Activity activity, @NonNull Dialog dialog) {
@@ -404,12 +404,12 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 在Dialog里销毁，不包括DialogFragment
+     * Destroy in Dialog, excluding DialogFragment.
      *
      * @param activity the activity
      * @param dialog   the dialog
-     * @param isOnly   the is only fragment实例对象是否唯一，默认是false，不唯一，isOnly影响tag以何种形式生成
-     * @deprecated 自{@link #with(Activity, Dialog, boolean)}起，Dialog消失时会自动销毁，无需再手动调用本方法。
+     * @param isOnly   the is only whether the Fragment instance is unique; default is false (not unique); isOnly affects how tags are generated
+     * @deprecated Since {@link #with(Activity, Dialog, boolean)}, it will be destroyed automatically when the Dialog dismisses; no need to call this manually.
      */
     @Deprecated
     public static void destroy(@NonNull Activity activity, @NonNull Dialog dialog, boolean isOnly) {
@@ -417,7 +417,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 通过上面配置后初始化后方可成功调用
+     * Must be initialized after the configuration above before it can be successfully called.
      */
     @SuppressLint("ObsoleteSdkInt")
     public void init() {
@@ -426,22 +426,22 @@ public final class ImmersionBar implements Runnable {
             return;
         }
         if (Build.VERSION.SDK_INT >= Version.KITKAT && mBarParams.barEnable) {
-            //更新Bar的参数
+            // Update Bar parameters
             updateBarParams();
-            //设置沉浸式
+            // Set immersion bar
             setBar();
-            //修正界面显示
+            // Fix view display
             fitsWindows();
-            //适配软键盘与底部输入框冲突问题
+            // Resolve soft keyboard and bottom input view conflict
             fitsKeyboard();
-            //变色view
+            // Color transform views
             transformView();
             mInitialized = true;
         }
     }
 
     /**
-     * 内部方法无需调用
+     * Internal method, no need to call.
      */
     void onDestroy() {
         cancelListener();
@@ -537,7 +537,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 更新Bar的参数
+     * Update Bar parameters.
      * Update bar params.
      */
     @SuppressLint("ObsoleteSdkInt")
@@ -545,16 +545,16 @@ public final class ImmersionBar implements Runnable {
         applyDefaultNavigationBarStyle();
         adjustDarkModeParams();
         if (Build.VERSION.SDK_INT >= Version.KITKAT) {
-            //获得Bar相关信息
+            // Obtain Bar related information
             if (!mInitialized || mIsFragment) {
                 updateBarConfig();
             }
             if (mParentBar != null) {
-                //如果在Fragment中使用，让Activity同步Fragment的BarParams参数
+                // If used in Fragment, synchronize Fragment's BarParams to Activity
                 if (mIsFragment) {
                     mParentBar.mBarParams = mBarParams;
                 }
-                //如果dialog里设置了keyboardEnable为true，则Activity中所设置的keyboardEnable为false
+                // If keyboardEnable is set to true in Dialog, keyboardEnable set in Activity becomes false
                 if (mIsDialog) {
                     if (mParentBar.mKeyboardTempEnable) {
                         mParentBar.mBarParams.keyboardEnable = false;
@@ -566,51 +566,51 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 初始化状态栏和导航栏
+     * Initialize status bar and navigation bar.
      */
     void setBar() {
-        //防止系统栏隐藏时内容区域大小发生变化
+        // Prevent content area size change when system bars are hidden
         int uiFlags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
         if (isEdgeToEdgeEnforced()) {
-            //适配刘海屏
+            // Adapt to notch / display cutout
             fitsNotchScreen();
-            //android 15(targetSdk 35)以上系统强制edge-to-edge，setXxxBarColor失效，改用假栏视图上色
+            // On Android 15 (targetSdk 35) and above, edge-to-edge is enforced, setXxxBarColor is invalid, use fake bar view for tinting
             initBarAboveAndroid15();
-            //状态栏字体、导航栏图标明暗交给android 11以上的WindowInsetsController处理
+            // Status bar font and navigation bar icon darkness handled by WindowInsetsController on Android 11+
             setBarDarkFontAboveR();
         } else if (Build.VERSION.SDK_INT >= Version.LOLLIPOP && !OSUtils.isEMUI3_x()) {
-            //适配刘海屏
+            // Adapt to notch / display cutout
             fitsNotchScreen();
-            //初始化5.0以上，包含5.0
+            // Initialize Android 5.0 and above, including 5.0
             uiFlags = initBarAboveLOLLIPOP(uiFlags);
-            //android 6.0以上设置状态栏字体为暗色
+            // Set dark status bar font on Android 6.0+
             uiFlags = setStatusBarDarkFont(uiFlags);
-            //android 8.0以上设置导航栏图标为暗色
+            // Set dark navigation bar icon on Android 8.0+
             uiFlags = setNavigationIconDark(uiFlags);
-            //适配android 11以上
+            // Adapt to Android 11+
             setBarDarkFontAboveR();
         } else {
-            //初始化5.0以下，4.4以上沉浸式
+            // Initialize below Android 5.0, Android 4.4+ immersion
             initBarBelowLOLLIPOP();
         }
-        //隐藏状态栏或者导航栏
+        // Hide status bar or navigation bar
         uiFlags = hideBarBelowR(uiFlags);
-        //应用flag
+        // Apply flags
         mDecorView.setSystemUiVisibility(uiFlags);
-        //适配小米和魅族状态栏黑白
+        // Adapt status bar dark/light font for Xiaomi and Meizu
         setSpecialBarDarkMode();
-        //适配android 11以上
+        // Adapt to Android 11+
         hideBarAboveR();
-        //导航模式切换监听（三键⇄手势等设置项变化）：内部注册，变化时只触发BarProperties快照刷新，由快照统一分发
+        // Navigation mode change listener (3-button ⇄ gesture, etc.): registered internally, only triggers BarProperties snapshot refresh on change, dispatched uniformly by snapshot
         NavigationBarObserver.getInstance().addOnNavigationBarListener(mNavigationModeChangeListener);
         NavigationBarObserver.getInstance().register(mActivity.getApplication());
-        //监听系统栏运行时显隐（hideBar等），按版本注册insets/systemUi监听，变化时回调onBarVisibilityChange
+        // Listen to system bar runtime visibility (hideBar, etc.), register insets/systemUi listener by version, callback onBarVisibilityChange on change
         setupBarVisibilityObserver();
     }
 
     /**
-     * 创建并启用{@link BarVisibilityObserver}，监听系统栏运行时显隐。
-     * 仅API 16+有可用的运行时检测API，低版本no-op（仅保留URI模式切换监听）。
+     * Create and enable {@link BarVisibilityObserver} to listen for system bar runtime visibility.
+     * Detection APIs are only available on API 16+; no-op on lower versions (retains URI mode change listener only).
      */
     @SuppressLint("ObsoleteSdkInt")
     private void setupBarVisibilityObserver() {
@@ -632,14 +632,14 @@ public final class ImmersionBar implements Runnable {
 
     private void setSpecialBarDarkMode() {
         if (OSUtils.isMIUI6Later()) {
-            //修改miui状态栏字体颜色
+            // Change MIUI status bar font color
             SpecialBarFontUtils.setMIUIBarDark(mWindow, IMMERSION_STATUS_BAR_DARK_MIUI, mBarParams.statusBarDarkFont);
-            //修改miui导航栏图标为黑色
+            // Change MIUI navigation bar icons to dark
             if (mBarParams.navigationBarEnable) {
                 SpecialBarFontUtils.setMIUIBarDark(mWindow, IMMERSION_NAVIGATION_BAR_DARK_MIUI, mBarParams.navigationBarDarkIcon);
             }
         }
-        // 修改Flyme OS状态栏字体颜色
+        // Change Flyme OS status bar font color
         if (OSUtils.isFlymeOS4Later()) {
             if (mBarParams.flymeOSStatusBarFontColor != 0) {
                 SpecialBarFontUtils.setStatusBarDarkIcon(mActivity, mBarParams.flymeOSStatusBarFontColor);
@@ -650,7 +650,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 适配刘海屏
+     * Adapt to notch / display cutout.
      * Fits notch screen.
      */
     private void fitsNotchScreen() {
@@ -666,35 +666,35 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 判断当前窗口是否被系统强制edge-to-edge。
-     * android 15(targetSdk 35)以上系统强制edge-to-edge，{@link Window#setStatusBarColor(int)}、
-     * {@link Window#setNavigationBarColor(int)}等旧API失效，需要改用假栏视图上色。
-     * 是否被强制由三个因素共同决定：设备API、宿主App的targetSdk、windowOptOutEdgeToEdgeEnforcement属性。
+     * Determine whether current window is enforced to edge-to-edge by the system.
+     * On Android 15 (targetSdk 35) and above, edge-to-edge is enforced by the system, and legacy APIs like {@link Window#setStatusBarColor(int)} and
+     * {@link Window#setNavigationBarColor(int)} become no-ops, requiring fake bar views for tinting.
+     * Whether it is enforced is determined by three factors: device API, host app targetSdk, and windowOptOutEdgeToEdgeEnforcement attribute.
      *
-     * @return true表示被强制edge-to-edge，需要走{@link #initBarAboveAndroid15()}
+     * @return true if enforced edge-to-edge and needs to go through {@link #initBarAboveAndroid15()}
      */
     @ChecksSdkIntAtLeast(api = Version.VANILLA_ICE_CREAM)
     private boolean isEdgeToEdgeEnforced() {
-        //设备必须android 15(API 35)及以上
+        // Device must be Android 15 (API 35) and above
         if (Build.VERSION.SDK_INT < Version.VANILLA_ICE_CREAM) {
             return false;
         }
-        //宿主App的targetSdk必须35及以上，低于35系统不会强制edge-to-edge
+        // Host app targetSdk must be 35 and above; below 35, system will not enforce edge-to-edge
         int target = mActivity.getApplicationInfo().targetSdkVersion;
         if (target < Version.VANILLA_ICE_CREAM) {
             return false;
         }
         if (isEdgeToEdgeOptedOut()) {
-            //windowOptOutEdgeToEdgeEnforcement仅在targetSdk 36+且设备也是36+时被忽略，其余情况退出仍然有效
+            // windowOptOutEdgeToEdgeEnforcement is only ignored when targetSdk 36+ and device is also 36+; in other cases opting out remains effective
             return target >= Version.BAKLAVA && Build.VERSION.SDK_INT >= Version.BAKLAVA;
         }
         return true;
     }
 
     /**
-     * 读取主题中的android:windowOptOutEdgeToEdgeEnforcement属性（API 35新增）。
+     * Read android:windowOptOutEdgeToEdgeEnforcement attribute from theme (added in API 35).
      *
-     * @return true表示App主动退出edge-to-edge强制
+     * @return true if the app actively opted out of edge-to-edge enforcement
      */
     private boolean isEdgeToEdgeOptedOut() {
         try {
@@ -704,35 +704,35 @@ public final class ImmersionBar implements Runnable {
                 return tv.data != 0;
             }
         } catch (Throwable ignored) {
-            //低版本无此属性或解析异常，视为未退出
+            // Lower versions do not have this attribute or error occurred while parsing; treat as not opted out
         }
         return false;
     }
 
     /**
-     * 初始化android 15(targetSdk 35)以上状态栏和导航栏。
-     * 此版本系统强制edge-to-edge，{@link Window#setStatusBarColor(int)}、
-     * {@link Window#setNavigationBarColor(int)}已失效，改为将系统栏置透明并用假栏视图自绘上色。
+     * Initialize status bar and navigation bar on Android 15 (targetSdk 35) and above.
+     * On this version the system enforces edge-to-edge, {@link Window#setStatusBarColor(int)} and
+     * {@link Window#setNavigationBarColor(int)} are no-ops; system bars are set to transparent and tinted using custom fake bar views.
      */
     @RequiresApi(api = Version.VANILLA_ICE_CREAM)
     private void initBarAboveAndroid15() {
-        //获得默认导航栏颜色
+        // Obtain default navigation bar color
         if (!mInitialized) {
             mBarParams.defaultNavigationBarColor = mWindow.getNavigationBarColor();
         }
-        //关闭系统对比度强制，并将系统栏置为透明，让自绘的假栏视图透出
-        //（edge-to-edge下setXxxBarColor为no-op，置透明无副作用）
+        // Disable system contrast enforcement, and make system bars transparent so custom fake bar views show through
+        // (under edge-to-edge, setXxxBarColor is a no-op, setting transparent has no side effects)
         mWindow.setStatusBarContrastEnforced(false);
         mWindow.setNavigationBarContrastEnforced(false);
         mWindow.setStatusBarColor(Color.TRANSPARENT);
         mWindow.setNavigationBarColor(Color.TRANSPARENT);
-        //创建假状态栏并按mBarParams上色
+        // Create fake status bar and tint according to mBarParams
         setupStatusBarView();
-        //创建假导航栏并按mBarParams上色
+        // Create fake navigation bar and tint according to mBarParams
         setupNavBarView();
-        //假栏跟随真实系统栏显隐，由BarVisibilityObserver统一监听后回调onBarVisibilityChange；
-        //此处立即用当前真实insets同步一次，避免setupXxxBarView刚把假栏置VISIBLE、但真实系统栏已是隐藏态时停留错误状态
-        //（如重复点击“隐藏全部”，hide()是no-op不触发监听回调来纠正）。
+        // Fake bars follow real system bar visibility, observed by BarVisibilityObserver and dispatched to onBarVisibilityChange;
+        // Synchronize once immediately using current real insets to prevent fake bar from staying in wrong state when setupXxxBarView just set it VISIBLE but the real system bar is already hidden
+        // (e.g. repeated clicks on "hide all", hide() is a no-op and won't trigger listener callback to correct it).
         WindowInsets rootInsets = mDecorView.getRootWindowInsets();
         if (rootInsets != null) {
             onBarVisibilityChange(rootInsets.isVisible(WindowInsets.Type.statusBars()),
@@ -741,31 +741,31 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 初始化android 5.0以上状态栏和导航栏
+     * Initialize status bar and navigation bar on Android 5.0 and above.
      *
      * @param uiFlags the ui flags
      * @return the int
      */
     @RequiresApi(api = Version.LOLLIPOP)
     private int initBarAboveLOLLIPOP(int uiFlags) {
-        //获得默认导航栏颜色
+        // Obtain default navigation bar color
         if (!mInitialized) {
             mBarParams.defaultNavigationBarColor = mWindow.getNavigationBarColor();
         }
-        //Activity全屏显示，但状态栏不会被隐藏覆盖，状态栏依然可见，Activity顶端布局部分会被状态栏遮住。
+        // Activity is displayed full screen, but the status bar will not be hidden or covered; it remains visible, and the top layout of the Activity will be covered by the status bar.
         uiFlags |= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
         if (mBarParams.fullScreen && mBarParams.navigationBarEnable) {
-            //Activity全屏显示，但导航栏不会被隐藏覆盖，导航栏依然可见，Activity底部布局部分会被导航栏遮住。
+            // Activity is displayed full screen, but the navigation bar will not be hidden or covered; it remains visible, and the bottom layout of the Activity will be covered by the navigation bar.
             uiFlags |= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
         }
         mWindow.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        //判断是否存在导航栏
+        // Check if navigation bar exists
         if (mBarConfig.hasNavigationBar()) {
             mWindow.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
-        //需要设置这个才能设置状态栏和导航栏颜色
+        // This must be set to configure status bar and navigation bar colors
         mWindow.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        //设置状态栏颜色
+        // Set status bar color
         if (mBarParams.statusBarColorEnabled) {
             if (Build.VERSION.SDK_INT >= Version.Q) {
                 mWindow.setStatusBarContrastEnforced(false);
@@ -776,7 +776,7 @@ public final class ImmersionBar implements Runnable {
             mWindow.setStatusBarColor(ColorUtils.blendARGB(mBarParams.statusBarColor,
                     Color.TRANSPARENT, mBarParams.statusBarAlpha));
         }
-        //设置导航栏颜色
+        // Set navigation bar color
         if (mBarParams.navigationBarEnable) {
             if (Build.VERSION.SDK_INT >= Version.Q) {
                 mWindow.setNavigationBarContrastEnforced(false);
@@ -790,28 +790,28 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 初始化android 4.4和emui3.1状态栏和导航栏
+     * Initialize status bar and navigation bar on Android 4.4 and EMUI 3.1.
      */
     private void initBarBelowLOLLIPOP() {
-        //透明状态栏
+        // Translucent status bar
         mWindow.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        //创建一个假的状态栏
+        // Create a fake status bar
         setupStatusBarView();
-        //判断是否存在导航栏，是否禁止设置导航栏
+        // Check whether navigation bar exists and whether configuring navigation bar is disabled
         if (mBarConfig.hasNavigationBar() || OSUtils.isEMUI3_x()) {
             if (mBarParams.navigationBarEnable && mBarParams.navigationBarWithKitkatEnable) {
-                //透明导航栏，设置这个，如果有导航栏，底部布局会被导航栏遮住
+                // Translucent navigation bar; with this set, if navigation bar exists, bottom layout will be covered by navigation bar
                 mWindow.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
             } else {
                 mWindow.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
             }
-            //创建一个假的导航栏
+            // Create a fake navigation bar
             setupNavBarView();
         }
     }
 
     /**
-     * 设置一个可以自定义颜色的状态栏
+     * Set a custom color status bar.
      */
     private void setupStatusBarView() {
         View statusBarView = mDecorView.findViewById(IMMERSION_STATUS_BAR_VIEW_ID);
@@ -820,7 +820,7 @@ public final class ImmersionBar implements Runnable {
             statusBarView.setId(IMMERSION_STATUS_BAR_VIEW_ID);
             mDecorView.addView(statusBarView);
         }
-        //状态栏高度可能随旋转等变化（如刘海屏横竖屏高度不同），每次都按当前mBarConfig重设
+        // Status bar height may change with rotation, etc. (e.g. notch screen portrait/landscape differences), re-apply using current mBarConfig each time
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
                 mBarConfig.getStatusBarHeight());
         params.gravity = Gravity.TOP;
@@ -838,12 +838,12 @@ public final class ImmersionBar implements Runnable {
         } else {
             statusBarView.setVisibility(View.GONE);
         }
-        //Dialog窗口尺寸可能在init之后的onStart等时机才确定（如底部半屏Dialog），布局变化后重新评估假状态栏可见性
+        // Dialog window size may only be determined at onStart after init (e.g. bottom half-screen Dialog); re-evaluate fake status bar visibility after layout changes
         registerFakeBarLayoutListener();
     }
 
     /**
-     * 设置一个可以自定义颜色的导航栏
+     * Set a custom color navigation bar.
      */
     private void setupNavBarView() {
         View navigationBarView = mDecorView.findViewById(IMMERSION_NAVIGATION_BAR_VIEW_ID);
@@ -872,20 +872,20 @@ public final class ImmersionBar implements Runnable {
         } else {
             navigationBarView.setVisibility(View.GONE);
         }
-        //Dialog窗口尺寸可能在init之后的onStart等时机才确定（如顶部/侧边半屏Dialog），布局变化后重新评估假导航栏可见性
+        // Dialog window size may only be determined at onStart after init (e.g. top/side half-screen Dialog); re-evaluate fake navigation bar visibility after layout changes
         registerFakeBarLayoutListener();
     }
 
     /**
-     * 判断是否需要为当前window绘制假导航栏。
-     * <p>假导航栏是按Gravity.BOTTOM/END加到{@link #mDecorView}上的子view，铺满整屏的Activity/Dialog没问题；
-     * 但顶部、侧边等未覆盖到系统导航栏的Dialog，其window并不与系统导航栏重叠，若仍绘制假栏，会因Gravity.BOTTOM/END
-     * 落在Dialog窗口自身的边缘（如屏幕中部），显示成一条错误的假导航栏。
-     * <p>Dialog的{@code getRootWindowInsets()}返回的是display级导航栏inset，无法反映半屏window的真实几何，
-     * 故这里改用几何判断：window的decorView边缘是否真正抵达屏幕上系统导航栏所在的区域。
-     * 非Dialog（Activity）window恒铺满，直接返回true保持原有行为。
+     * Determine whether a fake navigation bar needs to be drawn for the current window.
+     * <p>The fake navigation bar is a child view added to {@link #mDecorView} with Gravity.BOTTOM/END; this is fine for full-screen Activity/Dialog;
+     * however, for top or side Dialogs that do not cover the system navigation bar, their window does not overlap with the system navigation bar.
+     * If a fake bar is still drawn, Gravity.BOTTOM/END would place it on the edge of the Dialog window itself (e.g. middle of screen), displaying an incorrect fake navigation bar.
+     * <p>Dialog's {@code getRootWindowInsets()} returns display-level navigation bar insets, which cannot reflect the actual geometry of a half-screen window.
+     * Therefore, geometric determination is used here: whether the window decorView edge actually reaches the screen area where the system navigation bar resides.
+     * Non-Dialog (Activity) windows always fill the screen and directly return true to preserve original behavior.
      *
-     * @return true表示需要绘制假导航栏
+     * @return true if fake navigation bar needs to be drawn
      */
     @SuppressLint("ObsoleteSdkInt")
     private boolean needDrawFakeNavBar() {
@@ -896,24 +896,24 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 用几何关系判断window的decorView是否抵达屏幕上系统导航栏所在的区域。
-     * <p>假导航栏按Gravity.BOTTOM（底部导航）或Gravity.END（侧边导航）贴在decorView边缘，
-     * 只有当decorView那条边缘落在屏幕对应的系统导航栏区域内时，假栏才会正确覆盖真实导航栏；
-     * 否则（如顶部半屏Dialog的底边在屏幕中部）会显示成一条错位的假栏。
+     * Use geometric relations to determine whether the window decorView reaches the screen area where the system navigation bar resides.
+     * <p>The fake navigation bar is attached to the edge of decorView with Gravity.BOTTOM (bottom navigation) or Gravity.END (side navigation).
+     * Only when that edge of decorView falls within the corresponding system navigation bar region on screen will the fake bar correctly cover the real navigation bar;
+     * otherwise (e.g. bottom edge of a top half-screen Dialog in the middle of screen), a misplaced fake bar will appear.
      *
-     * @return true表示window抵达了系统导航栏区域，需要绘制假栏；无法取得几何信息时保守返回true
+     * @return true if the window reaches the system navigation bar area and fake bar should be drawn; returns true conservatively if geometry is unavailable
      */
     @RequiresApi(api = Version.R)
     private boolean windowReachesNavigationBar() {
         int[] screenSize = getRealScreenSize();
         if (screenSize == null) {
-            //取不到屏幕尺寸，保守绘制，交由后续布局回调纠正
+            // Unable to get screen size, draw conservatively and let subsequent layout callbacks correct it
             return true;
         }
         int width = mDecorView.getWidth();
         int height = mDecorView.getHeight();
         if (width == 0 || height == 0) {
-            //decorView尚未布局，几何信息不可用，保守绘制，交由布局回调纠正
+            // decorView not yet laid out, geometry unavailable, draw conservatively and let layout callbacks correct it
             return true;
         }
         int[] location = new int[2];
@@ -922,21 +922,21 @@ public final class ImmersionBar implements Runnable {
         int windowRight = location[0] + width;
         if (mBarConfig.isNavigationAtBottom()) {
             int navHeight = mBarConfig.getNavigationBarHeight();
-            //window底边越过“屏幕底 - 导航栏高”才算覆盖到底部导航栏
+            // Window bottom edge must pass (screen bottom - navigation bar height) to be considered covering bottom navigation bar
             return windowBottom > screenSize[1] - navHeight;
         }
-        //侧边导航栏假栏按Gravity.END绘制，需window右边缘抵达屏幕右侧导航栏区域
+        // Lateral navigation fake bar drawn with Gravity.END; window right edge must reach screen right navigation bar area
         int navWidth = mBarConfig.getNavigationBarWidth();
         return windowRight > screenSize[0] - navWidth;
     }
 
     /**
-     * 判断是否需要为当前window绘制假状态栏。
-     * <p>与{@link #needDrawFakeNavBar()}对称：假状态栏按Gravity.TOP贴在{@link #mDecorView}顶边，
-     * 底部半屏Dialog的顶边落在屏幕中部、并未与真实状态栏重叠，若仍绘制假状态栏会在窗口顶边显示成一条错误的色条。
-     * 非Dialog（Activity）window恒抵达屏幕顶部，直接返回true保持原有行为。
+     * Determine whether a fake status bar needs to be drawn for the current window.
+     * <p>Symmetric with {@link #needDrawFakeNavBar()}: fake status bar is attached to {@link #mDecorView} top edge with Gravity.TOP.
+     * A bottom half-screen Dialog's top edge falls in the middle of the screen and does not overlap with the real status bar;
+     * drawing a fake status bar would show an erroneous color strip at the window top edge. Non-Dialog (Activity) windows always reach screen top, directly returning true to preserve original behavior.
      *
-     * @return true表示需要绘制假状态栏
+     * @return true if fake status bar needs to be drawn
      */
     @SuppressLint("ObsoleteSdkInt")
     private boolean needDrawFakeStatusBar() {
@@ -947,30 +947,30 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 用几何关系判断window的decorView顶边是否抵达屏幕顶部状态栏所在的区域。
-     * 状态栏恒在屏幕顶部[0, statusBarHeight)，故只需判断decorView顶边是否落入该区间，无需真实屏幕尺寸。
+     * Use geometric relations to determine whether the window decorView top edge reaches the screen top status bar region.
+     * Status bar is always at screen top [0, statusBarHeight), so only need to check if decorView top edge falls in this interval, no real screen size needed.
      *
-     * @return true表示window抵达了状态栏区域，需要绘制假栏；无法取得几何信息时保守返回true
+     * @return true if the window reaches the status bar area and fake bar should be drawn; returns true conservatively if geometry is unavailable
      */
     @RequiresApi(api = Version.R)
     private boolean windowReachesStatusBar() {
         int width = mDecorView.getWidth();
         int height = mDecorView.getHeight();
         if (width == 0 || height == 0) {
-            //decorView尚未布局，几何信息不可用，保守绘制，交由布局回调纠正
+            // decorView not yet laid out, geometry unavailable, draw conservatively and let layout callbacks correct it
             return true;
         }
         int[] location = new int[2];
         mDecorView.getLocationOnScreen(location);
         int windowTop = location[1];
-        //window顶边落在屏幕顶部状态栏区域内才算覆盖到状态栏
+        // Window top edge falling within screen top status bar area is considered covering status bar
         return windowTop < mBarConfig.getStatusBarHeight();
     }
 
     /**
-     * 获取屏幕真实尺寸（含系统栏区域）。
+     * Get real screen size (including system bar areas).
      *
-     * @return int[]{宽, 高}，取不到时返回null
+     * @return int[]{width, height}, or null if unavailable
      */
     @SuppressLint("ObsoleteSdkInt")
     private int[] getRealScreenSize() {
@@ -988,10 +988,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 为Dialog的decorView注册布局监听，在Dialog窗口尺寸变化（如onStart设置Gravity/尺寸）后重新评估假状态栏/假导航栏可见性与padding。
-     * <p>{@link BarVisibilityObserver}只在系统栏显隐翻转时回调，Dialog窗口resize时系统栏可见性不变，其去重逻辑会跳过；
-     * 且init时（onViewCreated）Dialog窗口尚未resize，几何信息不准，故用decorView的布局回调在resize后纠正。
-     * <p>仅Dialog、API 30+需要；Activity窗口恒铺满，无需监听。监听只创建一次，重复调用安全。
+     * Register layout listener for Dialog decorView to re-evaluate fake status bar / fake navigation bar visibility and padding after Dialog window size changes (e.g. Gravity/size set in onStart).
+     * <p>{@link BarVisibilityObserver} only callbacks when system bar visibility flips. When Dialog window resizes, system bar visibility does not change and deduplication skips it;
+     * also during init (onViewCreated), Dialog window has not resized yet and geometry is inaccurate, so decorView layout callback corrects it after resize.
+     * <p>Only needed for Dialog on API 30+; Activity window always fills screen and does not need listening. Listener is created once, safe for repeated calls.
      */
     @SuppressLint("ObsoleteSdkInt")
     private void registerFakeBarLayoutListener() {
@@ -1005,12 +1005,12 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 依据当前几何关系纠正假状态栏/假导航栏view的可见性与内容区padding。
-     * <p>init时Dialog窗口尚未resize（decorView为0×0），{@link #needDrawFakeStatusBar()}/{@link #needDrawFakeNavBar()}
-     * 只能保守返回true，会绘制假栏并预留状态栏/导航栏高度的padding；窗口resize、布局完成后几何才有效，这里重新评估：
-     * 半屏Dialog未抵达真实系统栏时（如底部半屏Dialog顶边在屏幕中部、顶部半屏Dialog底边在屏幕中部），
-     * 隐藏对应假栏view并通过{@link #fitsWindows()}撤销那份多余的padding（否则会显示错位色条或留出错误空白）。
-     * <p>{@link View#setPadding}与{@link View#setVisibility}对相同值均为no-op，故每次布局回调重复执行会收敛，不会形成回环。
+     * Correct fake status bar / fake navigation bar view visibility and content area padding based on current geometric relations.
+     * <p>During init, Dialog window has not yet resized (decorView is 0x0), {@link #needDrawFakeStatusBar()}/{@link #needDrawFakeNavBar()}
+     * can only return true conservatively, drawing fake bars and reserving padding for status bar / navigation bar height; window resize and layout completion makes geometry valid, so re-evaluate here:
+     * when half-screen Dialog does not reach real system bar (e.g. bottom half-screen Dialog top edge in middle of screen, top half-screen Dialog bottom edge in middle of screen),
+     * hide corresponding fake bar view and revoke extra padding via {@link #fitsWindows()} (otherwise misplaced color bar or erroneous blank space will appear).
+     * <p>{@link View#setPadding} and {@link View#setVisibility} are no-ops for identical values, so repeated execution converges without looping.
      */
     private void updateFakeBarByGeometry() {
         View statusBarView = mDecorView.findViewById(IMMERSION_STATUS_BAR_VIEW_ID);
@@ -1042,14 +1042,14 @@ public final class ImmersionBar implements Runnable {
                 }
             }
         }
-        //窗口resize后几何已确定，重新计算内容区padding，撤销init时保守预留的状态栏/导航栏padding
+        // Geometry is determined after window resize; recompute content area padding, revoking conservatively reserved status bar / navigation bar padding from init
         fitsWindows();
     }
 
     /**
-     * 用户未显式配置导航栏时，在支持深色图标的系统上统一使用与主题匹配的默认外观：
-     * 浅色主题为白底深色图标，深色主题为黑底浅色图标；旧系统保留Window原始外观。
-     * 用户显式设置颜色时保持历史行为；只显式设置图标模式时自动选择对比色背景。
+     * When the user has not explicitly configured the navigation bar, uniformly apply a theme-matching default appearance on systems supporting dark icons:
+     * white background with dark icons for light themes, and black background with light icons for dark themes; older systems retain the Window's original appearance.
+     * Retains legacy behavior when the user explicitly sets the color; automatically selects a contrasting background when only the icon mode is explicitly set.
      */
     private void applyDefaultNavigationBarStyle() {
         detectExposedNavigationBarStyleChanges();
@@ -1059,7 +1059,6 @@ public final class ImmersionBar implements Runnable {
                 && !mBarParams.autoNavigationBarDarkModeEnable;
         if (!mBarParams.navigationBarColorSpecified) {
             if (explicitNavigationIcon && navigationIconDarkSupported) {
-                //只指定图标模式时同步选择对比色，避免白底白图标或黑底黑图标。
                 mBarParams.navigationBarColor = mBarParams.navigationBarDarkIcon
                         ? Color.WHITE : Color.BLACK;
             } else if (navigationIconDarkSupported) {
@@ -1081,7 +1080,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 识别调用方通过getBarParams()直接修改导航栏颜色或图标模式的兼容用法。
+     * Detects compatibility usage where callers directly modify navigation bar color or icon mode via getBarParams().
      */
     private void detectExposedNavigationBarStyleChanges() {
         if (mExposedBarParams == null || mExposedBarParams.get() != mBarParams) {
@@ -1098,7 +1097,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 更新已暴露参数的内部快照，避免把ImmersionBar自身的默认值或自动模式更新误判为用户修改。
+     * Updates internal snapshot of exposed parameters to avoid misinterpreting ImmersionBar's own default values or auto-mode updates as user modifications.
      */
     private void syncExposedNavigationBarStyle() {
         if (mExposedBarParams != null && mExposedBarParams.get() == mBarParams) {
@@ -1119,7 +1118,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 调整深色亮色模式参数
+     * Adjust dark/light mode parameters.
      */
     private void adjustDarkModeParams() {
         int statusBarColor = ColorUtils.blendARGB(mBarParams.statusBarColor,
@@ -1139,7 +1138,7 @@ public final class ImmersionBar implements Runnable {
 
     /**
      * Hide bar.
-     * 隐藏或显示状态栏和导航栏。
+     * Hide or show status bar and navigation bar.
      *
      * @param uiFlags the ui flags
      * @return the int
@@ -1163,8 +1162,8 @@ public final class ImmersionBar implements Runnable {
                             | View.SYSTEM_UI_FLAG_FULLSCREEN;
                     break;
                 case FLAG_HIDE_STATUS_BAR:
-                    // 目标栏由显示变为隐藏时，保留导航栏当前的原生隐藏状态；
-                    // 目标栏已隐藏时则维持原有“仅隐藏状态栏”的切换语义。
+                    // When target bar changes from visible to hidden, preserve navigation bar's current native hidden state;
+                    // When target bar is already hidden, preserve existing "hide status bar only" toggle semantics.
                     if (!statusBarHidden && navigationBarHidden) {
                         uiFlags |= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
@@ -1173,8 +1172,8 @@ public final class ImmersionBar implements Runnable {
                             | View.SYSTEM_UI_FLAG_FULLSCREEN;
                     break;
                 case FLAG_HIDE_NAVIGATION_BAR:
-                    // 目标栏由显示变为隐藏时，保留状态栏当前的原生隐藏状态；
-                    // 目标栏已隐藏时则维持原有“仅隐藏导航栏”的切换语义。
+                    // When target bar changes from visible to hidden, preserve status bar's current native hidden state;
+                    // When target bar is already hidden, preserve existing "hide navigation bar only" toggle semantics.
                     if (!navigationBarHidden && statusBarHidden) {
                         uiFlags |= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                                 | View.SYSTEM_UI_FLAG_FULLSCREEN;
@@ -1193,25 +1192,25 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 修正界面显示
+     * Fix view display.
      */
     @SuppressLint("ObsoleteSdkInt")
     private void fitsWindows() {
         if (Build.VERSION.SDK_INT >= Version.KITKAT) {
             if (Build.VERSION.SDK_INT >= Version.LOLLIPOP && !OSUtils.isEMUI3_x()) {
-                //android 5.0以上解决状态栏和布局重叠问题
+                // Resolve status bar and layout overlap on Android 5.0 and above
                 fitsWindowsAboveLOLLIPOP();
             } else {
-                //android 5.0以下解决状态栏和布局重叠问题
+                // Resolve status bar and layout overlap below Android 5.0
                 fitsWindowsBelowLOLLIPOP();
             }
-            //适配状态栏与布局重叠问题
+            // Adapt to status bar and layout overlap
             fitsLayoutOverlap();
         }
     }
 
     /**
-     * android 5.0以下解决状态栏和布局重叠问题
+     * Resolve status bar and layout overlap below Android 5.0.
      */
     private void fitsWindowsBelowLOLLIPOP() {
         if (mBarParams.isSupportActionBar) {
@@ -1232,16 +1231,16 @@ public final class ImmersionBar implements Runnable {
     }
 
     private void postFitsWindowsBelowLOLLIPOP() {
-        //解决android4.4有导航栏的情况下，activity底部被导航栏遮挡的问题和android 5.0以下解决状态栏和布局重叠问题
+        // Resolve bottom of activity being obscured by navigation bar when navigation bar exists on Android 4.4, and resolve status bar and layout overlap below Android 5.0
         fitsWindowsKITKAT();
-        //解决华为emui3.1或者3.0导航栏手动隐藏的问题
+        // Resolve Huawei EMUI 3.1 or 3.0 navigation bar manual hiding issue
         if (!mIsFragment && OSUtils.isEMUI3_x()) {
             fitsWindowsEMUI();
         }
     }
 
     /**
-     * android 5.0以上解决状态栏和布局重叠问题
+     * Resolve status bar and layout overlap on Android 5.0 and above.
      * Fits windows above lollipop.
      */
     private void fitsWindowsAboveLOLLIPOP() {
@@ -1257,15 +1256,15 @@ public final class ImmersionBar implements Runnable {
             top = mBarConfig.getStatusBarHeight() + mActionBarHeight;
         }
         if (isEdgeToEdgeEnforced()) {
-            //android 15以上edge-to-edge下，内容会延伸到导航栏后面，需要额外处理导航栏方向的padding
+            // Under edge-to-edge on Android 15+, content extends behind the navigation bar; additional padding in navigation bar direction is required
             int right = 0, bottom = 0;
-            //hasNavigationBar是display级判断，半屏Dialog即便没抵达系统导航栏也为true；再用needDrawFakeNavBar几何判断，
-            //避免为顶部/侧边半屏Dialog预留导航栏高度的padding而在其底部/侧边留出错误空白
+            // hasNavigationBar is a display-level check and returns true even if half-screen Dialog does not reach system navigation bar; use needDrawFakeNavBar geometric check,
+            // avoiding reserving navigation bar height padding for top/side half-screen Dialogs and leaving erroneous blank space at bottom/side
             if (mBarConfig.hasNavigationBar() && mBarParams.navigationBarEnable && !mBarParams.fullScreen
                     && needDrawFakeNavBar()) {
                 //noinspection StatementWithEmptyBody
                 if (mBarParams.hideNavigationBar) {
-                    //导航栏被隐藏，无需让位
+                    // Navigation bar is hidden, no need to yield space
                 } else if (mBarConfig.isNavigationAtBottom()) {
                     bottom = mBarConfig.getNavigationBarHeight();
                 } else {
@@ -1279,7 +1278,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 解决android4.4有导航栏的情况下，activity底部被导航栏遮挡的问题和android 5.0以下解决状态栏和布局重叠问题
+     * Resolve bottom of activity being obscured by navigation bar when navigation bar exists on Android 4.4, and resolve status bar and layout overlap below Android 5.0.
      * Fits windows below lollipop.
      */
     private void fitsWindowsKITKAT() {
@@ -1318,7 +1317,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 注册emui3.x导航栏监听函数
+     * Register EMUI 3.x navigation bar listener.
      * Register emui 3 x.
      */
     private void fitsWindowsEMUI() {
@@ -1335,7 +1334,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 更新BarConfig
+     * Update BarConfig.
      */
     private void updateBarConfig() {
         mBarConfig = new BarConfig(mActivity);
@@ -1345,13 +1344,13 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 系统栏（状态栏/导航栏）真实可见性变化时的统一回调，由{@link BarVisibilityObserver}按版本监听后调用。
-     * 只负责刷新BarProperties快照：observer已按翻转去重，快照层再次去重后统一分发；
-     * 假栏视图与重叠适配view的同步由注册在监听器集合里的内部默认回调（mStatusBarSync/mFakeNavigationBarSync）随分发处理，
-     * 各类监听器（含废弃监听器）也随同一分发回调。
+     * Unified callback when real system bar (status bar / navigation bar) visibility changes, invoked by {@link BarVisibilityObserver} according to version.
+     * Only responsible for refreshing BarProperties snapshot: observer deduplicates by flip, and snapshot layer deduplicates again before uniform dispatch;
+     * fake bar views and overlap adaptation view synchronization are handled during dispatch by internal default callbacks (mStatusBarSync/mFakeNavigationBarSync) registered in listener sets,
+     * and various listeners (including deprecated listeners) are also invoked during the same dispatch.
      *
-     * @param statusVisible     状态栏当前是否可见
-     * @param navigationVisible 导航栏当前是否可见
+     * @param statusVisible     whether status bar is currently visible
+     * @param navigationVisible whether navigation bar is currently visible
      */
     void onBarVisibilityChange(boolean statusVisible, boolean navigationVisible) {
         refreshBarProperties(navigationVisible);
@@ -1369,9 +1368,9 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 由{@link ImmersionDelegate}在构造后回传自身引用，使运行时系统栏显隐变化能反向刷新BarProperties快照。
+     * Passed back by {@link ImmersionDelegate} after construction, enabling runtime system bar visibility changes to inversely refresh BarProperties snapshot.
      *
-     * @param delegate 持有此ImmersionBar的delegate
+     * @param delegate the delegate holding this ImmersionBar
      */
     void setImmersionDelegate(ImmersionDelegate delegate) {
         mImmersionDelegate = delegate;
@@ -1391,18 +1390,18 @@ public final class ImmersionBar implements Runnable {
         View navigationBarView = mDecorView.findViewById(IMMERSION_NAVIGATION_BAR_VIEW_ID);
         if (navigationBarView == null) return;
         mBarConfig = new BarConfig(mActivity);
-        //Dialog窗口未覆盖到系统导航栏方向时（如顶部/侧边半屏Dialog），不显示假导航栏，否则会落在窗口边缘显示成错误的一条
+        // When Dialog window does not cover system navigation bar direction (e.g. top/side half-screen Dialog), do not show fake navigation bar, otherwise it falls on window edge showing an erroneous strip
         if (show && !needDrawFakeNavBar()) {
             show = false;
         }
         int bottom = mContentView.getPaddingBottom(), right = mContentView.getPaddingRight();
         if (!show) {
-            //导航键隐藏了
+            // Navigation keys hidden
             navigationBarView.setVisibility(View.GONE);
             bottom = 0;
             right = 0;
         } else {
-            //导航键显示了
+            // Navigation keys shown
             navigationBarView.setVisibility(View.VISIBLE);
             if (checkFitsSystemWindows(mDecorView.findViewById(android.R.id.content))) {
                 bottom = 0;
@@ -1410,7 +1409,7 @@ public final class ImmersionBar implements Runnable {
             } else {
                 if (!mBarParams.hideNavigationBar) {
                     FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) navigationBarView.getLayoutParams();
-                    //导航栏高度/宽度可能随旋转、导航模式切换变化，按上面刚刷新的mBarConfig取当前值
+                    // Navigation bar height/width may change with rotation or navigation mode switch; get current value from freshly refreshed mBarConfig above
                     if (mBarConfig.isNavigationAtBottom()) {
                         params.gravity = Gravity.BOTTOM;
                         params.height = mBarConfig.getNavigationBarHeight();
@@ -1431,7 +1430,7 @@ public final class ImmersionBar implements Runnable {
 
     /**
      * Sets status bar dark font.
-     * 设置状态栏字体颜色，android6.0以上
+     * Set status bar font color, Android 6.0 and above.
      */
     private int setStatusBarDarkFont(int uiFlags) {
         if (Build.VERSION.SDK_INT >= Version.M) {
@@ -1446,7 +1445,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 设置导航栏图标亮色与暗色
+     * Set navigation bar icons to light or dark.
      * Sets dark navigation icon.
      */
     private int setNavigationIconDark(int uiFlags) {
@@ -1542,7 +1541,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 适配状态栏与布局重叠问题
+     * Adapt to status bar and layout overlap.
      * Fits layout overlap.
      */
     private void fitsLayoutOverlap() {
@@ -1552,15 +1551,15 @@ public final class ImmersionBar implements Runnable {
         }
         switch (mFitsStatusBarType) {
             case FLAG_FITS_TITLE:
-                //通过设置paddingTop重新绘制标题栏高度
+                // Redraw title bar height by setting paddingTop
                 setTitleBar(fixHeight, mBarParams.titleBarView);
                 break;
             case FLAG_FITS_TITLE_MARGIN_TOP:
-                //通过设置marginTop重新绘制标题栏高度
+                // Redraw title bar height by setting marginTop
                 setTitleBarMarginTop(fixHeight, mBarParams.titleBarView);
                 break;
             case FLAG_FITS_STATUS:
-                //通过状态栏高度动态设置状态栏布局
+                // Dynamically configure status bar layout with status bar height
                 setStatusBarView(fixHeight, mBarParams.statusBarView);
                 break;
             default:
@@ -1569,7 +1568,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 变色view
+     * Color transform views.
      * Transform view.
      */
     private void transformView() {
@@ -1596,7 +1595,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 取消注册emui3.x导航栏监听函数和软键盘监听
+     * Unregister EMUI 3.x navigation bar listener and soft keyboard listener.
      * Cancel listener.
      */
     private void cancelListener() {
@@ -1623,7 +1622,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 解决底部输入框与软键盘问题
+     * Resolve bottom input view and soft keyboard conflict.
      * Keyboard enable.
      */
     @SuppressLint("ObsoleteSdkInt")
@@ -1744,7 +1743,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 是否是在Fragment的使用的
+     * Whether used in a Fragment.
      *
      * @return the boolean
      */
@@ -1757,7 +1756,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 是否已经调用过init()方法了
+     * Whether init() has already been called.
      */
     boolean initialized() {
         return mInitialized;
@@ -1776,7 +1775,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 判断手机支不支持状态栏字体变色
+     * Check whether the device supports status bar font color change.
      * Is support status bar dark font boolean.
      *
      * @return the boolean
@@ -1787,7 +1786,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 判断导航栏图标是否支持变色
+     * Check whether navigation bar icons support color change.
      * Is support navigation icon dark boolean.
      *
      * @return the boolean
@@ -1841,7 +1840,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 为标题栏paddingTop和高度增加状态栏的高度
+     * Increase paddingTop and height of title bar by the height of status bar.
      * Sets title bar.
      *
      * @param activity the activity
@@ -1908,7 +1907,7 @@ public final class ImmersionBar implements Runnable {
 
 
     /**
-     * 为标题栏marginTop增加状态栏的高度
+     * Increase marginTop of title bar by the height of status bar.
      * Sets title bar margin top.
      *
      * @param activity the activity
@@ -1970,7 +1969,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 单独在标题栏的位置增加view，高度为状态栏的高度
+     * Add a view separately at the title bar position with height equal to status bar height.
      * Sets status bar view.
      *
      * @param activity the activity
@@ -2005,7 +2004,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 调用系统view的setFitsSystemWindows方法
+     * Call setFitsSystemWindows method of the system view.
      * Sets fits system windows.
      *
      * @param activity        the activity
@@ -2100,7 +2099,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 检查布局根节点是否使用了android:fitsSystemWindows="true"属性
+     * Check if layout root node uses android:fitsSystemWindows="true" attribute.
      * Check fits system windows boolean.
      *
      * @param view the view
@@ -2132,7 +2131,7 @@ public final class ImmersionBar implements Runnable {
 
     /**
      * Has navigtion bar boolean.
-     * 判断是否存在导航栏
+     * Check if navigation bar exists.
      *
      * @param activity the activity
      * @return the boolean
@@ -2181,7 +2180,7 @@ public final class ImmersionBar implements Runnable {
 
     /**
      * Gets navigation bar height.
-     * 获得导航栏的高度
+     * Get navigation bar height.
      *
      * @param activity the activity
      * @return the navigation bar height
@@ -2230,7 +2229,7 @@ public final class ImmersionBar implements Runnable {
 
     /**
      * Gets navigation bar width.
-     * 获得导航栏的宽度
+     * Get navigation bar width.
      *
      * @param activity the activity
      * @return the navigation bar width
@@ -2279,7 +2278,7 @@ public final class ImmersionBar implements Runnable {
 
     /**
      * Is navigation at bottom boolean.
-     * 判断导航栏是否在底部
+     * Check if navigation bar is at the bottom.
      *
      * @param activity the activity
      * @return the boolean
@@ -2327,10 +2326,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 获取当前BarProperties快照。
+     * Get current BarProperties snapshot.
      *
      * @param activity the activity
-     * @return BarProperties快照
+     * @return BarProperties snapshot
      */
     @NonNull
     public static BarProperties getBarProperties(@NonNull Activity activity) {
@@ -2338,10 +2337,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 获取当前BarProperties快照。
+     * Get current BarProperties snapshot.
      *
      * @param fragment the fragment
-     * @return BarProperties快照
+     * @return BarProperties snapshot
      */
     @NonNull
     public static BarProperties getBarProperties(@NonNull Fragment fragment) {
@@ -2349,10 +2348,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 获取当前BarProperties快照。
+     * Get current BarProperties snapshot.
      *
      * @param fragment the fragment
-     * @return BarProperties快照
+     * @return BarProperties snapshot
      */
     @NonNull
     public static BarProperties getBarProperties(@NonNull android.app.Fragment fragment) {
@@ -2360,10 +2359,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 获取当前BarProperties快照。
+     * Get current BarProperties snapshot.
      *
      * @param dialog the dialog
-     * @return BarProperties快照
+     * @return BarProperties snapshot
      */
     @NonNull
     public static BarProperties getBarProperties(@NonNull Dialog dialog) {
@@ -2371,10 +2370,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 获取当前BarProperties快照。
+     * Get current BarProperties snapshot.
      *
      * @param view the view
-     * @return BarProperties快照
+     * @return BarProperties snapshot
      */
     @NonNull
     public static BarProperties getBarProperties(@NonNull View view) {
@@ -2382,10 +2381,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 获取当前BarProperties快照。
+     * Get current BarProperties snapshot.
      *
      * @param context the context
-     * @return BarProperties快照
+     * @return BarProperties snapshot
      */
     @NonNull
     public static BarProperties getBarProperties(@NonNull Context context) {
@@ -2393,10 +2392,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 获取当前BarProperties快照。
+     * Get current BarProperties snapshot.
      *
      * @param window the window
-     * @return BarProperties快照
+     * @return BarProperties snapshot
      */
     @NonNull
     public static BarProperties getBarProperties(@NonNull Window window) {
@@ -2404,10 +2403,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 获取当前状态栏信息快照。
+     * Get current status bar snapshot.
      *
      * @param activity the activity
-     * @return StatusBar快照
+     * @return StatusBar snapshot
      */
     @NonNull
     public static StatusBar getStatusBar(@NonNull Activity activity) {
@@ -2415,10 +2414,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 获取当前状态栏信息快照。
+     * Get current status bar snapshot.
      *
      * @param fragment the fragment
-     * @return StatusBar快照
+     * @return StatusBar snapshot
      */
     @NonNull
     public static StatusBar getStatusBar(@NonNull Fragment fragment) {
@@ -2426,10 +2425,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 获取当前状态栏信息快照。
+     * Get current status bar snapshot.
      *
      * @param fragment the fragment
-     * @return StatusBar快照
+     * @return StatusBar snapshot
      */
     @NonNull
     public static StatusBar getStatusBar(@NonNull android.app.Fragment fragment) {
@@ -2437,10 +2436,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 获取当前状态栏信息快照。
+     * Get current status bar snapshot.
      *
      * @param dialog the dialog
-     * @return StatusBar快照
+     * @return StatusBar snapshot
      */
     @NonNull
     public static StatusBar getStatusBar(@NonNull Dialog dialog) {
@@ -2448,10 +2447,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 获取当前状态栏信息快照。
+     * Get current status bar snapshot.
      *
      * @param view the view
-     * @return StatusBar快照
+     * @return StatusBar snapshot
      */
     @NonNull
     public static StatusBar getStatusBar(@NonNull View view) {
@@ -2459,10 +2458,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 获取当前状态栏信息快照。
+     * Get current status bar snapshot.
      *
      * @param context the context
-     * @return StatusBar快照
+     * @return StatusBar snapshot
      */
     @NonNull
     public static StatusBar getStatusBar(@NonNull Context context) {
@@ -2470,10 +2469,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 获取当前状态栏信息快照。
+     * Get current status bar snapshot.
      *
      * @param window the window
-     * @return StatusBar快照
+     * @return StatusBar snapshot
      */
     @NonNull
     public static StatusBar getStatusBar(@NonNull Window window) {
@@ -2481,10 +2480,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 获取当前导航栏信息快照。
+     * Get current navigation bar snapshot.
      *
      * @param activity the activity
-     * @return NavigationBar快照
+     * @return NavigationBar snapshot
      */
     @NonNull
     public static NavigationBar getNavigationBar(@NonNull Activity activity) {
@@ -2492,10 +2491,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 获取当前导航栏信息快照。
+     * Get current navigation bar snapshot.
      *
      * @param fragment the fragment
-     * @return NavigationBar快照
+     * @return NavigationBar snapshot
      */
     @NonNull
     public static NavigationBar getNavigationBar(@NonNull Fragment fragment) {
@@ -2503,10 +2502,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 获取当前导航栏信息快照。
+     * Get current navigation bar snapshot.
      *
      * @param fragment the fragment
-     * @return NavigationBar快照
+     * @return NavigationBar snapshot
      */
     @NonNull
     public static NavigationBar getNavigationBar(@NonNull android.app.Fragment fragment) {
@@ -2514,10 +2513,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 获取当前导航栏信息快照。
+     * Get current navigation bar snapshot.
      *
      * @param dialog the dialog
-     * @return NavigationBar快照
+     * @return NavigationBar snapshot
      */
     @NonNull
     public static NavigationBar getNavigationBar(@NonNull Dialog dialog) {
@@ -2525,10 +2524,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 获取当前导航栏信息快照。
+     * Get current navigation bar snapshot.
      *
      * @param view the view
-     * @return NavigationBar快照
+     * @return NavigationBar snapshot
      */
     @NonNull
     public static NavigationBar getNavigationBar(@NonNull View view) {
@@ -2536,10 +2535,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 获取当前导航栏信息快照。
+     * Get current navigation bar snapshot.
      *
      * @param context the context
-     * @return NavigationBar快照
+     * @return NavigationBar snapshot
      */
     @NonNull
     public static NavigationBar getNavigationBar(@NonNull Context context) {
@@ -2547,10 +2546,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 获取当前导航栏信息快照。
+     * Get current navigation bar snapshot.
      *
      * @param window the window
-     * @return NavigationBar快照
+     * @return NavigationBar snapshot
      */
     @NonNull
     public static NavigationBar getNavigationBar(@NonNull Window window) {
@@ -2559,7 +2558,7 @@ public final class ImmersionBar implements Runnable {
 
     /**
      * Gets status bar height, regardless of its current visibility.
-     * 获得状态栏的实际高度（忽略当前可见性，隐藏时也返回其实际尺寸）
+     * Get actual height of status bar (ignores current visibility, returns actual size even when hidden).
      *
      * @param activity the activity
      * @return the status bar height
@@ -2608,7 +2607,7 @@ public final class ImmersionBar implements Runnable {
 
     /**
      * Gets action bar height.
-     * 或得ActionBar得高度
+     * Get ActionBar height.
      *
      * @param activity the activity
      * @return the action bar height
@@ -2656,7 +2655,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 是否是刘海屏
+     * Whether the display has a notch / cutout.
      * Has notch screen boolean.
      * e.g:getWindow().getDecorView().post(() -> ImmersionBar.hasNotchScreen(this));
      *
@@ -2693,7 +2692,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 是否是刘海屏
+     * Whether the display has a notch / cutout.
      * Has notch screen boolean.
      *
      * @param window the window
@@ -2704,7 +2703,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 是否是刘海屏
+     * Whether the display has a notch / cutout.
      * Has notch screen boolean.
      *
      * @param view the view
@@ -2727,7 +2726,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 刘海屏高度
+     * Notch / display cutout height.
      * Notch height int.
      * e.g: getWindow().getDecorView().post(() -> ImmersionBar.getNotchHeight(this));
      *
@@ -2848,7 +2847,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 隐藏状态栏
+     * Hide status bar.
      * Hide status bar.
      *
      * @param activity the activity
@@ -2883,9 +2882,9 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 隐藏状态栏，通过窗口标志{@link WindowManager.LayoutParams#FLAG_FULLSCREEN}实现；
-     * API 16~29上同时同步{@link View#SYSTEM_UI_FLAG_FULLSCREEN}位，
-     * 使{@link OnStatusBarChangedListener}等显隐回调能正常触发。
+     * Hide status bar via window flag {@link WindowManager.LayoutParams#FLAG_FULLSCREEN};
+     * on API 16~29, also synchronizes {@link View#SYSTEM_UI_FLAG_FULLSCREEN} bit,
+     * allowing visibility callbacks such as {@link OnStatusBarChangedListener} to trigger normally.
      * Hide status bar.
      *
      * @param window the window
@@ -2894,7 +2893,7 @@ public final class ImmersionBar implements Runnable {
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         if (Build.VERSION.SDK_INT >= Version.JELLY_BEAN && Build.VERSION.SDK_INT < Version.R) {
-            // API 16~29的显隐监听观察systemUiVisibility；同步该位才能触发运行时回调。
+            // Visibility listeners on API 16~29 observe systemUiVisibility; synchronizing this bit triggers runtime callbacks.
             View decorView = window.getDecorView();
             int oldVisibility = decorView.getSystemUiVisibility();
             int newVisibility = oldVisibility | View.SYSTEM_UI_FLAG_FULLSCREEN;
@@ -2921,7 +2920,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 显示状态栏
+     * Show status bar.
      * Show status bar.
      *
      * @param activity the activity
@@ -2956,9 +2955,9 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 显示状态栏，清除窗口标志{@link WindowManager.LayoutParams#FLAG_FULLSCREEN}；
-     * API 16~29上同时清除{@link View#SYSTEM_UI_FLAG_FULLSCREEN}位（保留其他位），
-     * 与{@link #hideStatusBar(Window)}对称，使显隐回调能正常触发。
+     * Show status bar, clearing window flag {@link WindowManager.LayoutParams#FLAG_FULLSCREEN};
+     * on API 16~29, also clears {@link View#SYSTEM_UI_FLAG_FULLSCREEN} bit (preserving other bits),
+     * symmetric with {@link #hideStatusBar(Window)}, allowing visibility callbacks to trigger normally.
      * Show status bar.
      *
      * @param window the window
@@ -2966,7 +2965,7 @@ public final class ImmersionBar implements Runnable {
     public static void showStatusBar(@NonNull Window window) {
         window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         if (Build.VERSION.SDK_INT >= Version.JELLY_BEAN && Build.VERSION.SDK_INT < Version.R) {
-            // 与hideStatusBar对称，保留调用方设置的其他systemUiVisibility位。
+            // Symmetric with hideStatusBar, preserving other systemUiVisibility bits set by caller.
             View decorView = window.getDecorView();
             int oldVisibility = decorView.getSystemUiVisibility();
             int newVisibility = oldVisibility & ~View.SYSTEM_UI_FLAG_FULLSCREEN;
@@ -2993,7 +2992,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 是否是手势
+     * Whether gesture navigation is enabled.
      *
      * @param activity Activity
      * @return the boolean
@@ -3020,7 +3019,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 是否是手势
+     * Whether gesture navigation is enabled.
      *
      * @param context Context
      * @return the boolean
@@ -3046,7 +3045,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 在Activity里初始化
+     * Initialize in Activity.
      * Instantiates a new Immersion bar.
      *
      * @param activity the activity
@@ -3057,7 +3056,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 在Fragment里初始化
+     * Initialize in Fragment.
      * Instantiates a new Immersion bar.
      *
      * @param fragment the fragment
@@ -3075,7 +3074,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 在Fragment里初始化
+     * Initialize in Fragment.
      * Instantiates a new Immersion bar.
      *
      * @param fragment the fragment
@@ -3089,7 +3088,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 在dialogFragment里使用
+     * Used in DialogFragment.
      * Instantiates a new Immersion bar.
      *
      * @param dialogFragment the dialog fragment
@@ -3105,7 +3104,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 在dialogFragment里使用
+     * Used in DialogFragment.
      * Instantiates a new Immersion bar.
      *
      * @param dialogFragment the dialog fragment
@@ -3121,7 +3120,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 在Dialog里初始化
+     * Initialize in Dialog.
      * Instantiates a new Immersion bar.
      *
      * @param activity the activity
@@ -3136,7 +3135,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 检查是否已经在Activity中初始化了，未初始化则自动初始化
+     * Check whether initialized in Activity; if not, initialize automatically.
      */
     private void checkInitWithActivity() {
         if (mParentBar == null) {
@@ -3148,7 +3147,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 初始化共同参数
+     * Initialize common parameters.
      *
      * @param window window
      */
@@ -3158,14 +3157,15 @@ public final class ImmersionBar implements Runnable {
         mContentView = mDecorView.findViewById(android.R.id.content);
         captureDefaultNavigationBarStyle();
         mBarParams = createDefaultBarParams();
-        //注册内部默认回调：同步假状态栏/假导航栏视图及重叠适配view，随监听器集合参与统一分发
+        // Register internal default callback: synchronize fake status bar / fake navigation bar views and overlap adaptation views, participating in uniform dispatch along with listener sets
         mOnStatusBarChangedListeners.add(mStatusBarSync);
         mOnNavigationBarChangedListeners.add(mFakeNavigationBarSync);
     }
 
     /**
-     * 保存当前Window在ImmersionBar接管前的导航栏外观。
-     * 用户未主动配置导航栏颜色或图标模式时沿用该外观，避免被BarParams中的兼容性黑色默认值覆盖。
+     * Captures the current Window's navigation bar appearance prior to being taken over by ImmersionBar.
+     * When the user has not actively configured navigation bar color or icon mode, this appearance is preserved
+     * to avoid being overwritten by BarParams' compatibility default of black.
      */
     @SuppressLint("ObsoleteSdkInt")
     private void captureDefaultNavigationBarStyle() {
@@ -3187,7 +3187,9 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 创建一份继承当前Window原始导航栏外观的默认参数。
+     * Creates default parameters inheriting the current Window's original navigation bar appearance.
+     *
+     * @return the default bar params
      */
     private BarParams createDefaultBarParams() {
         BarParams barParams = new BarParams();
@@ -3198,7 +3200,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 透明状态栏，默认透明
+     * Transparent status bar, default is transparent.
      *
      * @return the immersion bar
      */
@@ -3208,7 +3210,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 透明导航栏；未配置导航栏时，支持深色图标的浅色主题默认使用白底深色图标
+     * Transparent navigation bar, default is black.
      *
      * @return the immersion bar
      */
@@ -3220,7 +3222,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 透明状态栏和导航栏
+     * Transparent status bar and navigation bar.
      *
      * @return the immersion bar
      */
@@ -3233,9 +3235,9 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏颜色
+     * Status bar color.
      *
-     * @param statusBarColor 状态栏颜色，资源文件（R.color.xxx）
+     * @param statusBarColor status bar color resource (R.color.xxx)
      * @return the immersion bar
      */
     public ImmersionBar statusBarColor(@ColorRes int statusBarColor) {
@@ -3243,10 +3245,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏颜色
+     * Status bar color.
      *
-     * @param statusBarColor 状态栏颜色，资源文件（R.color.xxx）
-     * @param alpha          the alpha  透明度
+     * @param statusBarColor status bar color resource (R.color.xxx)
+     * @param alpha          the alpha transparency
      * @return the immersion bar
      */
     public ImmersionBar statusBarColor(@ColorRes int statusBarColor,
@@ -3255,11 +3257,11 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏颜色
+     * Status bar color.
      *
-     * @param statusBarColor          状态栏颜色，资源文件（R.color.xxx）
-     * @param statusBarColorTransform the status bar color transform 状态栏变换后的颜色
-     * @param alpha                   the alpha  透明度
+     * @param statusBarColor          status bar color resource (R.color.xxx)
+     * @param statusBarColorTransform the status bar color transform transformed color of status bar
+     * @param alpha                   the alpha transparency
      * @return the immersion bar
      */
     public ImmersionBar statusBarColor(@ColorRes int statusBarColor,
@@ -3271,7 +3273,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏颜色
+     * Status bar color.
      * Status bar color int immersion bar.
      *
      * @param statusBarColor the status bar color
@@ -3282,10 +3284,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏颜色
+     * Status bar color.
      *
-     * @param statusBarColor 状态栏颜色
-     * @param alpha          the alpha  透明度
+     * @param statusBarColor status bar color
+     * @param alpha          the alpha transparency
      * @return the immersion bar
      */
     public ImmersionBar statusBarColor(String statusBarColor,
@@ -3294,11 +3296,11 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏颜色
+     * Status bar color.
      *
-     * @param statusBarColor          状态栏颜色
-     * @param statusBarColorTransform the status bar color transform 状态栏变换后的颜色
-     * @param alpha                   the alpha  透明度
+     * @param statusBarColor          status bar color
+     * @param statusBarColorTransform the status bar color transform transformed color of status bar
+     * @param alpha                   the alpha transparency
      * @return the immersion bar
      */
     public ImmersionBar statusBarColor(String statusBarColor,
@@ -3310,9 +3312,9 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏颜色
+     * Status bar color.
      *
-     * @param statusBarColor 状态栏颜色，资源文件（R.color.xxx）
+     * @param statusBarColor status bar color resource (R.color.xxx)
      * @return the immersion bar
      */
     public ImmersionBar statusBarColorInt(@ColorInt int statusBarColor) {
@@ -3321,10 +3323,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏颜色
+     * Status bar color.
      *
-     * @param statusBarColor 状态栏颜色，资源文件（R.color.xxx）
-     * @param alpha          the alpha  透明度
+     * @param statusBarColor status bar color resource (R.color.xxx)
+     * @param alpha          the alpha transparency
      * @return the immersion bar
      */
     public ImmersionBar statusBarColorInt(@ColorInt int statusBarColor,
@@ -3335,11 +3337,11 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏颜色
+     * Status bar color.
      *
-     * @param statusBarColor          状态栏颜色，资源文件（R.color.xxx）
-     * @param statusBarColorTransform the status bar color transform 状态栏变换后的颜色
-     * @param alpha                   the alpha  透明度
+     * @param statusBarColor          status bar color resource (R.color.xxx)
+     * @param statusBarColorTransform the status bar color transform transformed color of status bar
+     * @param alpha                   the alpha transparency
      * @return the immersion bar
      */
     public ImmersionBar statusBarColorInt(@ColorInt int statusBarColor,
@@ -3352,9 +3354,9 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 导航栏颜色
+     * Navigation bar color.
      *
-     * @param navigationBarColor the navigation bar color 导航栏颜色
+     * @param navigationBarColor the navigation bar color
      * @return the immersion bar
      */
     public ImmersionBar navigationBarColor(@ColorRes int navigationBarColor) {
@@ -3362,10 +3364,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 导航栏颜色
+     * Navigation bar color.
      *
-     * @param navigationBarColor the navigation bar color 导航栏颜色
-     * @param navigationAlpha    the navigation alpha 透明度
+     * @param navigationBarColor the navigation bar color
+     * @param navigationAlpha    the navigation alpha transparency
      * @return the immersion bar
      */
     public ImmersionBar navigationBarColor(@ColorRes int navigationBarColor,
@@ -3374,11 +3376,11 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 导航栏颜色
+     * Navigation bar color.
      *
-     * @param navigationBarColor          the navigation bar color 导航栏颜色
-     * @param navigationBarColorTransform the navigation bar color transform  导航栏变色后的颜色
-     * @param navigationAlpha             the navigation alpha  透明度
+     * @param navigationBarColor          the navigation bar color
+     * @param navigationBarColorTransform the navigation bar color transform transformed color of navigation bar
+     * @param navigationAlpha             the navigation alpha transparency
      * @return the immersion bar
      */
     public ImmersionBar navigationBarColor(@ColorRes int navigationBarColor,
@@ -3389,9 +3391,9 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 导航栏颜色
+     * Navigation bar color.
      *
-     * @param navigationBarColor the navigation bar color 导航栏颜色
+     * @param navigationBarColor the navigation bar color
      * @return the immersion bar
      */
     public ImmersionBar navigationBarColor(String navigationBarColor) {
@@ -3399,10 +3401,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 导航栏颜色
+     * Navigation bar color.
      *
-     * @param navigationBarColor the navigation bar color 导航栏颜色
-     * @param navigationAlpha    the navigation alpha 透明度
+     * @param navigationBarColor the navigation bar color
+     * @param navigationAlpha    the navigation alpha transparency
      * @return the immersion bar
      */
     public ImmersionBar navigationBarColor(String navigationBarColor,
@@ -3411,11 +3413,11 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 导航栏颜色
+     * Navigation bar color.
      *
-     * @param navigationBarColor          the navigation bar color 导航栏颜色
-     * @param navigationBarColorTransform the navigation bar color transform  导航栏变色后的颜色
-     * @param navigationAlpha             the navigation alpha  透明度
+     * @param navigationBarColor          the navigation bar color
+     * @param navigationBarColorTransform the navigation bar color transform transformed color of navigation bar
+     * @param navigationAlpha             the navigation alpha transparency
      * @return the immersion bar
      */
     public ImmersionBar navigationBarColor(String navigationBarColor,
@@ -3426,9 +3428,9 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 导航栏颜色
+     * Navigation bar color.
      *
-     * @param navigationBarColor the navigation bar color 导航栏颜色
+     * @param navigationBarColor the navigation bar color
      * @return the immersion bar
      */
     public ImmersionBar navigationBarColorInt(@ColorInt int navigationBarColor) {
@@ -3438,10 +3440,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 导航栏颜色
+     * Navigation bar color.
      *
-     * @param navigationBarColor the navigation bar color 导航栏颜色
-     * @param navigationAlpha    the navigation alpha 透明度
+     * @param navigationBarColor the navigation bar color
+     * @param navigationAlpha    the navigation alpha transparency
      * @return the immersion bar
      */
     public ImmersionBar navigationBarColorInt(@ColorInt int navigationBarColor,
@@ -3453,11 +3455,11 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 导航栏颜色
+     * Navigation bar color.
      *
-     * @param navigationBarColor          the navigation bar color 导航栏颜色
-     * @param navigationBarColorTransform the navigation bar color transform  导航栏变色后的颜色
-     * @param navigationAlpha             the navigation alpha  透明度
+     * @param navigationBarColor          the navigation bar color
+     * @param navigationBarColorTransform the navigation bar color transform transformed color of navigation bar
+     * @param navigationAlpha             the navigation alpha transparency
      * @return the immersion bar
      */
     public ImmersionBar navigationBarColorInt(@ColorInt int navigationBarColor,
@@ -3471,7 +3473,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏和导航栏颜色
+     * Status bar and navigation bar color.
      *
      * @param barColor the bar color
      * @return the immersion bar
@@ -3481,7 +3483,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏和导航栏颜色
+     * Status bar and navigation bar color.
      *
      * @param barColor the bar color
      * @param barAlpha the bar alpha
@@ -3492,7 +3494,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏和导航栏颜色
+     * Status bar and navigation bar color.
      *
      * @param barColor          the bar color
      * @param barColorTransform the bar color transform
@@ -3507,7 +3509,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏和导航栏颜色
+     * Status bar and navigation bar color.
      *
      * @param barColor the bar color
      * @return the immersion bar
@@ -3517,7 +3519,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏和导航栏颜色
+     * Status bar and navigation bar color.
      *
      * @param barColor the bar color
      * @param barAlpha the bar alpha
@@ -3528,7 +3530,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏和导航栏颜色
+     * Status bar and navigation bar color.
      *
      * @param barColor          the bar color
      * @param barColorTransform the bar color transform
@@ -3542,7 +3544,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏和导航栏颜色
+     * Status bar and navigation bar color.
      *
      * @param barColor the bar color
      * @return the immersion bar
@@ -3555,7 +3557,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏和导航栏颜色
+     * Status bar and navigation bar color.
      *
      * @param barColor the bar color
      * @param barAlpha the bar alpha
@@ -3571,7 +3573,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏和导航栏颜色
+     * Status bar and navigation bar color.
      *
      * @param barColor          the bar color
      * @param barColorTransform the bar color transform
@@ -3595,7 +3597,7 @@ public final class ImmersionBar implements Runnable {
 
 
     /**
-     * 状态栏根据透明度最后变换成的颜色
+     * Color that status bar transforms into based on alpha.
      *
      * @param statusBarColorTransform the status bar color transform
      * @return the immersion bar
@@ -3605,7 +3607,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏根据透明度最后变换成的颜色
+     * Color that status bar transforms into based on alpha.
      *
      * @param statusBarColorTransform the status bar color transform
      * @return the immersion bar
@@ -3615,7 +3617,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏根据透明度最后变换成的颜色
+     * Color that status bar transforms into based on alpha.
      *
      * @param statusBarColorTransform the status bar color transform
      * @return the immersion bar
@@ -3626,7 +3628,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 导航栏根据透明度最后变换成的颜色
+     * Color that navigation bar transforms into based on alpha.
      *
      * @param navigationBarColorTransform the m navigation bar color transform
      * @return the immersion bar
@@ -3636,7 +3638,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 导航栏根据透明度最后变换成的颜色
+     * Color that navigation bar transforms into based on alpha.
      *
      * @param navigationBarColorTransform the m navigation bar color transform
      * @return the immersion bar
@@ -3646,7 +3648,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 导航栏根据透明度最后变换成的颜色
+     * Color that navigation bar transforms into based on alpha.
      *
      * @param navigationBarColorTransform the m navigation bar color transform
      * @return the immersion bar
@@ -3657,7 +3659,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏和导航栏根据透明度最后变换成的颜色
+     * Color that status bar and navigation bar transform into based on alpha.
      *
      * @param barColorTransform the bar color transform
      * @return the immersion bar
@@ -3667,7 +3669,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏和导航栏根据透明度最后变换成的颜色
+     * Color that status bar and navigation bar transform into based on alpha.
      *
      * @param barColorTransform the bar color transform
      * @return the immersion bar
@@ -3677,7 +3679,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏和导航栏根据透明度最后变换成的颜色
+     * Color that status bar and navigation bar transform into based on alpha.
      *
      * @param barColorTransform the bar color transform
      * @return the immersion bar
@@ -3689,7 +3691,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * Add 颜色变换支持View
+     * Add view supporting color transformation.
      *
      * @param view the view
      * @return the immersion bar
@@ -3699,7 +3701,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * Add 颜色变换支持View
+     * Add view supporting color transformation.
      *
      * @param view                    the view
      * @param viewColorAfterTransform the view color after transform
@@ -3710,7 +3712,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * Add 颜色变换支持View
+     * Add view supporting color transformation.
      *
      * @param view                     the view
      * @param viewColorBeforeTransform the view color before transform
@@ -3725,7 +3727,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * Add 颜色变换支持View
+     * Add view supporting color transformation.
      *
      * @param view                    the view
      * @param viewColorAfterTransform the view color after transform
@@ -3736,7 +3738,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * Add 颜色变换支持View
+     * Add view supporting color transformation.
      *
      * @param view                     the view
      * @param viewColorBeforeTransform the view color before transform
@@ -3751,7 +3753,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * Add 颜色变换支持View
+     * Add view supporting color transformation.
      *
      * @param view                    the view
      * @param viewColorAfterTransform the view color after transform
@@ -3759,7 +3761,7 @@ public final class ImmersionBar implements Runnable {
      */
     public ImmersionBar addViewSupportTransformColorInt(View view, @ColorInt int viewColorAfterTransform) {
         if (view == null) {
-            throw new IllegalArgumentException("View参数不能为空");
+            throw new IllegalArgumentException("View parameter cannot be null");
         }
         Map<Integer, Integer> map = new HashMap<>();
         map.put(mBarParams.statusBarColor, viewColorAfterTransform);
@@ -3768,7 +3770,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * Add 颜色变换支持View
+     * Add view supporting color transformation.
      *
      * @param view                     the view
      * @param viewColorBeforeTransform the view color before transform
@@ -3778,7 +3780,7 @@ public final class ImmersionBar implements Runnable {
     public ImmersionBar addViewSupportTransformColorInt(View view, @ColorInt int viewColorBeforeTransform,
                                                         @ColorInt int viewColorAfterTransform) {
         if (view == null) {
-            throw new IllegalArgumentException("View参数不能为空");
+            throw new IllegalArgumentException("View parameter cannot be null");
         }
         Map<Integer, Integer> map = new HashMap<>();
         map.put(viewColorBeforeTransform, viewColorAfterTransform);
@@ -3787,7 +3789,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * view透明度
+     * View alpha.
      * View alpha immersion bar.
      *
      * @param viewAlpha the view alpha
@@ -3806,7 +3808,7 @@ public final class ImmersionBar implements Runnable {
      */
     public ImmersionBar removeSupportView(View view) {
         if (view == null) {
-            throw new IllegalArgumentException("View参数不能为空");
+            throw new IllegalArgumentException("View parameter cannot be null");
         }
         Map<Integer, Integer> map = mBarParams.viewMap.get(view);
         if (map != null && !map.isEmpty()) {
@@ -3828,7 +3830,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 有导航栏的情况下，Activity是否全屏显示
+     * Whether Activity is displayed full screen when navigation bar exists.
      *
      * @param isFullScreen the is full screen
      * @return the immersion bar
@@ -3839,7 +3841,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏透明度
+     * Status bar alpha.
      *
      * @param statusAlpha the status alpha
      * @return the immersion bar
@@ -3851,7 +3853,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 导航栏透明度
+     * Navigation bar alpha.
      *
      * @param navigationAlpha the navigation alpha
      * @return the immersion bar
@@ -3863,7 +3865,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏和导航栏透明度
+     * Status bar and navigation bar alpha.
      *
      * @param barAlpha the bar alpha
      * @return the immersion bar
@@ -3877,9 +3879,9 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 是否启用 自动根据StatusBar和NavigationBar颜色调整深色模式与亮色模式
+     * Whether to enable automatic dark/light mode adjustment based on StatusBar and NavigationBar colors.
      *
-     * @param isEnable true启用 默认false
+     * @param isEnable true to enable, default is false
      * @return the immersion bar
      */
     public ImmersionBar autoDarkModeEnable(boolean isEnable) {
@@ -3887,7 +3889,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 是否启用自动根据StatusBar和NavigationBar颜色调整深色模式与亮色模式
+     * Whether to enable automatic dark/light mode adjustment based on StatusBar and NavigationBar colors.
      * Auto dark mode enable immersion bar.
      *
      * @param isEnable          the is enable
@@ -3903,7 +3905,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 是否启用自动根据StatusBar颜色调整深色模式与亮色模式
+     * Whether to enable automatic dark/light mode adjustment based on StatusBar color.
      * Auto status bar dark mode enable immersion bar.
      *
      * @param isEnable the is enable
@@ -3914,7 +3916,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 是否启用自动根据StatusBar颜色调整深色模式与亮色模式
+     * Whether to enable automatic dark/light mode adjustment based on StatusBar color.
      * Auto status bar dark mode enable immersion bar.
      *
      * @param isEnable          the is enable
@@ -3928,7 +3930,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 是否启用自动根据StatusBar颜色调整深色模式与亮色模式
+     * Whether to enable automatic dark/light mode adjustment based on StatusBar color.
      * Auto navigation bar dark mode enable immersion bar.
      *
      * @param isEnable the is enable
@@ -3939,7 +3941,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 是否启用自动根据NavigationBar颜色调整深色模式与亮色模式
+     * Whether to enable automatic dark/light mode adjustment based on NavigationBar color.
      * Auto navigation bar dark mode enable immersion bar.
      *
      * @param isEnable          the is enable
@@ -3953,9 +3955,9 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏字体深色或亮色
+     * Status bar font dark or light.
      *
-     * @param isDarkFont true 深色
+     * @param isDarkFont true for dark
      * @return the immersion bar
      */
     public ImmersionBar statusBarDarkFont(boolean isDarkFont) {
@@ -3963,11 +3965,11 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏字体深色或亮色，判断设备支不支持状态栏变色来设置状态栏透明度
+     * Status bar font dark or light, setting status bar alpha based on whether device supports status bar font color change.
      * Status bar dark font immersion bar.
      *
      * @param isDarkFont  the is dark font
-     * @param statusAlpha the status alpha 如果不支持状态栏字体变色可以使用statusAlpha来指定状态栏透明度，比如白色状态栏的时候可以用到
+     * @param statusAlpha the status alpha; if status bar font color change is not supported, statusAlpha can specify status bar alpha, useful e.g. for white status bar
      * @return the immersion bar
      */
     public ImmersionBar statusBarDarkFont(boolean isDarkFont, @FloatRange(from = 0f, to = 1f) float statusAlpha) {
@@ -3982,7 +3984,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 导航栏图标深色或亮色，只支持android o以上版本
+     * Navigation bar icons dark or light, supported only on Android O and above.
      * Navigation bar dark icon immersion bar.
      *
      * @param isDarkIcon the is dark icon
@@ -3993,11 +3995,11 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 导航栏图标深色或亮色，只支持android o以上版本，判断设备支不支持导航栏图标变色来设置导航栏透明度
+     * Navigation bar icons dark or light, supported only on Android O and above, setting navigation bar alpha based on whether device supports navigation bar icon color change.
      * Navigation bar dark icon immersion bar.
      *
      * @param isDarkIcon      the is dark icon
-     * @param navigationAlpha the navigation alpha 如果不支持导航栏图标变色可以使用navigationAlpha来指定导航栏透明度，比如白色导航栏的时候可以用到
+     * @param navigationAlpha the navigation alpha; if navigation bar icon color change is not supported, navigationAlpha can specify navigation bar alpha, useful e.g. for white navigation bar
      * @return the immersion bar
      */
     public ImmersionBar navigationBarDarkIcon(boolean isDarkIcon, @FloatRange(from = 0f, to = 1f) float navigationAlpha) {
@@ -4017,7 +4019,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 修改 Flyme OS系统手机状态栏字体颜色，优先级高于statusBarDarkFont(boolean isDarkFont)方法
+     * Modify Flyme OS status bar font color, takes precedence over statusBarDarkFont(boolean isDarkFont).
      * Flyme os status bar font color immersion bar.
      *
      * @param flymeOSStatusBarFontColor the flyme os status bar font color
@@ -4030,7 +4032,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 修改 Flyme OS系统手机状态栏字体颜色，优先级高于statusBarDarkFont(boolean isDarkFont)方法
+     * Modify Flyme OS status bar font color, takes precedence over statusBarDarkFont(boolean isDarkFont).
      * Flyme os status bar font color immersion bar.
      *
      * @param flymeOSStatusBarFontColor the flyme os status bar font color
@@ -4043,7 +4045,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 修改 Flyme OS系统手机状态栏字体颜色，优先级高于statusBarDarkFont(boolean isDarkFont)方法
+     * Modify Flyme OS status bar font color, takes precedence over statusBarDarkFont(boolean isDarkFont).
      * Flyme os status bar font color immersion bar.
      *
      * @param flymeOSStatusBarFontColor the flyme os status bar font color
@@ -4056,7 +4058,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 隐藏导航栏或状态栏
+     * Hide navigation bar or status bar.
      *
      * @param barHide the bar hide
      * @return the immersion bar
@@ -4072,8 +4074,8 @@ public final class ImmersionBar implements Runnable {
 
 
     /**
-     * 解决布局与状态栏重叠问题，该方法将调用系统view的setFitsSystemWindows方法，一旦window已经focus在设置为false将不会生效，
-     * 默认不会使用该方法，如果是渐变色状态栏和顶部图片请不要调用此方法或者设置为false
+     * Resolve layout and status bar overlap. This method calls system view's setFitsSystemWindows method.
+     * Once window has focus, setting to false will not take effect. Not used by default; do not call or set to false for gradient status bar and top images.
      * Apply system fits immersion bar.
      *
      * @param applySystemFits the apply system fits
@@ -4086,7 +4088,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 解决布局与状态栏重叠问题
+     * Resolve layout and status bar overlap.
      *
      * @param fits the fits
      * @return the immersion bar
@@ -4104,11 +4106,11 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 解决布局与状态栏重叠问题，支持侧滑返回
+     * Resolve layout and status bar overlap, supporting swipe back.
      * Fits system windows immersion bar.
      *
      * @param fits         the fits
-     * @param contentColor the content color 整体界面背景色
+     * @param contentColor the content color overall background color
      * @return the immersion bar
      */
     public ImmersionBar fitsSystemWindows(boolean fits, @ColorRes int contentColor) {
@@ -4116,13 +4118,13 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 解决布局与状态栏重叠问题，支持侧滑返回
+     * Resolve layout and status bar overlap, supporting swipe back.
      * Fits system windows immersion bar.
      *
      * @param fits                  the fits
-     * @param contentColor          the content color 整体界面背景色
-     * @param contentColorTransform the content color transform  整体界面变换后的背景色
-     * @param contentAlpha          the content alpha 整体界面透明度
+     * @param contentColor          the content color overall background color
+     * @param contentColorTransform the content color transform transformed overall background color
+     * @param contentAlpha          the content alpha overall background alpha
      * @return the immersion bar
      */
     public ImmersionBar fitsSystemWindows(boolean fits, @ColorRes int contentColor
@@ -4132,11 +4134,11 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 解决布局与状态栏重叠问题，支持侧滑返回
+     * Resolve layout and status bar overlap, supporting swipe back.
      * Fits system windows int immersion bar.
      *
      * @param fits         the fits
-     * @param contentColor the content color 整体界面背景色
+     * @param contentColor the content color overall background color
      * @return the immersion bar
      */
     public ImmersionBar fitsSystemWindowsInt(boolean fits, @ColorInt int contentColor) {
@@ -4144,13 +4146,13 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 解决布局与状态栏重叠问题，支持侧滑返回
+     * Resolve layout and status bar overlap, supporting swipe back.
      * Fits system windows int immersion bar.
      *
      * @param fits                  the fits
-     * @param contentColor          the content color 整体界面背景色
-     * @param contentColorTransform the content color transform 整体界面变换后的背景色
-     * @param contentAlpha          the content alpha 整体界面透明度
+     * @param contentColor          the content color overall background color
+     * @param contentColorTransform the content color transform transformed overall background color
+     * @param contentAlpha          the content alpha overall background alpha
      * @return the immersion bar
      */
     public ImmersionBar fitsSystemWindowsInt(boolean fits, @ColorInt int contentColor
@@ -4172,7 +4174,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 是否可以修复状态栏与布局重叠，默认为true，只适合ImmersionBar#statusBarView，ImmersionBar#titleBar，ImmersionBar#titleBarMarginTop
+     * Whether status bar and layout overlap can be fixed; default is true, applies only to ImmersionBar#statusBarView, ImmersionBar#titleBar, ImmersionBar#titleBarMarginTop.
      * Fits layout overlap enable immersion bar.
      *
      * @param fitsLayoutOverlapEnable the fits layout overlap enable
@@ -4184,7 +4186,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 通过状态栏高度动态设置状态栏布局
+     * Dynamically configure status bar layout with status bar height.
      *
      * @param view the view
      * @return the immersion bar
@@ -4201,7 +4203,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 通过状态栏高度动态设置状态栏布局,只能在Activity中使用
+     * Dynamically configure status bar layout with status bar height, used only in Activity.
      *
      * @param viewId the view id
      * @return the immersion bar
@@ -4211,7 +4213,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 通过状态栏高度动态设置状态栏布局
+     * Dynamically configure status bar layout with status bar height.
      * Status bar view immersion bar.
      *
      * @param viewId   the view id
@@ -4223,7 +4225,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 解决状态栏与布局顶部重叠又多了种方法
+     * Another method to resolve status bar and layout top overlap.
      * Title bar immersion bar.
      *
      * @param view the view
@@ -4237,11 +4239,11 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 解决状态栏与布局顶部重叠又多了种方法
+     * Another method to resolve status bar and layout top overlap.
      * Title bar immersion bar.
      *
      * @param view                          the view
-     * @param statusBarColorTransformEnable the status bar flag 默认为true false表示状态栏不支持变色，true表示状态栏支持变色
+     * @param statusBarColorTransformEnable the status bar flag; default is true; false indicates status bar does not support color change, true indicates support
      * @return the immersion bar
      */
     public ImmersionBar titleBar(View view, boolean statusBarColorTransformEnable) {
@@ -4257,7 +4259,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 解决状态栏与布局顶部重叠又多了种方法，只支持Activity
+     * Another method to resolve status bar and layout top overlap, supports Activity only.
      * Title bar immersion bar.
      *
      * @param viewId the view id
@@ -4296,12 +4298,12 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 解决状态栏与布局顶部重叠又多了种方法，支持任何view
+     * Another method to resolve status bar and layout top overlap, supports any view.
      * Title bar immersion bar.
      *
      * @param viewId                        the view id
      * @param rootView                      the root view
-     * @param statusBarColorTransformEnable the status bar flag 默认为true false表示状态栏不支持变色，true表示状态栏支持变色
+     * @param statusBarColorTransformEnable the status bar flag; default is true; false indicates status bar does not support color change, true indicates support
      * @return the immersion bar
      */
     public ImmersionBar titleBar(@IdRes int viewId, View rootView, boolean statusBarColorTransformEnable) {
@@ -4309,10 +4311,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 绘制标题栏距离顶部的高度为状态栏的高度
+     * Set title bar top distance to status bar height.
      * Title bar margin top immersion bar.
      *
-     * @param viewId the view id   标题栏资源id
+     * @param viewId the view id title bar resource id
      * @return the immersion bar
      */
     public ImmersionBar titleBarMarginTop(@IdRes int viewId) {
@@ -4326,11 +4328,11 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 绘制标题栏距离顶部的高度为状态栏的高度
+     * Set title bar top distance to status bar height.
      * Title bar margin top immersion bar.
      *
-     * @param viewId   the view id  标题栏资源id
-     * @param rootView the root view  布局view
+     * @param viewId   the view id title bar resource id
+     * @param rootView the root view layout view
      * @return the immersion bar
      */
     public ImmersionBar titleBarMarginTop(@IdRes int viewId, View rootView) {
@@ -4338,10 +4340,10 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 绘制标题栏距离顶部的高度为状态栏的高度
+     * Set title bar top distance to status bar height.
      * Title bar margin top immersion bar.
      *
-     * @param view the view  要改变的标题栏view
+     * @param view the view title bar view to modify
      * @return the immersion bar
      */
     public ImmersionBar titleBarMarginTop(View view) {
@@ -4356,7 +4358,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 支持有actionBar的界面,调用该方法，布局讲从actionBar下面开始绘制
+     * Support screen with ActionBar; calling this method renders layout starting below ActionBar.
      * Support action bar immersion bar.
      *
      * @param isSupportActionBar the is support action bar
@@ -4379,7 +4381,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 一键重置所有参数
+     * Reset all parameters with one click.
      * Reset immersion bar.
      *
      * @return the immersion bar
@@ -4391,7 +4393,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 给某个页面设置tag来标识这页bar的属性.
+     * Set tag for a page to identify its bar properties.
      * Add tag bar tag.
      *
      * @param tag the tag
@@ -4399,7 +4401,7 @@ public final class ImmersionBar implements Runnable {
      */
     public ImmersionBar addTag(String tag) {
         if (isEmpty(tag)) {
-            throw new IllegalArgumentException("tag不能为空");
+            throw new IllegalArgumentException("tag cannot be empty");
         }
         BarParams barParams = mBarParams.clone();
         mTagMap.put(tag, barParams);
@@ -4407,7 +4409,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 根据tag恢复到某次调用时的参数
+     * Restore parameters to a previous call according to tag.
      * Recover immersion bar.
      *
      * @param tag the tag
@@ -4415,7 +4417,7 @@ public final class ImmersionBar implements Runnable {
      */
     public ImmersionBar getTag(String tag) {
         if (isEmpty(tag)) {
-            throw new IllegalArgumentException("tag不能为空");
+            throw new IllegalArgumentException("tag cannot be empty");
         }
         BarParams barParams = mTagMap.get(tag);
         if (barParams != null) {
@@ -4425,7 +4427,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 解决软键盘与底部输入框冲突问题 ，默认是false
+     * Resolve soft keyboard and bottom input view conflict, default is false.
      * Keyboard enable immersion bar.
      *
      * @param enable the enable
@@ -4436,7 +4438,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 解决软键盘与底部输入框冲突问题 ，默认是false
+     * Resolve soft keyboard and bottom input view conflict, default is false.
      *
      * @param enable       the enable
      * @param keyboardMode the keyboard mode
@@ -4450,7 +4452,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 修改键盘模式
+     * Modify keyboard mode.
      * Keyboard mode immersion bar.
      *
      * @param keyboardMode the keyboard mode
@@ -4462,12 +4464,12 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 软键盘弹出关闭的回调监听
+     * Callback listener for soft keyboard show/hide.
      * Sets on keyboard listener.
      *
      * @param onKeyboardListener the on keyboard listener
      * @return the on keyboard listener
-     * @deprecated 使用{@link #addOnKeyboardChangedListener(OnKeyboardChangedListener)}代替。
+     * @deprecated Use {@link #addOnKeyboardChangedListener(OnKeyboardChangedListener)} instead.
      */
     @Deprecated
     public ImmersionBar setOnKeyboardListener(@Nullable OnKeyboardListener onKeyboardListener) {
@@ -4478,14 +4480,14 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 导航栏显示隐藏监听器
+     * Navigation bar visibility listener.
      * Sets on navigation bar listener.
      *
      * @param onNavigationBarListener the on navigation bar listener
      * @return the on navigation bar listener
-     * @deprecated 使用{@link #addOnNavigationBarChangedListener(OnNavigationBarChangedListener)}代替。
-     * 为兼容旧代码，此处设置的监听器内部仍会通过BarProperties快照统一分发，
-     * 在首次初始化以及导航栏可见性、高度、宽度或导航类型变化时回调。
+     * @deprecated Use {@link #addOnNavigationBarChangedListener(OnNavigationBarChangedListener)} instead.
+     * For backward compatibility, listeners set here are still dispatched uniformly via BarProperties snapshot,
+     * invoked on initial initialization and when navigation bar visibility, height, width, or navigation type changes.
      */
     @Deprecated
     public ImmersionBar setOnNavigationBarListener(OnNavigationBarListener onNavigationBarListener) {
@@ -4502,14 +4504,14 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 状态栏显示隐藏监听器
+     * Status bar visibility listener.
      * Sets on status bar listener.
      *
      * @param onStatusBarListener the on status bar listener
      * @return the immersion bar
-     * @deprecated 使用{@link #addOnStatusBarChangedListener(OnStatusBarChangedListener)}代替。
-     * 为兼容旧代码，此处设置的监听器内部仍会通过BarProperties快照统一分发，
-     * 在首次初始化以及状态栏可见性、高度变化时回调。
+     * @deprecated Use {@link #addOnStatusBarChangedListener(OnStatusBarChangedListener)} instead.
+     * For backward compatibility, listeners set here are still dispatched uniformly via BarProperties snapshot,
+     * invoked on initial initialization and when status bar visibility or height changes.
      */
     @Deprecated
     public ImmersionBar setOnStatusBarListener(@Nullable OnStatusBarListener onStatusBarListener) {
@@ -4527,7 +4529,7 @@ public final class ImmersionBar implements Runnable {
 
 
     /**
-     * 添加Bar属性变化监听器。首次初始化以及Bar属性发生变化时会触发回调。
+     * Add bar property change listener. Triggered on initial initialization and when bar properties change.
      *
      * @param listener the bar properties changed listener
      * @return the immersion bar
@@ -4538,7 +4540,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 移除Bar属性变化监听器。
+     * Remove bar property change listener.
      *
      * @param listener the bar properties changed listener
      * @return the immersion bar
@@ -4549,7 +4551,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 添加软键盘变化监听器。软键盘弹出状态或高度发生变化时会触发回调。
+     * Add soft keyboard change listener. Triggered when soft keyboard visibility or height changes.
      *
      * @param listener the keyboard changed listener
      * @return the immersion bar
@@ -4560,7 +4562,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 移除软键盘变化监听器。
+     * Remove soft keyboard change listener.
      *
      * @param listener the keyboard changed listener
      * @return the immersion bar
@@ -4571,7 +4573,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 添加状态栏变化监听器。首次初始化以及状态栏可见性、高度变化时会触发回调。
+     * Add status bar change listener. Triggered on initial initialization and when status bar visibility or height changes.
      *
      * @param listener the status bar changed listener
      * @return the immersion bar
@@ -4582,7 +4584,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 移除状态栏变化监听器。
+     * Remove status bar change listener.
      *
      * @param listener the status bar changed listener
      * @return the immersion bar
@@ -4593,7 +4595,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 添加导航栏变化监听器。首次初始化以及导航栏可见性、高度、宽度、导航类型变化时会触发回调。
+     * Add navigation bar change listener. Triggered on initial initialization and when navigation bar visibility, height, width, or navigation type changes.
      *
      * @param listener the navigation bar changed listener
      * @return the immersion bar
@@ -4604,7 +4606,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 移除导航栏变化监听器。
+     * Remove navigation bar change listener.
      *
      * @param listener the navigation bar changed listener
      * @return the immersion bar
@@ -4645,8 +4647,8 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 分发状态栏变化：先回调OnStatusBarChangedListener集合（含内部默认的假状态栏同步回调），再回调废弃的OnStatusBarListener。
-     * 是否回调由ImmersionDelegate对比连续快照后判定（可见性或高度变化），这里纯粹执行回调。
+     * Dispatch status bar change: first invokes OnStatusBarChangedListener set (including internal default fake status bar synchronization callback), then invokes deprecated OnStatusBarListener.
+     * Whether to invoke is determined by ImmersionDelegate comparing successive snapshots (visibility or height change); here it purely performs dispatch.
      */
     void dispatchOnStatusBarChanged(@NonNull StatusBar statusBar) {
         for (OnStatusBarChangedListener listener : mOnStatusBarChangedListeners) {
@@ -4663,8 +4665,8 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 分发导航栏变化：先回调OnNavigationBarChangedListener集合（含内部默认的假导航栏同步回调），再回调废弃的OnNavigationBarListener。
-     * 是否回调由ImmersionDelegate对比连续快照后判定（可见性、高度、宽度或导航类型变化），这里纯粹执行回调。
+     * Dispatch navigation bar change: first invokes OnNavigationBarChangedListener set (including internal default fake navigation bar synchronization callback), then invokes deprecated OnNavigationBarListener.
+     * Whether to invoke is determined by ImmersionDelegate comparing successive snapshots (visibility, height, width, or navigation type change); here it purely performs dispatch.
      */
     void dispatchOnNavigationBarChanged(@NonNull NavigationBar navigationBar) {
         for (OnNavigationBarChangedListener listener : mOnNavigationBarChangedListeners) {
@@ -4681,7 +4683,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * Bar监听，第一次调用和横竖屏切换都会触发此方法，比如可以解决横竖屏切换，横屏情况下，刘海屏遮挡布局的问题
+     * Bar listener, triggered on first call and configuration/orientation changes, e.g. solving notch covering layout in landscape mode on orientation switch.
      * Sets on bar listener.
      *
      * @param onBarListener the on bar listener
@@ -4704,8 +4706,8 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 是否可以修改导航栏颜色，默认为true
-     * 优先级 navigationBarEnable  > navigationBarWithKitkatEnable > navigationBarWithEMUI3Enable
+     * Whether navigation bar color can be modified; default is true.
+     * Priority: navigationBarEnable > navigationBarWithKitkatEnable > navigationBarWithEMUI3Enable
      * Navigation bar enable immersion bar.
      *
      * @param navigationBarEnable the enable
@@ -4717,8 +4719,8 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 是否可以修改4.4设备导航栏颜色，默认为true
-     * 优先级 navigationBarEnable  > navigationBarWithKitkatEnable > navigationBarWithEMUI3Enable
+     * Whether navigation bar color on Android 4.4 devices can be modified; default is true.
+     * Priority: navigationBarEnable > navigationBarWithKitkatEnable > navigationBarWithEMUI3Enable
      *
      * @param navigationBarWithKitkatEnable the navigation bar with kitkat enable
      * @return the immersion bar
@@ -4729,15 +4731,15 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 是否能修改华为emui3.1导航栏颜色，默认为true，
-     * 优先级 navigationBarEnable  > navigationBarWithKitkatEnable > navigationBarWithEMUI3Enable
+     * Whether navigation bar color on Huawei EMUI 3.1 can be modified; default is true.
+     * Priority: navigationBarEnable > navigationBarWithKitkatEnable > navigationBarWithEMUI3Enable
      * Navigation bar with emui 3 enable immersion bar.
      *
      * @param navigationBarWithEMUI3Enable the navigation bar with emui 3 1 enable
      * @return the immersion bar
      */
     public ImmersionBar navigationBarWithEMUI3Enable(boolean navigationBarWithEMUI3Enable) {
-        //是否可以修改emui3系列手机导航栏
+        // Whether navigation bar on EMUI 3 series devices can be modified
         if (OSUtils.isEMUI3_x()) {
             mBarParams.navigationBarWithEMUI3Enable = navigationBarWithEMUI3Enable;
             mBarParams.navigationBarWithKitkatEnable = navigationBarWithEMUI3Enable;
@@ -4746,7 +4748,7 @@ public final class ImmersionBar implements Runnable {
     }
 
     /**
-     * 是否可以使用沉浸式，如果已经是true了，在改为false，之前沉浸式效果不会消失，之后设置的沉浸式效果也不会生效
+     * Whether immersion can be used; if already true and changed to false, previous immersion effect will not disappear, but subsequent immersion effects will not take effect.
      * Bar enable immersion bar.
      *
      * @param barEnable the bar enable

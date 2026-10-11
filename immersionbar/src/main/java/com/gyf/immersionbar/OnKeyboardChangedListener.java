@@ -3,14 +3,14 @@ package com.gyf.immersionbar;
 import androidx.annotation.NonNull;
 
 /**
- * 软键盘变化监听器。
+ * Listener for soft keyboard visibility and height changes.
  *
  * @author geyifeng
  * @date 2026/7/26
  */
 public interface OnKeyboardChangedListener {
     /**
-     * 软键盘状态发生变化。
+     * Called when the soft keyboard state changes.
      *
      * @param keyboard the keyboard
      */

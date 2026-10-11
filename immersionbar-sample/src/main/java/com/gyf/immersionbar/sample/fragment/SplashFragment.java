@@ -95,7 +95,7 @@ public class SplashFragment extends BaseFragment implements Observer<Long> {
     }
 
     /**
-     * 关闭当前页面
+     * Close current page
      */
     private void finish() {
         if (getFragmentManager() != null) {
@@ -112,7 +112,7 @@ public class SplashFragment extends BaseFragment implements Observer<Long> {
     }
 
     /**
-     * 开启倒计时
+     * Start countdown
      */
     private void startCountDown() {
         Observable.interval(1, TimeUnit.SECONDS)
@@ -124,7 +124,7 @@ public class SplashFragment extends BaseFragment implements Observer<Long> {
     }
 
     /**
-     * 关闭倒计时
+     * Stop countdown
      */
     private void stopCountDown() {
         if (mSubscribe != null && !mSubscribe.isDisposed()) {
@@ -141,7 +141,7 @@ public class SplashFragment extends BaseFragment implements Observer<Long> {
     @SuppressLint("SetTextI18n")
     @Override
     public void onNext(Long aLong) {
-        binding.tvTime.setText("我是" + aLong + "s欢迎页，点我可以关闭");
+        binding.tvTime.setText(getString(R.string.text_splash_welcome_format, aLong));
         if (mOnSplashListener != null) {
             mOnSplashListener.onTime(aLong, mTotalTime);
         }

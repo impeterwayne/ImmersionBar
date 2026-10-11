@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
-            app:title="修改Flyme OS状态栏字体颜色"
+            app:title="@string/text_flyme"
             app:titleTextColor="@android:color/white" />
     </LinearLayout>
 
@@ -41,7 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:digits="0123456789abcdefABCDEF"
-                android:hint="请输入6位字体颜色,只针对FlymeOS4+设备"
+                android:hint="@string/hint_flyme_color"
                 android:maxLength="6" />
 
             <Button
@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="50dp"
-                android:text="修改" />
+                android:text="@string/text_modify" />
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 

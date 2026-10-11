@@ -12,7 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * Flyme OS 修改状态栏字体颜色工具类
+ * Flyme OS and MIUI status bar font/icon color modification utility.
  *
  * @author gyf
  * @date 2017 /05/30
@@ -50,11 +50,11 @@ class SpecialBarFontUtils {
     }
 
     /**
-     * 判断颜色是否偏黑色
+     * Determines whether a color is considered dark.
      *
-     * @param color 颜色
-     * @param level 级别
-     * @return boolean boolean
+     * @param color color
+     * @param level threshold level
+     * @return true if dark, false otherwise
      */
     static boolean isBlackColor(int color, int level) {
         int grey = toGrey(color);
@@ -62,11 +62,10 @@ class SpecialBarFontUtils {
     }
 
     /**
-     * 颜色转换成灰度值
+     * Converts an RGB color to grayscale value.
      *
-     * @param rgb 颜色
-     * @return the int
-     * @return　灰度值
+     * @param rgb color
+     * @return grayscale value
      */
     static int toGrey(int rgb) {
         int blue = rgb & 0x000000FF;
@@ -76,10 +75,10 @@ class SpecialBarFontUtils {
     }
 
     /**
-     * 设置状态栏字体图标颜色
+     * Sets status bar font/icon color.
      *
-     * @param activity 当前activity
-     * @param color    颜色
+     * @param activity current activity
+     * @param color    color
      */
     public static void setStatusBarDarkIcon(Activity activity, int color) {
         if (mSetStatusBarColorIcon != null) {
@@ -102,10 +101,10 @@ class SpecialBarFontUtils {
     }
 
     /**
-     * 设置状态栏字体图标颜色(只限全屏非activity情况)
+     * Sets status bar font/icon color (for non-activity full-screen windows).
      *
-     * @param window 当前窗口
-     * @param color  颜色
+     * @param window current window
+     * @param color  color
      */
     public static void setStatusBarDarkIcon(Window window, int color) {
         try {
@@ -119,10 +118,10 @@ class SpecialBarFontUtils {
     }
 
     /**
-     * 设置状态栏字体图标颜色
+     * Sets status bar font/icon color.
      *
-     * @param activity 当前activity
-     * @param dark     是否深色 true为深色 false 为白色
+     * @param activity current activity
+     * @param dark     whether dark font/icons should be used (true for dark, false for white)
      */
     public static void setStatusBarDarkIcon(Activity activity, boolean dark) {
         setStatusBarDarkIcon(activity, dark, true);
@@ -159,10 +158,10 @@ class SpecialBarFontUtils {
     }
 
     /**
-     * 设置状态栏颜色
+     * Sets status bar dark icon flag on view.
      *
-     * @param view
-     * @param dark
+     * @param view view
+     * @param dark whether dark font/icons should be used
      */
     private static void setStatusBarDarkIcon(View view, boolean dark) {
         int oldVis = view.getSystemUiVisibility();
@@ -178,10 +177,10 @@ class SpecialBarFontUtils {
     }
 
     /**
-     * 设置状态栏颜色
+     * Sets status bar color.
      *
-     * @param window
-     * @param color
+     * @param window window
+     * @param color  color
      */
     private static void setStatusBarColor(Window window, int color) {
         WindowManager.LayoutParams winParams = window.getAttributes();
@@ -199,10 +198,10 @@ class SpecialBarFontUtils {
     }
 
     /**
-     * 设置状态栏字体图标颜色(只限全屏非activity情况)
+     * Sets status bar font/icon color (for non-activity full-screen windows).
      *
-     * @param window 当前窗口
-     * @param dark   是否深色 true为深色 false 为白色
+     * @param window current window
+     * @param dark   whether dark font/icons should be used (true for dark, false for white)
      */
     public static void setStatusBarDarkIcon(Window window, boolean dark) {
         if (Build.VERSION.SDK_INT < Version.M) {
@@ -241,10 +240,10 @@ class SpecialBarFontUtils {
                 darkModeFlag = field.getInt(layoutParams);
                 Method extraFlagField = clazz.getMethod("setExtraFlags", int.class, int.class);
                 if (dark) {
-                    //状态栏透明且黑色字体
+                    // Transparent status bar with dark font
                     extraFlagField.invoke(window, darkModeFlag, darkModeFlag);
                 } else {
-                    //清除黑色字体
+                    // Clear dark font
                     extraFlagField.invoke(window, 0, darkModeFlag);
                 }
             } catch (Exception ignored) {

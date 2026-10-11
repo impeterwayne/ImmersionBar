@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textColor="@color/btn1"
-        android:text="我是增加的头部" />
+        android:text="@string/text_added_header" />
 
     <EditText
         android:id="@+id/edit"
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textColor="@color/btn3"
-        android:text="我是华丽的头部风格线" />
+        android:text="@string/text_fancy_header_line" />
 
     <View
         android:layout_width="match_parent"

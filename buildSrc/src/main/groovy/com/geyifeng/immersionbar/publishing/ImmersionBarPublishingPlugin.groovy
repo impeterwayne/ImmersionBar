@@ -11,45 +11,45 @@ import org.gradle.api.tasks.bundling.Zip
 import org.gradle.plugins.signing.SigningExtension
 
 /**
- * 集中管理 ImmersionBar 的发布流程：
- *  - 为每个 Android library 模块配置 maven-publish / signing / 本地 staging 仓库
- *  - 在根项目注册 Central Portal Publisher API 上传任务
+ * Centrally manages the ImmersionBar publishing process:
+ *  - Configures maven-publish / signing / local staging repository for each Android library module
+ *  - Registers Central Portal Publisher API upload tasks in the root project
  *
- * 应用到根项目：id 'immersionbar.publishing'
+ * Applied to root project: id 'immersionbar.publishing'
  */
 class ImmersionBarPublishingPlugin implements Plugin<Project> {
 
-    // 库信息
+    // Library info
     static final String LIB_GROUP_ID = "com.geyifeng.immersionbar"
-    static final String LIB_SITE_URL = "https://github.com/gyf-dev/ImmersionBar"
+    static final String LIB_SITE_URL = "https://github.com/impeterwayne/ImmersionBar"
 
-    // 开源协议
+    // Open source license
     static final String LICENSE_NAME = 'The Apache License, Version 2.0'
     static final String LICENSE_URL = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
 
-    // 开发者信息
+    // Developer info
     static final String DEVELOPER_ID = 'gyf-dev'
     static final String DEVELOPER_NAME = 'gyf-dev'
     static final String DEVELOPER_EMAIL = 'gyf.dev@gmail.com'
 
-    // SCM信息
-    static final String SCM_CONNECTION = 'git@github.com:gyf-dev/ImmersionBar.git'
-    static final String SCM_URL = "https://github.com/gyf-dev/ImmersionBar/tree/master"
+    // SCM info
+    static final String SCM_CONNECTION = 'git@github.com:impeterwayne/ImmersionBar.git'
+    static final String SCM_URL = "https://github.com/impeterwayne/ImmersionBar/tree/master"
 
     @Override
     void apply(Project rootProject) {
         if (rootProject != rootProject.rootProject) {
-            throw new GradleException("immersionbar.publishing 插件应应用于根项目")
+            throw new GradleException("immersionbar.publishing plugin must be applied to the root project")
         }
 
-        // 对每个 Android library 子模块配置发布
+        // Configure publishing for each Android library submodule
         rootProject.subprojects { Project project ->
             project.plugins.withId("com.android.library") {
                 configureLibraryModule(project)
             }
         }
 
-        // 注册 Central Portal 聚合任务
+        // Register Central Portal aggregate tasks
         rootProject.gradle.projectsEvaluated {
             configureCentralPortalTasks(rootProject)
         }
@@ -59,7 +59,7 @@ class ImmersionBarPublishingPlugin implements Plugin<Project> {
         project.pluginManager.apply('maven-publish')
         project.pluginManager.apply('signing')
 
-        // 从 local.properties 加载签名与凭据（保留原逻辑）
+        // Load signing and credentials from local.properties (preserve original logic)
         loadSecretProps(project)
 
         project.afterEvaluate {
@@ -70,8 +70,8 @@ class ImmersionBarPublishingPlugin implements Plugin<Project> {
                 if (android != null) {
                     from android.sourceSets.main.java.source
                 }
-                exclude "**/R.class"          //排除`R.class`
-                exclude "**/BuildConfig.class" //排除`BuildConfig.class`
+                exclude "**/R.class"          // Exclude R.class
+                exclude "**/BuildConfig.class" // Exclude BuildConfig.class
             }
 
             def javadocsJar = project.tasks.register('androidJavadocsJar', Jar) {
@@ -81,7 +81,7 @@ class ImmersionBarPublishingPlugin implements Plugin<Project> {
             def releaseComponent = project.components.findByName('release')
             if (releaseComponent == null) {
                 throw new GradleException(
-                        "模块 ${project.name} 缺少 release 组件，请在 android { publishing { singleVariant('release') } } 中声明")
+                        "Module ${project.name} is missing a release component, please declare it in android { publishing { singleVariant('release') } }")
             }
 
             def libVersion = project.rootProject.ext.immersionbar_version

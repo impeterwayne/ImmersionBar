@@ -58,8 +58,8 @@ public class MainFragment extends BaseFiveFragment implements View.OnClickListen
                     mFragments[SERVICE],
                     mFragments[MINE]);
         } else {
-            // 这里库已经做了Fragment恢复,所有不需要额外的处理了, 不会出现重叠问题
-            // 这里我们需要拿到mFragments的引用,也可以通过getChildFragmentManager.findFragmentByTag自行进行判断查找(效率更高些),用下面的方法查找更方便些
+            // The library has restored Fragments here, so no extra handling is required, no overlap issues
+            // Here we need to obtain the reference to mFragments, or check/find via getChildFragmentManager.findFragmentByTag (more efficient), using the method below is more convenient
             mFragments[HOME] = homeFiveFragment;
             mFragments[CATEGORY] = findChildFragment(CategoryFiveFragment.class);
             mFragments[SERVICE] = findChildFragment(ServiceFiveFragment.class);

@@ -34,7 +34,7 @@ public class FlymeActivity extends BaseActivity {
             if (s.length() == 7) {
                 ImmersionBar.with(this).flymeOSStatusBarFontColor(s).init();
             } else {
-                ToastUtils.show(FlymeActivity.this, "请正确输入6位颜色值");
+                ToastUtils.show(FlymeActivity.this, getString(R.string.toast_input_6_digit_color));
             }
         });
     }

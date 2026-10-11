@@ -17,7 +17,7 @@ import com.gyf.immersionbar.sample.fragment.BaseFragment;
 public class CategoryThreeFragment extends BaseFragment {
 
     private FragmentThreeCategoryBinding binding;
-    private String[] mTabName = {"关注", "头条", "视频", "娱乐", "体育", "新时代", "要闻", "知否", "段子", "本地", "公开课", "财经", "科技", "汽车"};
+    private String[] mTabName;
 
     @Override
     protected int getLayoutId() {
@@ -27,6 +27,22 @@ public class CategoryThreeFragment extends BaseFragment {
     @Override
     protected void initView() {
         super.initView();
+        mTabName = new String[]{
+                getString(R.string.tab_follow),
+                getString(R.string.tab_headlines),
+                getString(R.string.tab_video),
+                getString(R.string.tab_entertainment),
+                getString(R.string.tab_sports),
+                getString(R.string.tab_new_era),
+                getString(R.string.tab_top_news),
+                getString(R.string.tab_qna),
+                getString(R.string.tab_jokes),
+                getString(R.string.tab_local),
+                getString(R.string.tab_open_course),
+                getString(R.string.tab_finance),
+                getString(R.string.tab_tech),
+                getString(R.string.tab_auto)
+        };
         for (String s : mTabName) {
             binding.tabLayout.addTab(binding.tabLayout.newTab().setText(s));
         }

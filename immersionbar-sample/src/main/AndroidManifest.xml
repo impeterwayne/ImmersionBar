@@ -24,13 +24,13 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
         tools:replace="android:allowBackup">
-        <!-- 适配全面屏 -->
+        <!-- Support fullscreen -->
         <meta-data
             android:name="android.max_aspect"
-            android:value="2.4" /> <!-- 适配华为(hua wei)刘海屏 -->
+            android:value="2.4" /> <!-- Support Huawei notch screen -->
         <meta-data
             android:name="android.notch_support"
-            android:value="true" /> <!-- 适配小米(xiao mi)刘海屏 -->
+            android:value="true" /> <!-- Support Xiaomi notch screen -->
         <meta-data
             android:name="notch.config"
             android:value="portrait|landscape" />

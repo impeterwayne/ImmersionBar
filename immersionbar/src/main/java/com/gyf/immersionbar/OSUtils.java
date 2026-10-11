@@ -1,282 +1,207 @@
 package com.gyf.immersionbar;
 
 import android.annotation.SuppressLint;
-import android.os.Build;
-import android.text.TextUtils;
+
+import com.hjq.device.compat.DeviceBrand;
+import com.hjq.device.compat.DeviceOs;
 
 import java.lang.reflect.Method;
 
 /**
- * 手机系统判断
+ * Operating system and device brand detection utility.
  *
  * @author geyifeng
- * @date 2017 /4/18
+ * @date 2017/4/18
  */
 public class OSUtils {
 
-    private static final String KEY_MIUI_VERSION_NAME = "ro.miui.ui.version.name";
-    private static final String KEY_EMUI_VERSION_NAME = "ro.build.version.emui";
-    private static final String KEY_DISPLAY = "ro.build.display.id";
-
-
     /**
-     * 是否是小米手机
-     * Is xiao mi boolean.
+     * Whether the device is manufactured by Xiaomi or running MIUI / HyperOS.
      *
-     * @return the boolean
+     * @return true if Xiaomi device or OS, false otherwise
      */
     public static boolean isXiaoMi() {
-        return Build.MANUFACTURER.toLowerCase().contains("xiaomi");
+        return DeviceBrand.isXiaoMi() || DeviceBrand.isRedMi() || DeviceOs.isMiui() || DeviceOs.isHyperOs();
     }
 
     /**
-     * 是否是华为手机
-     * Is hua wei boolean.
+     * Whether the device is manufactured by Huawei / Honor or running EMUI / HarmonyOS / MagicOS.
      *
-     * @return the boolean
+     * @return true if Huawei device or OS, false otherwise
      */
     public static boolean isHuaWei() {
-        return Build.MANUFACTURER.toLowerCase().contains("huawei");
+        return DeviceBrand.isHuaWei() || DeviceBrand.isHonor() || DeviceOs.isEmui() || DeviceOs.isHarmonyOs() || DeviceOs.isMagicOs();
     }
 
     /**
-     * 是否是Oppo手机
-     * Is oppo boolean.
+     * Whether the device is manufactured by Oppo / OnePlus / Realme or running ColorOS / Realme UI.
      *
-     * @return the boolean
+     * @return true if Oppo device or OS, false otherwise
      */
     public static boolean isOppo() {
-        return Build.MANUFACTURER.toLowerCase().contains("oppo");
+        return DeviceBrand.isOppo() || DeviceBrand.isOnePlus() || DeviceBrand.isRealMe() || DeviceOs.isColorOs() || DeviceOs.isRealmeUi();
     }
 
     /**
-     * 是否是Vivo手机
-     * Is vivo boolean.
+     * Whether the device is manufactured by Vivo or running OriginOS / Funtouch OS.
      *
-     * @return the boolean
+     * @return true if Vivo device or OS, false otherwise
      */
     public static boolean isVivo() {
-        return Build.MANUFACTURER.toLowerCase().contains("vivo");
+        return DeviceBrand.isVivo() || DeviceOs.isOriginOs() || DeviceOs.isFuntouchOs();
     }
 
     /**
-     * 是否是Samsung手机
-     * Is samsung boolean.
+     * Whether the device is manufactured by Samsung or running One UI.
      *
-     * @return the boolean
+     * @return true if Samsung device or OS, false otherwise
      */
     public static boolean isSamsung() {
-        return Build.MANUFACTURER.toLowerCase().contains("samsung");
+        return DeviceBrand.isSamsung() || DeviceOs.isOneUi();
     }
 
     /**
-     * 是否是Lenovo手机
+     * Whether the device is manufactured by Lenovo.
      *
-     * @return the boolean
+     * @return true if Lenovo device, false otherwise
      */
     public static boolean isLenovo() {
-        return Build.MANUFACTURER.toLowerCase().contains("lenovo");
+        return DeviceBrand.isLenovo();
     }
 
     /**
-     * 是否是魅族
+     * Whether the device is manufactured by Meizu or running Flyme.
      *
-     * @return the boolean
+     * @return true if Meizu device or OS, false otherwise
      */
     public static boolean isMeizu() {
-        return Build.MANUFACTURER.toLowerCase().contains("meizu");
+        return DeviceBrand.isMeiZu() || DeviceOs.isFlyme();
     }
 
     /**
-     * 判断是否为miui
-     * Is miui boolean.
+     * Checks whether the OS is MIUI or HyperOS.
      *
-     * @return the boolean
+     * @return true if MIUI or HyperOS, false otherwise
      */
     public static boolean isMIUI() {
-        String property = getSystemProperty(KEY_MIUI_VERSION_NAME);
-        return !TextUtils.isEmpty(property);
+        return DeviceOs.isMiui() || DeviceOs.isHyperOs();
     }
 
     /**
-     * 判断miui版本是否大于等于6
-     * Is miui 6 later boolean.
+     * Checks whether the MIUI version is 6 or higher, or running HyperOS.
      *
-     * @return the boolean
+     * @return true if MIUI 6 or later, or HyperOS, false otherwise
      */
     public static boolean isMIUI6Later() {
-        String version = getMIUIVersion();
-        int num;
-        if ((!version.isEmpty())) {
-            try {
-                num = Integer.parseInt(version.substring(1));
-                return num >= 6;
-            } catch (NumberFormatException e) {
-                return false;
-            }
-        } else {
-            return false;
-        }
+        return DeviceOs.isHyperOs() || (DeviceOs.isMiui() && DeviceOs.getOsBigVersionCode() >= 6);
     }
 
     /**
-     * 获得miui的版本
-     * Gets miui version.
+     * Gets the MIUI version string.
      *
-     * @return the miui version
+     * @return the MIUI version name, or empty string
      */
     public static String getMIUIVersion() {
-        return isMIUI() ? getSystemProperty(KEY_MIUI_VERSION_NAME) : "";
+        return isMIUI() ? DeviceOs.getOsVersionName() : "";
     }
 
     /**
-     * 判断是否为emui
-     * Is emui boolean.
+     * Checks whether the OS is EMUI.
      *
-     * @return the boolean
+     * @return true if EMUI, false otherwise
      */
     public static boolean isEMUI() {
-        String property = getSystemProperty(KEY_EMUI_VERSION_NAME);
-        return !TextUtils.isEmpty(property);
+        return DeviceOs.isEmui();
     }
 
     /**
-     * 得到emui的版本
-     * Gets emui version.
+     * Gets the EMUI version string.
      *
-     * @return the emui version
+     * @return the EMUI version name, or empty string
      */
     public static String getEMUIVersion() {
-        return isEMUI() ? getSystemProperty(KEY_EMUI_VERSION_NAME) : "";
+        return isEMUI() ? DeviceOs.getOsVersionName() : "";
     }
 
     /**
-     * 判断是否为emui3.1版本
-     * Is emui 3 1 boolean.
+     * Checks whether the OS is EMUI 3.1.
      *
-     * @return the boolean
+     * @return true if EMUI 3.1, false otherwise
      */
     public static boolean isEMUI3_1() {
-        String property = getEMUIVersion();
-        if ("EmotionUI 3".equals(property) || property.contains("EmotionUI_3.1")) {
-            return true;
-        }
-        return false;
+        return "EmotionUI 3".equals(getEMUIVersion()) || getEMUIVersion().contains("EmotionUI_3.1") || (DeviceOs.isEmui() && DeviceOs.getOsVersionName().contains("3.1"));
     }
 
     /**
-     * 判断是否为emui3.0版本
-     * Is emui 3 1 boolean.
+     * Checks whether the OS is EMUI 3.0.
      *
-     * @return the boolean
+     * @return true if EMUI 3.0, false otherwise
      */
     public static boolean isEMUI3_0() {
-        String property = getEMUIVersion();
-        return property.contains("EmotionUI_3.0");
+        return getEMUIVersion().contains("EmotionUI_3.0") || (DeviceOs.isEmui() && DeviceOs.getOsVersionName().contains("3.0"));
     }
 
     /**
-     * 判断是否为emui3.x版本
-     * Is emui 3 x boolean.
+     * Checks whether the OS is EMUI 3.x.
      *
-     * @return the boolean
+     * @return true if EMUI 3.x, false otherwise
      */
     public static boolean isEMUI3_x() {
-        return OSUtils.isEMUI3_0() || OSUtils.isEMUI3_1();
+        return DeviceOs.isEmui() && (DeviceOs.getOsBigVersionCode() == 3 || isEMUI3_0() || isEMUI3_1());
     }
 
     /**
-     * 判断是否为ColorOs
-     * Is emui boolean.
+     * Checks whether the OS is ColorOS.
      *
-     * @return the boolean
+     * @return true if ColorOS, false otherwise
      */
     public static boolean isColorOs() {
-        String property = getSystemProperty("ro.build.version.opporom");
-        return !TextUtils.isEmpty(property);
+        return DeviceOs.isColorOs();
     }
 
     /**
-     * 判断是否为FuntouchOs或者是否为OriginOs
-     * Is emui boolean.
+     * Checks whether the OS is Funtouch OS or OriginOS.
      *
-     * @return the boolean
+     * @return true if Funtouch OS or OriginOS, false otherwise
      */
     public static boolean isFuntouchOrOriginOs() {
-        String property = getSystemProperty("ro.vivo.os.version");
-        return !TextUtils.isEmpty(property);
+        return DeviceOs.isFuntouchOs() || DeviceOs.isOriginOs();
     }
 
     /**
-     * 判断是否为flymeOS
-     * Is flyme os boolean.
+     * Checks whether the OS is Flyme OS.
      *
-     * @return the boolean
+     * @return true if Flyme OS, false otherwise
      */
     public static boolean isFlymeOS() {
-        return getFlymeOSFlag().toLowerCase().contains("flyme");
+        return DeviceOs.isFlyme();
     }
 
     /**
-     * 判断flymeOS的版本是否大于等于4
-     * Is flyme os 4 later boolean.
+     * Checks whether the Flyme OS version is 4 or higher.
      *
-     * @return the boolean
+     * @return true if Flyme OS 4 or later, false otherwise
      */
     public static boolean isFlymeOS4Later() {
-        String version = getFlymeOSVersion();
-        int num;
-        if (!version.isEmpty()) {
-            try {
-                if (version.toLowerCase().contains("os")) {
-                    num = Integer.parseInt(version.substring(9, 10));
-                } else {
-                    num = Integer.parseInt(version.substring(6, 7));
-                }
-                return num >= 4;
-            } catch (NumberFormatException e) {
-                return false;
-            }
-        }
-        return false;
+        return DeviceOs.isFlyme() && DeviceOs.getOsBigVersionCode() >= 4;
     }
 
     /**
-     * 判断flymeOS的版本是否等于5
-     * Is flyme os 5 boolean.
+     * Checks whether the Flyme OS version is 5.
      *
-     * @return the boolean
+     * @return true if Flyme OS 5, false otherwise
      */
     public static boolean isFlymeOS5() {
-        String version = getFlymeOSVersion();
-        int num;
-        if (!version.isEmpty()) {
-            try {
-                if (version.toLowerCase().contains("os")) {
-                    num = Integer.parseInt(version.substring(9, 10));
-                } else {
-                    num = Integer.parseInt(version.substring(6, 7));
-                }
-                return num == 5;
-            } catch (NumberFormatException e) {
-                return false;
-            }
-        }
-        return false;
+        return DeviceOs.isFlyme() && DeviceOs.getOsBigVersionCode() == 5;
     }
 
     /**
-     * 得到flymeOS的版本
-     * Gets flyme os version.
+     * Gets the Flyme OS version string.
      *
-     * @return the flyme os version
+     * @return the Flyme OS version name, or empty string
      */
     public static String getFlymeOSVersion() {
-        return isFlymeOS() ? getSystemProperty(KEY_DISPLAY) : "";
-    }
-
-    private static String getFlymeOSFlag() {
-        return getSystemProperty(KEY_DISPLAY);
+        return isFlymeOS() ? DeviceOs.getOsVersionName() : "";
     }
 
     @SuppressLint("PrivateApi")

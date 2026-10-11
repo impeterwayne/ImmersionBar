@@ -1,19 +1,19 @@
 package com.gyf.immersionbar;
 
 /**
- * 软键盘监听。
+ * Soft keyboard listener.
  *
  * @author geyifeng
  * @date 2017/8/28
- * @deprecated 使用{@link OnKeyboardChangedListener}代替。
+ * @deprecated Use {@link OnKeyboardChangedListener} instead.
  */
 @Deprecated
 public interface OnKeyboardListener {
     /**
      * On keyboard change.
      *
-     * @param isPopup        the is popup  是否弹出
-     * @param keyboardHeight the keyboard height  软键盘高度
+     * @param isPopup        whether the keyboard is shown
+     * @param keyboardHeight keyboard height
      */
     void onKeyboardChange(boolean isPopup, int keyboardHeight);
 }

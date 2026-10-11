@@ -55,7 +55,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
     private ActivityMainBinding binding;
     /**
-     * splash页面
+     * splash page
      */
     private SplashFragment mSplashFragment;
 
@@ -105,14 +105,14 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
                     Log.d(mTag, "onStatusBarChanged: " + statusBar);
                     if (!statusBar.isFirstCallback()
                             && statusBar.hasChanged(StatusBar.CHANGE_VISIBILITY)) {
-                        ToastUtils.show(this, "状态栏" + (statusBar.isVisible() ? "显示了" : "隐藏了"));
+                        ToastUtils.show(this, getString(R.string.toast_status_bar_state, (statusBar.isVisible() ? getString(R.string.text_state_shown) : getString(R.string.text_state_hidden))));
                     }
                 })
                 .addOnNavigationBarChangedListener(navigationBar -> {
                     Log.d(mTag, "onNavigationBarChanged: " + navigationBar);
                     if (!navigationBar.isFirstCallback()
                             && navigationBar.hasChanged(NavigationBar.CHANGE_VISIBILITY)) {
-                        ToastUtils.show(this, "导航栏" + (navigationBar.isVisible() ? "显示了" : "隐藏了"));
+                        ToastUtils.show(this, getString(R.string.toast_nav_bar_state, (navigationBar.isVisible() ? getString(R.string.text_state_shown) : getString(R.string.text_state_hidden))));
                     }
                 })
                 .init();
@@ -131,7 +131,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         showSplash();
         GlideUtils.loadBlurry(findViewById(R.id.iv_bg), Utils.getPic());
         mMainAdapter = new MainAdapter();
-        binding.getRoot().<android.widget.TextView>findViewById(R.id.tv_version).setText("当前版本：" + BuildConfig.VERSION_NAME);
+        binding.getRoot().<android.widget.TextView>findViewById(R.id.tv_version).setText(getString(R.string.text_current_version_prefix, BuildConfig.VERSION_NAME));
         mMainAdapter.openLoadAnimation(BaseQuickAdapter.SCALEIN);
         mMainAdapter.isFirstOnly(false);
         binding.rv.setAdapter(mMainAdapter);
@@ -256,7 +256,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
                     if (ImmersionBar.hasNavigationBar(this)) {
                         ImmersionBar.with(this).hideBar(BarHide.FLAG_HIDE_NAVIGATION_BAR).init();
                     } else {
-                        ToastUtils.show(this, "当前设备没有导航栏或者导航栏已经被隐藏或者低于4.4系统");
+                        ToastUtils.show(this, getString(R.string.toast_no_nav_bar_or_low_api));
                     }
                     break;
                 case 26:
@@ -274,14 +274,14 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
                             ImmersionBar.with(this).fullScreen(true).transparentNavigationBar().navigationBarDarkIcon(true).init();
                         }
                     } else {
-                        ToastUtils.show(this, "当前设备没有导航栏或者导航栏已经被隐藏或者低于4.4系统");
+                        ToastUtils.show(this, getString(R.string.toast_no_nav_bar_or_low_api));
                     }
                     break;
                 case 29:
                     if (ImmersionBar.isSupportStatusBarDarkFont()) {
                         ImmersionBar.with(this).statusBarDarkFont(true).init();
                     } else {
-                        ToastUtils.show(this, "当前设备不支持状态栏字体变色");
+                        ToastUtils.show(this, getString(R.string.toast_status_bar_dark_font_unsupported));
                     }
                     break;
                 case 30:
@@ -324,7 +324,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
 
     /**
-     * 展示Splash
+     * Show Splash
      */
     private void showSplash() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -394,7 +394,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
 
     /**
-     * 适配刘海屏遮挡数据问题
+     * Adapt notch screen data overlap issue
      * Adjust view.
      *
      * @param barProperties the bar properties from OnBarPropertiesChangedListener
@@ -413,7 +413,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
                 marginEnd += barProperties.getNotchHeight();
             }
         }
-        //所有item的边距一致，用首项对比：边距未变化时直接返回，避免notifyDataSetChanged触发无效item动画
+        // All items have consistent margin, compare using first item: if margin unchanged return directly to avoid notifyDataSetChanged triggering invalid item animation
         FunBean first = mMainData.get(0);
         if (first.getMarginStart() == marginStart && first.getMarginEnd() == marginEnd) {
             return;
@@ -459,7 +459,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
                         super.onBackPressed();
                         AppManager.getInstance().removeAllActivity();
                     } else {
-                        ToastUtils.show(this, "再按一次退出");
+                        ToastUtils.show(this, getString(R.string.toast_press_again_to_exit));
                         mFirstPressedTime = System.currentTimeMillis();
                     }
                 } else {

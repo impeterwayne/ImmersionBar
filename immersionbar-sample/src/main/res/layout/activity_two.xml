@@ -21,6 +21,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="100dp"
-        android:text="我是第二个子Activity"
+        android:text="@string/text_i_am_second_activity"
         android:textSize="18sp" />
 </LinearLayout>

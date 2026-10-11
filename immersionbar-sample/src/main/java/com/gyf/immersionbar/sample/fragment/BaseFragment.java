@@ -17,7 +17,7 @@ import com.gyf.immersionbar.sample.R;
 
 
 /**
- * 没有使用沉浸式的Fragment基类
+ * Base Fragment without immersion
  *
  * @author geyifeng
  * @date 2017/4/7
@@ -72,7 +72,7 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        //旋转屏幕为什么要重新设置布局与状态栏重叠呢？因为旋转屏幕有可能使状态栏高度不一样，如果你是使用的静态方法修复的，所以要重新调用修复
+        // Why reconfigure layout overlap on screen rotation? Because status bar height may change on orientation switch, so call fix method again if using static methods
         fitsLayoutOverlap();
     }
 
@@ -81,7 +81,7 @@ public abstract class BaseFragment extends Fragment {
     }
 
     /**
-     * 初始化ViewBinding
+     * Initialize ViewBinding
      */
     protected void initViewBinding(View view) {
     }
@@ -94,21 +94,21 @@ public abstract class BaseFragment extends Fragment {
     protected abstract int getLayoutId();
 
     /**
-     * 初始化数据
+     * Initialize data
      */
     protected void initData() {
 
     }
 
     /**
-     * view与数据绑定
+     * Bind views and data
      */
     protected void initView() {
 
     }
 
     /**
-     * 设置监听
+     * Set listeners
      */
     protected void setListener() {
 

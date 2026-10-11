@@ -22,10 +22,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <!--标题栏-->
+            <!--Title Bar-->
             <include layout="@layout/cool_title" />
 
-            <!--选项卡-->
+            <!--Tab Layout-->
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabLayout"
                 android:layout_width="match_parent"
@@ -37,10 +37,10 @@
                 app:tabTextColor="@color/colorBarText" />
         </com.google.android.material.appbar.AppBarLayout>
 
-        <!--包含可滑动的布局内容(RecyclerView,NestedScrollView,不支持ListView，ScrollView)
-        必须要设置app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        属性来告知CoordinatorLayout该组件是带有滑动行为的组件,
-        然后CoordinatorLayout在接受到滑动时会通知AppBarLayout中可滑动的Toolbar可以滑出屏幕-->
+        <!--Contains scrollable layout content (RecyclerView, NestedScrollView; ListView, ScrollView unsupported)
+        Must set app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        attribute to inform CoordinatorLayout that this component has scrolling behavior,
+        then CoordinatorLayout upon receiving scroll events will notify scrollable Toolbar in AppBarLayout to scroll off screen-->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"

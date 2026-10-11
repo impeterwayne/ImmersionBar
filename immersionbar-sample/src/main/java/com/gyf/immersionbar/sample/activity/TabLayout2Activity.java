@@ -55,12 +55,12 @@ public class TabLayout2Activity extends SwipeBackActivity {
     private void initData(int pager) {
         mData = new ArrayList<>();
         for (int i = 1; i < 50; i++) {
-            mData.add("pager" + pager + " 第" + i + "个item");
+            mData.add(getString(R.string.text_pager_item_format, pager, i));
         }
     }
 
     private void initView() {
-        //设置ToolBar
+        // Set Toolbar
         ImmersionBar.setTitleBar(this, findViewById(R.id.toolbar));
 
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
@@ -74,16 +74,16 @@ public class TabLayout2Activity extends SwipeBackActivity {
         });
 
 
-        //设置TabLayout
+        // Set TabLayout
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         for (int i = 1; i < 7; i++) {
             tabLayout.addTab(tabLayout.newTab().setText("TAB" + i));
         }
-        //TabLayout的切换监听
+        // TabLayout selection listener
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                //切换的时候更新RecyclerView
+                // Update RecyclerView when tab changes
                 initData(tab.getPosition() + 1);
                 mAdapter.setNewData(mData);
             }
@@ -98,7 +98,7 @@ public class TabLayout2Activity extends SwipeBackActivity {
 
             }
         });
-        //设置RecycleView
+        // Set RecyclerView
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mAdapter = new TabAdapter();
         recyclerView.setAdapter(mAdapter);

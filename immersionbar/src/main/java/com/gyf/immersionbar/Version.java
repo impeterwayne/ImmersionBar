@@ -3,8 +3,8 @@ package com.gyf.immersionbar;
 import android.os.Build;
 
 /**
- * 统一管理项目中用到的Android版本号常量。
- * 除{@link #BAKLAVA}（API 36，编译SDK为35时平台常量尚不存在）外，均委托{@link Build.VERSION_CODES}。
+ * Centralized Android API version constants used across the project.
+ * All constants delegate to {@link Build.VERSION_CODES}.
  *
  * @author geyifeng
  */

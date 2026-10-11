@@ -28,7 +28,7 @@
                 android:layout_height="?actionBarSize"
                 android:background="@android:color/white"
                 app:layout_scrollFlags="scroll|enterAlways"
-                app:title="新闻" />
+                app:title="@string/title_news" />
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabLayout"

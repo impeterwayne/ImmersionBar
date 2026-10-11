@@ -26,7 +26,7 @@ public class WebActivity extends BaseActivity {
     protected void initImmersionBar() {
         super.initImmersionBar();
         ImmersionBar.with(this).titleBar(R.id.toolbar)
-                //解决软键盘与底部输入框冲突问题
+                // Fix conflict between soft keyboard and bottom input box
                 .keyboardEnable(true)
                 .init();
     }
@@ -46,7 +46,7 @@ public class WebActivity extends BaseActivity {
                     ((ViewGroup) parent).removeView(binding.web);
                 }
                 binding.web.stopLoading();
-                // 退出时调用此方法，移除绑定的服务，否则某些特定系统会报错
+                // Call this method on exit to remove bound services, otherwise certain systems will throw errors
                 binding.web.getSettings().setJavaScriptEnabled(false);
                 binding.web.clearHistory();
                 binding.web.clearView();

@@ -15,7 +15,7 @@ import com.gyf.immersionbar.sample.R;
 import com.gyf.immersionbar.sample.databinding.ActivityWeb2Binding;
 
 /**
- * Issue #584真实复现页：在WebView中打开移动版百度并点击网页搜索框唤起键盘。
+ * Issue #584 reproduction page: Open mobile Baidu in WebView and tap the web search box to invoke keyboard.
  */
 public class Web2Activity extends BaseActivity {
 

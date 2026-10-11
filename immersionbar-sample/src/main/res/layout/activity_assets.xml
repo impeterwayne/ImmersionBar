@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="资产管理"
+            android:text="@string/text_assets_management"
             android:textColor="#fff"
             android:textSize="18sp" />
 
@@ -80,7 +80,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="我的房屋"
+            android:text="@string/text_my_house"
             android:textColor="@color/black"
             android:textSize="14sp" />
 
@@ -118,7 +118,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="我的爱车"
+            android:text="@string/text_my_car"
             android:textColor="@color/black"
             android:textSize="14sp" />
 
@@ -156,7 +156,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="我的车位"
+            android:text="@string/text_my_parking"
             android:textColor="@color/black"
             android:textSize="14sp" />
 

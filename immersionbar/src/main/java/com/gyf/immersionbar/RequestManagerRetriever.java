@@ -150,8 +150,10 @@ class RequestManagerRetriever implements Handler.Callback {
     }
 
     /**
-     * 监听Dialog窗口detach，在Dialog消失时自动销毁，无需再手动调用destroy。
-     * decorView的attach状态监听是累加的，不会覆盖业务自己设置的dismiss监听。
+     * Listens for the Dialog window detach event to automatically destroy immersion resources
+     * when the Dialog is dismissed, eliminating the need to manually invoke destroy.
+     * The attach state listener on decorView is additive and will not override custom
+     * dismiss listeners set by the application.
      *
      * @param activity the activity
      * @param dialog   the dialog

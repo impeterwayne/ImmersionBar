@@ -30,7 +30,7 @@ public class ParamsActivity extends BaseActivity {
     private boolean mIsHideStatusBar = false;
     private boolean mIsHideNavigationBar = false;
     /**
-     * Bar最新快照，由OnBarPropertiesChangedListener回调下发
+     * Latest Bar snapshot, delivered by OnBarPropertiesChangedListener callback
      */
     private BarProperties mBarProperties;
 
@@ -52,14 +52,14 @@ public class ParamsActivity extends BaseActivity {
                     Log.d(mTag, "onStatusBarChanged: " + statusBar);
                     if (!statusBar.isFirstCallback()
                             && statusBar.hasChanged(StatusBar.CHANGE_VISIBILITY)) {
-                        ToastUtils.show(this, "状态栏" + (statusBar.isVisible() ? "显示了" : "隐藏了"));
+                        ToastUtils.show(this, getString(R.string.toast_status_bar_state, (statusBar.isVisible() ? getString(R.string.text_state_shown) : getString(R.string.text_state_hidden))));
                     }
                 })
                 .addOnNavigationBarChangedListener(navigationBar -> {
                     Log.d(mTag, "onNavigationBarChanged: " + navigationBar);
                     if (!navigationBar.isFirstCallback()
                             && navigationBar.hasChanged(NavigationBar.CHANGE_VISIBILITY)) {
-                        ToastUtils.show(this, "导航栏" + (navigationBar.isVisible() ? "显示了" : "隐藏了"));
+                        ToastUtils.show(this, getString(R.string.toast_nav_bar_state, (navigationBar.isVisible() ? getString(R.string.text_state_shown) : getString(R.string.text_state_hidden))));
                     }
                 })
                 .navigationBarColor(R.color.btn13).init();
@@ -75,7 +75,7 @@ public class ParamsActivity extends BaseActivity {
     @Override
     protected void initView() {
         super.initView();
-        // 等待OnBarPropertiesChangedListener回调下发Bar快照后再刷新UI
+        // Wait for OnBarPropertiesChangedListener callback to deliver Bar snapshot before refreshing UI
         if (mBarProperties == null) {
             return;
         }
@@ -99,7 +99,7 @@ public class ParamsActivity extends BaseActivity {
         binding.tvHasNotch.setText(getText(getTitle(binding.tvHasNotch) + p.isNotchScreen()));
         binding.tvNotchHeight.setText(getText(getTitle(binding.tvNotchHeight) + p.getNotchHeight()));
         binding.tvAction.setText(getText(getTitle(binding.tvAction) + p.getActionBarHeight()));
-        // 以下信息不在BarProperties快照中，仍使用静态方法获取
+        // The following information is not in the BarProperties snapshot, still obtained using static methods
         binding.tvFits.setText(getText(getTitle(binding.tvFits) + ImmersionBar.checkFitsSystemWindows(findViewById(android.R.id.content))));
         binding.tvStatusDark.setText(getText(getTitle(binding.tvStatusDark) + ImmersionBar.isSupportStatusBarDarkFont()));
         binding.tvNavigationDark.setText(getText(getTitle(binding.tvNavigationDark) + ImmersionBar.isSupportNavigationIconDark()));

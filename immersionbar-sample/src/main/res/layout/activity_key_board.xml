@@ -15,7 +15,7 @@
         android:layout_height="?actionBarSize"
         android:background="@color/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:title="解决EditText和软键盘的问题"
+        app:title="@string/text_key_board"
         app:titleTextColor="@android:color/white" />
 
     <ScrollView
@@ -35,7 +35,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="验证环境"
+                android:text="@string/text_verify_env"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -57,13 +57,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:checked="true"
-                android:text="启用 ImmersionBar keyboardEnable" />
+                android:text="@string/text_enable_keyboard_enable" />
 
             <TextView
                 android:id="@+id/tv_keyboard_mode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="keyboardEnable(true)：库接管键盘适配"
+                android:text="@string/text_keyboard_enable_true"
                 android:textColor="@color/colorPrimary"
                 android:textSize="13sp" />
 
@@ -71,7 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="验证步骤：\n1. 分别切换手势导航和三键导航。\n2. 点击顶部、中部和底部输入框。\n3. 键盘弹出后，底部白色面板应紧贴键盘。\n4. 如果中间露出橙色横条，说明底部 padding 被重复计算。"
+                android:text="@string/text_keyboard_verify_steps"
                 android:textColor="@color/black"
                 android:textSize="15sp" />
 
@@ -80,7 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:hint="顶部输入框：检查页面滚动"
+                android:hint="@string/hint_top_input"
                 android:imeOptions="actionNext"
                 android:inputType="text"
                 android:singleLine="true" />
@@ -92,7 +92,7 @@
                 android:background="@color/darker_gray"
                 android:gravity="center"
                 android:padding="16dp"
-                android:text="滚动内容占位区\n\n保持键盘打开后上下滚动，检查布局是否跳动。"
+                android:text="@string/text_scroll_placeholder"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
@@ -101,7 +101,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:hint="中部输入框：检查自动滚动"
+                android:hint="@string/hint_middle_input"
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:singleLine="true" />
@@ -111,7 +111,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:paddingBottom="12dp"
-                android:text="可关闭 keyboardEnable 对比系统默认行为；重新开启后继续验证库的处理。"
+                android:text="@string/text_middle_input_desc"
                 android:textColor="@color/colorPrimary" />
         </LinearLayout>
     </ScrollView>
@@ -131,7 +131,7 @@
             android:layout_height="wrap_content"
             android:background="@color/cornsilk"
             android:padding="8dp"
-            android:text="键盘状态：已关闭"
+            android:text="@string/text_keyboard_status_format"
             android:textColor="@color/black"
             android:textStyle="bold" />
 
@@ -140,7 +140,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="底部输入框：重点检查是否紧贴键盘"
+            android:hint="@string/hint_bottom_input"
             android:imeOptions="actionDone"
             android:inputType="text"
             android:singleLine="true" />
@@ -156,7 +156,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="打开键盘" />
+                android:text="@string/text_open_keyboard" />
 
             <Button
                 android:id="@+id/btn_hide_keyboard"
@@ -164,7 +164,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:text="关闭键盘" />
+                android:text="@string/text_close_keyboard" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

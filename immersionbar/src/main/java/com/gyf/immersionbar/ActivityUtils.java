@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 /**
- * Activity工具类
+ * Activity utility class.
  *
  * @author gyf
  */
@@ -20,7 +20,7 @@ class ActivityUtils {
     }
 
     /**
-     * 获取Activity。
+     * Gets the Activity.
      *
      * @param dialog the dialog
      * @return the activity
@@ -31,7 +31,7 @@ class ActivityUtils {
     }
 
     /**
-     * 获取Activity。
+     * Gets the Activity.
      *
      * @param window the window
      * @return the activity
@@ -42,7 +42,7 @@ class ActivityUtils {
     }
 
     /**
-     * 获取Activity。
+     * Gets the Activity.
      *
      * @param context the context
      * @return the activity

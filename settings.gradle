@@ -10,4 +10,4 @@ pluginManagement {
 
 rootProject.name = 'ImmersionBar'
 
-include ':immersionbar', ':immersionbar-ktx', ':immersionbar-components', ':immersionbar-sample'
+include ':immersionbar', ':immersionbar-sample'

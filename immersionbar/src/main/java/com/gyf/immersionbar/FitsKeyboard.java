@@ -13,7 +13,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 /**
- * 适配软键盘弹出问题
+ * Handles soft keyboard display and layout adjustments.
  *
  * @author geyifeng
  * @date 2018/11/9 10:24 PM
@@ -147,7 +147,7 @@ class FitsKeyboard implements ViewTreeObserver.OnGlobalLayoutListener {
         int navigationBarHeight = barConfig.isNavigationAtBottom()
                 ? barConfig.getNavigationBarHeight() : barConfig.getNavigationBarWidth();
         Rect rect = new Rect();
-        //获取当前窗口可视区域大小
+        // Retrieve visible display frame of current window
         mDecorView.getWindowVisibleDisplayFrame(rect);
         int keyboardHeight = mContentView.getHeight() - rect.bottom;
         if (keyboardHeight == mTempKeyboardHeight) {

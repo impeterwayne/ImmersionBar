@@ -12,26 +12,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 沉浸式参数信息
+ * Immersion bar configuration parameters.
  *
  * @author geyifeng
  * @date 2017 /5/9
  */
 public class BarParams implements Cloneable {
     /**
-     * 状态栏颜色
-     * The Status bar color.
+     * Status bar color.
      */
     @ColorInt
     public int statusBarColor = Color.TRANSPARENT;
     /**
-     * 导航栏颜色
-     * The Navigation bar color.
+     * Navigation bar color.
      */
     @ColorInt
     public int navigationBarColor = Color.BLACK;
     /**
-     * 用户是否主动设置过导航栏颜色，仅供ImmersionBar内部区分默认样式与显式配置。
+     * Whether the user explicitly specified the navigation bar color, used internally by ImmersionBar to distinguish default styling from explicit configuration.
      */
     boolean navigationBarColorSpecified = false;
 
@@ -40,8 +38,7 @@ public class BarParams implements Cloneable {
      */
     public int defaultNavigationBarColor = Color.BLACK;
     /**
-     * 状态栏透明度
-     * The Status bar alpha.
+     * Status bar alpha.
      */
     @FloatRange(from = 0f, to = 1f)
     public float statusBarAlpha = 0.0f;
@@ -49,52 +46,44 @@ public class BarParams implements Cloneable {
     @FloatRange(from = 0f, to = 1f)
     public float statusBarTempAlpha = 0.0f;
     /**
-     * 导航栏透明度
-     * The Navigation bar alpha.
+     * Navigation bar alpha.
      */
     @FloatRange(from = 0f, to = 1f)
     public float navigationBarAlpha = 0.0f;
     @FloatRange(from = 0f, to = 1f)
     public float navigationBarTempAlpha = 0.0f;
     /**
-     * 有导航栏的情况，全屏显示
-     * The Full screen.
+     * Full screen display when navigation bar exists.
      */
     public boolean fullScreen = false;
     /**
-     * 是否隐藏了导航栏
-     * The Hide navigation bar.
+     * Whether navigation bar is hidden.
      */
     public boolean hideNavigationBar = false;
     /**
-     * 隐藏Bar
-     * The Bar hide.
+     * System bar hide mode.
      */
     public BarHide barHide = BarHide.FLAG_SHOW_BAR;
     /**
-     * 状态栏字体深色与亮色标志位
-     * The Dark font.
+     * Status bar dark/light font flag.
      */
     public boolean statusBarDarkFont = false;
 
     /**
-     * 导航栏图标深色与亮色标志位
-     * The Navigation bar dark icon.
+     * Navigation bar dark/light icon flag.
      */
     public boolean navigationBarDarkIcon = false;
     /**
-     * 用户是否主动设置过导航栏图标模式，仅供ImmersionBar内部区分默认样式与显式配置。
+     * Whether the user explicitly specified the navigation bar icon mode, used internally by ImmersionBar to distinguish default styling from explicit configuration.
      */
     boolean navigationBarDarkIconSpecified = false;
     /**
-     * 是否启用 自动根据StatusBar颜色调整深色模式与亮色模式
-     * The Auto status bar dark mode enable.
+     * Whether to automatically adjust dark/light status bar mode based on status bar color.
      */
     public boolean autoStatusBarDarkModeEnable = false;
 
     /**
-     * 是否启用 自动根据NavigationBar颜色调整深色模式与亮色模式
-     * The Auto navigation bar dark mode enable.
+     * Whether to automatically adjust dark/light navigation bar mode based on navigation bar color.
      */
     public boolean autoNavigationBarDarkModeEnable = false;
 
@@ -111,25 +100,21 @@ public class BarParams implements Cloneable {
     public float autoNavigationBarDarkModeAlpha = 0.0f;
 
     /**
-     * 是否可以修改状态栏颜色
-     * The Status bar flag.
+     * Whether status bar color modification is enabled.
      */
     public boolean statusBarColorEnabled = true;
     /**
-     * 状态栏变换后的颜色
-     * The Status bar color transform.
+     * Transformed status bar color.
      */
     @ColorInt
     public int statusBarColorTransform = Color.BLACK;
     /**
-     * 导航栏变换后的颜色
-     * The Navigation bar color transform.
+     * Transformed navigation bar color.
      */
     @ColorInt
     public int navigationBarColorTransform = Color.BLACK;
     /**
-     * 支持view变色
-     * The View map.
+     * View color transformation mapping.
      */
     Map<View, Map<Integer, Integer>> viewMap = new HashMap<>();
     /**
@@ -153,92 +138,80 @@ public class BarParams implements Cloneable {
     @FloatRange(from = 0f, to = 1f)
     public float contentAlpha = 0.0f;
     /**
-     * 解决标题栏与状态栏重叠问题
-     * The Fits.
+     * Resolves layout overlap between title bar and status bar.
      */
     public boolean fits = false;
     /**
-     * 解决标题栏与状态栏重叠问题
-     * The Title bar view.
+     * Title bar view for resolving status bar overlap.
      */
     public View titleBarView;
     /**
-     * 解决标题栏与状态栏重叠问题
-     * The Status bar view by height.
+     * Status bar placeholder view for resolving overlap.
      */
     public View statusBarView;
     /**
-     * 是否可以解决标题栏与状态栏重叠问题
+     * Whether layout overlap adjustment is enabled.
      */
     public boolean fitsLayoutOverlapEnable = true;
     /**
-     * flymeOS状态栏字体变色
-     * The Flyme os status bar font color.
+     * Flyme OS status bar font color.
      */
     @ColorInt
     public int flymeOSStatusBarFontColor;
     @ColorInt
     public int flymeOSStatusBarFontTempColor;
     /**
-     * 结合actionBar使用
-     * The Is support action bar.
+     * Whether used with SupportActionBar.
      */
     public boolean isSupportActionBar = false;
     /**
-     * 解决软键盘与输入框冲突问题
-     * The Keyboard enable.
+     * Resolves soft keyboard and input field conflict.
      */
     public boolean keyboardEnable = false;
 
     /**
-     * 软键盘属性
-     * The Keyboard mode.
+     * Soft input window mode flags.
      */
     public int keyboardMode = WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN
             | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE;
     /**
-     * 是否能修改导航栏颜色
-     * The Navigation bar enable.
+     * Whether navigation bar color customization is enabled.
      */
     public boolean navigationBarEnable = true;
     /**
-     * 是否能修改4.4手机以及华为emui3.1导航栏颜色
-     * The Navigation bar with kitkat enable.
+     * Whether navigation bar color customization is enabled on Android 4.4 and Huawei EMUI 3.1.
      */
     public boolean navigationBarWithKitkatEnable = true;
     /**
-     * 是否可以修改emui3系列手机导航栏
-     * The Navigation bar with emui 3 enable.
+     * Whether navigation bar color customization is enabled on Huawei EMUI 3 series devices.
      */
     public boolean navigationBarWithEMUI3Enable = true;
     /**
-     * 是否可以沉浸式
-     * The Init enable.
+     * Whether immersion bar features are enabled.
      */
     public boolean barEnable = true;
     /**
-     * 软键盘监听类
-     * The On keyboard listener.
+     * Soft keyboard listener.
      */
     OnKeyboardListener onKeyboardListener;
 
     /**
-     * 导航栏显示隐藏监听
+     * Navigation bar visibility change listener.
      */
     OnNavigationBarListener onNavigationBarListener;
 
     /**
-     * 状态栏显示隐藏监听
+     * Status bar visibility change listener.
      */
     OnStatusBarListener onStatusBarListener;
 
     /**
-     * 横竖屏监听
+     * Orientation and bar change listener.
      */
     OnBarListener onBarListener;
 
     /**
-     * 清理可能持有页面生命周期对象的引用。
+     * Clears references that may hold page lifecycle objects.
      */
     void clear() {
         onKeyboardListener = null;

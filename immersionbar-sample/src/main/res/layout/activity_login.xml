@@ -11,7 +11,7 @@
         android:layout_height="?actionBarSize"
         android:background="@drawable/shape_login"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:title="登录界面"
+        app:title="@string/text_login"
         app:titleTextColor="@android:color/white" />
 
     <ScrollView
@@ -66,7 +66,7 @@
                             android:layout_marginTop="12dp"
                             android:layout_marginBottom="12dp"
                             android:alpha="0.4"
-                            android:text="手机号"
+                            android:text="@string/text_phone_number"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
 
@@ -76,7 +76,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="14dp"
                             android:background="@null"
-                            android:hint="请输入手机号"
+                            android:hint="@string/hint_phone_number"
                             android:inputType="number"
                             android:textColor="@color/colorPrimary"
                             android:textSize="14sp" />
@@ -106,7 +106,7 @@
                             android:layout_marginTop="12dp"
                             android:layout_marginBottom="12dp"
                             android:alpha="0.4"
-                            android:text="密码"
+                            android:text="@string/text_password"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
 
@@ -116,7 +116,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="14dp"
                             android:background="@null"
-                            android:hint="请输入密码"
+                            android:hint="@string/hint_password"
                             android:inputType="textPassword"
                             android:textColor="@color/colorPrimary"
                             android:textSize="@dimen/sp_14" />
@@ -137,7 +137,7 @@
                     android:layout_height="44dp"
                     android:background="@drawable/shape_login"
                     android:gravity="center"
-                    android:text="登录"
+                    android:text="@string/text_login_btn"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/sp_14" />
             </androidx.cardview.widget.CardView>
@@ -148,7 +148,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="30dp"
-                android:text="忘记密码？"
+                android:text="@string/text_forgot_password"
                 android:textColor="#333333"
                 android:textSize="@dimen/sp_14" />
         </LinearLayout>

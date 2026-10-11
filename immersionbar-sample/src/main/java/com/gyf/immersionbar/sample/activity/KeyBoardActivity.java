@@ -17,7 +17,7 @@ import com.gyf.immersionbar.sample.databinding.ActivityKeyBoardBinding;
 import java.util.Locale;
 
 /**
- * 软键盘与底部输入框适配验证页。
+ * Soft keyboard and bottom input box verification page.
  *
  * @author geyifeng
  * @date 2017/5/8
@@ -59,8 +59,8 @@ public class KeyBoardActivity extends BaseActivity {
         binding.switchKeyboardEnable.setOnCheckedChangeListener((buttonView, isChecked) -> {
             ImmersionBar.with(this).keyboardEnable(isChecked).init();
             binding.tvKeyboardMode.setText(isChecked
-                    ? "keyboardEnable(true)：库接管键盘适配"
-                    : "keyboardEnable(false)：用于对比系统默认行为");
+                    ? getString(R.string.text_keyboard_enable_true)
+                    : getString(R.string.text_keyboard_enable_false));
             if (!isChecked) {
                 hideKeyboard();
             }
@@ -80,9 +80,8 @@ public class KeyBoardActivity extends BaseActivity {
 
     private void renderKeyboardState(boolean isPopup, int keyboardHeight) {
         float density = getResources().getDisplayMetrics().density;
-        String state = isPopup ? "已弹出" : "已关闭";
-        binding.tvKeyboardState.setText(String.format(Locale.getDefault(),
-                "键盘状态：%s   高度：%d px / %.1f dp",
+        String state = isPopup ? getString(R.string.text_status_opened) : getString(R.string.text_status_closed);
+        binding.tvKeyboardState.setText(getString(R.string.text_keyboard_status_format,
                 state, keyboardHeight, keyboardHeight / density));
         binding.tvKeyboardState.setTextColor(ContextCompat.getColor(this,
                 isPopup ? R.color.green : R.color.black));
@@ -93,19 +92,18 @@ public class KeyBoardActivity extends BaseActivity {
     }
 
     private String buildEnvironmentText(BarProperties properties) {
-        String navigationMode = "等待系统栏首次回调";
+        String navigationMode = getString(R.string.text_waiting_system_bar_callback);
         int navigationBarHeight = 0;
         if (properties != null) {
             navigationMode = properties.isGestureNavigation()
-                    ? "手势导航 / " + properties.getNavigationBarType()
-                    : "经典导航键 / " + properties.getNavigationBarType();
+                    ? getString(R.string.text_gesture_navigation, properties.getNavigationBarType())
+                    : getString(R.string.text_classic_navigation, properties.getNavigationBarType());
             navigationBarHeight = properties.getNavigationBarHeight();
         }
         String implementation = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
                 ? "WindowInsets.Type.ime()"
                 : "getWindowVisibleDisplayFrame()";
-        return String.format(Locale.getDefault(),
-                "Android %s (API %d)  targetSdk %d\n导航模式：%s\n导航栏高度：%d px\n键盘分支：%s",
+        return getString(R.string.text_keyboard_sys_info,
                 Build.VERSION.RELEASE, Build.VERSION.SDK_INT,
                 getApplicationInfo().targetSdkVersion, navigationMode,
                 navigationBarHeight, implementation);

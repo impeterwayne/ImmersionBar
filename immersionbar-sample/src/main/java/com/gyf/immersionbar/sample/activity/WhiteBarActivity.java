@@ -37,12 +37,7 @@ public class WhiteBarActivity extends BaseActivity {
                     .statusBarDarkFont(true)
                     .navigationBarDarkIcon(true)
                     .init();
-            binding.text.setText("A：对于状态栏重点在于statusBarDarkFont(true,0.2f)这个方法，" +
-                    "原理：如果当前设备支持状态栏字体变色，会设置状态栏字体为黑色，" +
-                    "如果当前设备不支持状态栏字体变色，会使当前状态栏加上透明度，否则不执行透明度；" +
-                    "对于导航栏重点在于navigationBarDarkIcon(true,0.2f)这个方法，" +
-                    "原理：如果当前设备支持导航栏图标变色，会设置导航栏图标为黑色，" +
-                    "如果当前设备不支持导航栏图标变色，会使当前导航栏加上透明度，否则不执行透明度；");
+            binding.text.setText(getString(R.string.text_white_bar_explanation));
             binding.btn.setVisibility(View.GONE);
         });
     }

@@ -8,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="我是华丽的底部风格线"
+        android:text="@string/text_fancy_footer_line"
         android:textColor="@color/btn3" />
 
     <View
@@ -26,6 +26,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="我是增加的底部"
+        android:text="@string/text_added_footer"
         android:textColor="@color/btn1" />
 </LinearLayout>

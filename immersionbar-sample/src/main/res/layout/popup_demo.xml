@@ -25,7 +25,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
-                app:title="我是弹出的PopupWindow"
+                app:title="@string/title_popup_window"
                 app:titleTextColor="@android:color/white" />
         </FrameLayout>
 
@@ -40,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                android:text="沉浸式模式下软键盘弹出将会覆盖EditText，无法适配，除非不使用沉浸式或者换为DialogFragment来实现"
+                android:text="@string/text_popup_edit_desc"
                 android:textColor="@color/btn3" />
 
             <EditText
@@ -51,7 +51,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="我是底部" />
+                android:text="@string/text_i_am_bottom" />
         </LinearLayout>
 
     </RelativeLayout>

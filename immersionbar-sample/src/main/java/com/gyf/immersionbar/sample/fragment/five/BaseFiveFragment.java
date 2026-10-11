@@ -15,8 +15,8 @@ import com.gyf.immersionbar.sample.R;
 import me.yokeyword.fragmentation.SupportFragment;
 
 /**
- * 基于Fragmentation框架实现沉浸式，如果要在Fragment实现沉浸式，请在onSupportVisible实现沉浸式，
- * 至于解决布局重叠问题，建议使用readme里第四种或者第五种，参考onViewCreated方法
+ * Implement immersion based on Fragmentation framework. If you want to implement immersion in Fragment, please do so in onSupportVisible.
+ * As for resolving layout overlap issues, it is recommended to use method 4 or 5 in readme, refer to onViewCreated method
  *
  * @author geyifeng
  * @date 2017/8/12
@@ -62,7 +62,7 @@ public abstract class BaseFiveFragment extends SupportFragment {
     @Override
     public void onSupportVisible() {
         super.onSupportVisible();
-        //请在onSupportVisible实现沉浸式
+        // Please implement immersion in onSupportVisible
         if (isImmersionBarEnabled()) {
             initImmersionBar();
         }
@@ -78,7 +78,7 @@ public abstract class BaseFiveFragment extends SupportFragment {
 
 
     /**
-     * 初始化ViewBinding
+     * Initialize ViewBinding
      */
     protected void initViewBinding(View view) {
     }
@@ -91,21 +91,21 @@ public abstract class BaseFiveFragment extends SupportFragment {
     protected abstract int getLayoutId();
 
     /**
-     * 初始化数据
+     * Initialize data
      */
     protected void initData() {
 
     }
 
     /**
-     * view与数据绑定
+     * Bind views and data
      */
     protected void initView() {
 
     }
 
     /**
-     * 设置监听
+     * Set listeners
      */
     protected void setListener() {
 

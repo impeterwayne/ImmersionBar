@@ -12,7 +12,7 @@ import com.gyf.immersionbar.sample.databinding.DialogBinding;
 
 
 /**
- * 左边DialogFragment
+ * Left DialogFragment
  *
  * @author geyifeng
  * @date 2017/7/28

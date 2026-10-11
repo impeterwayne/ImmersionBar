@@ -13,7 +13,7 @@ import com.gyf.immersionbar.sample.databinding.ActivityAutoStatusFontBinding;
 
 
 /**
- * 自动调整状态栏字体
+ * Auto adjust status bar font
  *
  * @author github.com/dengyuhan
  * @date 2018/12/16 03:56

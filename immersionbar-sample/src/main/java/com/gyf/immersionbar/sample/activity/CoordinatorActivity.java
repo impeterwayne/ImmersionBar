@@ -43,9 +43,7 @@ public class CoordinatorActivity extends BaseActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        binding.text.setText("关于Snackbar在4.4和emui3.1上高度显示不准确的问题是由于沉浸式使用了系统的" +
-                "WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS或者WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION" +
-                "属性造成的，目前尚不知有什么解决办法");
+        binding.text.setText(getString(R.string.text_coordinator_desc));
         Glide.with(this).asBitmap().load(Utils.getPic())
                 .apply(new RequestOptions().placeholder(R.mipmap.test))
                 .into(binding.iv);
@@ -53,8 +51,8 @@ public class CoordinatorActivity extends BaseActivity {
 
     @Override
     protected void setListener() {
-        binding.fab.setOnClickListener(view -> Snackbar.make(view, "我是Snackbar", Snackbar.LENGTH_LONG).show());
-        //toolbar返回按钮监听
+        binding.fab.setOnClickListener(view -> Snackbar.make(view, getString(R.string.text_i_am_snackbar), Snackbar.LENGTH_LONG).show());
+        // toolbar navigation button listener
         binding.detailToolbar.setNavigationOnClickListener(v -> finish());
     }
     @Override

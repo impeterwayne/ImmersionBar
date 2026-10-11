@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        app:title="方法四"
+        app:title="@string/text_method_4"
         app:titleTextColor="@android:color/white" />
 
     <TextView
@@ -37,5 +37,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="我是底部" />
+        android:text="@string/text_i_am_bottom" />
 </LinearLayout>

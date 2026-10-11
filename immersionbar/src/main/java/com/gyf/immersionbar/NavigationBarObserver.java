@@ -22,7 +22,7 @@ import android.provider.Settings;
 import java.util.ArrayList;
 
 /**
- * 导航栏显示隐藏处理，目前支持华为、小米、VOVO、Android 10带有导航栏的手机
+ * Navigation bar visibility observer. Supports Huawei, Xiaomi, Vivo, Samsung, and Android 10+ devices with navigation bars.
  *
  * @author geyifeng
  * @date 2019/4/10 6:02 PM

@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:background="@color/colorPrimary"
-        app:title="结合Fragment使用"
+        app:title="@string/title_fragment_usage"
         app:titleTextColor="@android:color/white" />
 
     <ScrollView
@@ -28,27 +28,27 @@
             <Button
                 android:id="@+id/btn_one"
                 style="@style/btn"
-                android:text="方法一：在Fragment里使用沉浸式(fragment+viewpager)" />
+                android:text="@string/text_fragment_method_1" />
 
             <Button
                 android:id="@+id/btn_two"
                 style="@style/btn"
-                android:text="方法二：在Fragment里使用沉浸式(使用show()和hide()控制fragment)" />
+                android:text="@string/text_fragment_method_2" />
 
             <Button
                 android:id="@+id/btn_three"
                 style="@style/btn"
-                android:text="方法三：在Activity里使用沉浸式(fragment+viewpager)" />
+                android:text="@string/text_fragment_method_3" />
 
             <Button
                 android:id="@+id/btn_four"
                 style="@style/btn"
-                android:text="方法四：在Activity里使用沉浸式(使用show()和hide()控制fragment)" />
+                android:text="@string/text_fragment_method_4" />
 
             <Button
                 android:id="@+id/btn_five"
                 style="@style/btn"
-                android:text="方法五：使用Fragmentation框架实现沉浸式" />
+                android:text="@string/text_fragment_method_5" />
         </LinearLayout>
     </ScrollView>
 

@@ -32,7 +32,7 @@ class KotlinActivity : BaseKotlinActivity() {
     private var mIsHideNavigationBar = false
 
     /**
-     * Bar最新快照，由OnBarPropertiesChangedListener回调下发
+     * Latest Bar snapshot, delivered by OnBarPropertiesChangedListener callback
      */
     private var mBarProperties: BarProperties? = null
 
@@ -49,26 +49,20 @@ class KotlinActivity : BaseKotlinActivity() {
             addOnStatusBarChangedListener {
                 if (it.isFirstCallback.not()) {
                     ToastUtils.show(
-                        this@KotlinActivity, "状态栏${
-                            if (it.isVisible) {
-                                "显示了"
-                            } else {
-                                "隐藏了"
-                            }
-                        }"
+                        this@KotlinActivity, getString(
+                            R.string.toast_status_bar_state,
+                            if (it.isVisible) getString(R.string.text_state_shown) else getString(R.string.text_state_hidden)
+                        )
                     )
                 }
             }
             addOnNavigationBarChangedListener {
                 if (it.isFirstCallback.not()) {
                     ToastUtils.show(
-                        this@KotlinActivity, "导航栏${
-                            if (it.isVisible) {
-                                "显示了"
-                            } else {
-                                "隐藏了"
-                            }
-                        }"
+                        this@KotlinActivity, getString(
+                            R.string.toast_nav_bar_state,
+                            if (it.isVisible) getString(R.string.text_state_shown) else getString(R.string.text_state_hidden)
+                        )
                     )
                 }
             }
@@ -87,7 +81,6 @@ class KotlinActivity : BaseKotlinActivity() {
 
     @SuppressLint("SetTextI18n")
     override fun initView() {
-        // 等待OnBarPropertiesChangedListener回调下发Bar快照后再刷新UI
         val p = mBarProperties ?: return
         viewBinding.apply {
             tvPortrait.text = "${tvPortrait.title}${p.isPortrait}".content()
@@ -109,7 +102,6 @@ class KotlinActivity : BaseKotlinActivity() {
             tvHasNotch.text = "${tvHasNotch.title}${p.isNotchScreen}".content()
             tvNotchHeight.text = "${tvNotchHeight.title}${p.notchHeight}".content()
             tvAction.text = "${tvAction.title}${p.actionBarHeight}".content()
-            // 以下信息不在BarProperties快照中，仍使用静态/扩展方法获取
             tvFits.text =
                 "${tvFits.title}${findViewById<View>(android.R.id.content).checkFitsSystemWindows}".content()
             tvStatusDark.text = "${tvStatusDark.title}$isSupportStatusBarDarkFont".content()

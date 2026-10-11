@@ -1,28 +1,30 @@
 package com.gyf.immersionbar;
 
 /**
+ * Navigation bar type.
+ *
  * @author: ifan
  * @date: 8/12/21
  */
 public enum NavigationBarType {
     /**
-     * 经典导航键
+     * Classic 3-button navigation.
      */
     CLASSIC(0),
     /**
-     * 手势导航
+     * Full-screen gesture navigation.
      */
     GESTURES(1),
     /**
-     * 手势导航，三段式，小按钮
+     * Three-stage gesture navigation.
      */
     GESTURES_THREE_STAGE(2),
     /**
-     * 两个按钮
+     * Two-button navigation.
      */
     DOUBLE(3),
     /**
-     * 未知
+     * Unknown.
      */
     UNKNOWN(-1);
 

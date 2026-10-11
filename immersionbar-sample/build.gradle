@@ -73,34 +73,31 @@ dependencies {
     debugImplementation libs.androidx.compose.ui.tooling
     testImplementation libs.junit
     implementation project(':immersionbar')
-    implementation project(':immersionbar-components')
-    implementation project(':immersionbar-ktx')
 //    implementation libs.immersionbar
-//    implementation libs.immersionbar.components
 //    implementation libs.immersionbar.ktx
 
-    //侧滑返回
+    // Swipe back
     implementation libs.swipebacklayout
-    //log日志
+    // Logging
     implementation libs.logutils
-    //轮播图
+    // Banner carousel
     implementation libs.banner
-    //RecyclerView框架
+    // RecyclerView framework
     implementation libs.base.recyclerview.adapter.helper
-    //图片加载框架
+    // Image loading framework
     implementation libs.glide
     annotationProcessor libs.glide.compiler
-    //下拉刷新上拉加载
+    // Pull to refresh and load more
     implementation libs.tkrefreshlayout
-    //圆形imageView
+    // Circular ImageView
     implementation libs.circleimageview
-    // 内存泄漏检测
+    // Memory leak detection
     debugImplementation libs.leakcanary.android
     releaseImplementation libs.leakcanary.android.no.op
     testImplementation libs.leakcanary.android.no.op
-    // Fragment框架
+    // Fragment framework
     implementation libs.fragmentationx
-    //腾讯bugly
+    // Tencent Bugly
     implementation libs.bugly.crashreport
     // Rx
     implementation libs.rxjava2

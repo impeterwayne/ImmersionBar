@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/btn13"
-        app:title="系统一些参数信息"
+        app:title="@string/title_params_info"
         app:titleTextColor="@android:color/white" />
 
     <ScrollView
@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="46dp"
                 android:gravity="center"
-                android:text="是否竖屏："
+                android:text="@string/text_is_portrait"
                 android:textColor="@android:color/black" />
 
             <TextView
@@ -36,7 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="46dp"
                 android:gravity="center"
-                android:text="是否左横屏："
+                android:text="@string/text_is_landscape_left"
                 android:textColor="@android:color/black" />
 
             <TextView
@@ -44,7 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="46dp"
                 android:gravity="center"
-                android:text="是否右横屏："
+                android:text="@string/text_is_landscape_right"
                 android:textColor="@android:color/black" />
 
             <TextView
@@ -52,7 +52,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="46dp"
                 android:gravity="center"
-                android:text="StatusBar Height（当前高度）:"
+                android:text="@string/text_status_bar_height_current"
                 android:textColor="@android:color/black" />
 
             <TextView
@@ -60,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="46dp"
                 android:gravity="center"
-                android:text="StatusBar Height（忽略可见性）:"
+                android:text="@string/text_status_bar_height_ignore_visibility"
                 android:textColor="@android:color/black" />
 
             <TextView
@@ -68,7 +68,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="46dp"
                 android:gravity="center"
-                android:text="状态栏是否可见："
+                android:text="@string/text_is_status_bar_visible"
                 android:textColor="@android:color/black" />
 
             <TextView
@@ -76,7 +76,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="46dp"
                 android:gravity="center"
-                android:text="是否有NavigationBar？"
+                android:text="@string/text_has_navigation_bar"
                 android:textColor="@android:color/black" />
 
             <TextView
@@ -84,7 +84,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="46dp"
                 android:gravity="center"
-                android:text="导航栏是否可见："
+                android:text="@string/text_is_navigation_bar_visible"
                 android:textColor="@android:color/black" />
 
             <TextView
@@ -92,7 +92,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="46dp"
                 android:gravity="center"
-                android:text="导航栏是否在底部："
+                android:text="@string/text_is_navigation_bar_at_bottom"
                 android:textColor="@android:color/black" />
 
             <TextView
@@ -100,7 +100,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="46dp"
                 android:gravity="center"
-                android:text="导航栏类型："
+                android:text="@string/text_navigation_bar_type"
                 android:textColor="@android:color/black" />
 
             <TextView
@@ -108,7 +108,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="46dp"
                 android:gravity="center"
-                android:text="NavigationBar Height（当前高度）:"
+                android:text="@string/text_navigation_bar_height_current"
                 android:textColor="@android:color/black" />
 
             <TextView
@@ -116,7 +116,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="46dp"
                 android:gravity="center"
-                android:text="NavigationBar Height（忽略可见性）:"
+                android:text="@string/text_navigation_bar_height_ignore_visibility"
                 android:textColor="@android:color/black" />
 
             <TextView
@@ -126,7 +126,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:gravity="center"
-                android:text="NavigationBar Width（此宽度的意思是横屏下导航栏的宽度，理论上导航栏竖屏下高度和横屏下宽度值是一样的，但是有些手机会不一样，比如华为部分手机导航栏竖屏下高度和横屏下宽度就是不一样的）:"
+                android:text="@string/text_navigation_bar_width_desc"
                 android:textColor="@android:color/black" />
 
             <TextView
@@ -134,7 +134,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="46dp"
                 android:gravity="center"
-                android:text="是否有全面屏手势："
+                android:text="@string/text_has_gesture_navigation"
                 android:textColor="@android:color/black" />
 
             <TextView
@@ -142,7 +142,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="46dp"
                 android:gravity="center"
-                android:text="是否有刘海屏？"
+                android:text="@string/text_has_notch_screen"
                 android:textColor="@android:color/black" />
 
             <TextView
@@ -150,7 +150,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="46dp"
                 android:gravity="center"
-                android:text="刘海屏Height:"
+                android:text="@string/text_notch_height"
                 android:textColor="@android:color/black" />
 
             <TextView
@@ -174,7 +174,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="46dp"
                 android:gravity="center"
-                android:text="布局是否设置了fitsSystemWindows为true？"
+                android:text="@string/text_is_fits_system_windows"
                 android:textColor="@android:color/black" />
 
             <TextView
@@ -182,7 +182,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="46dp"
                 android:gravity="center"
-                android:text="是否支持状态栏字体变色？"
+                android:text="@string/text_is_support_status_bar_dark_font"
                 android:textColor="@android:color/black" />
 
             <TextView
@@ -190,7 +190,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="46dp"
                 android:gravity="center"
-                android:text="是否支持导航栏图标变色？"
+                android:text="@string/text_is_support_navigation_bar_dark_icon"
                 android:textColor="@android:color/black" />
 
             <Button
@@ -202,7 +202,7 @@
                 android:gravity="center"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:text="使用静态方法动态显示隐藏状态栏"
+                android:text="@string/text_demo_toggle_status_bar_static"
                 android:textColor="@android:color/white" />
 
             <Button
@@ -214,7 +214,7 @@
                 android:gravity="center"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:text="使用参数方法动态显示隐藏导航栏"
+                android:text="@string/text_demo_toggle_nav_bar_param"
                 android:textColor="@android:color/white" />
         </LinearLayout>
     </ScrollView>

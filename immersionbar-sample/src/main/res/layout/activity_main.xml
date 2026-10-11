@@ -34,7 +34,7 @@
                     android:layout_height="?attr/actionBarSize"
                     android:alpha="0"
                     android:background="@drawable/shape_main"
-                    app:title="沉浸式（ImmersionBar）"
+                    app:title="@string/title_main_app"
                     app:titleTextColor="@android:color/white" />
             </FrameLayout>
 
@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:padding="10dp"
-                android:text="我是底部"
+                android:text="@string/text_i_am_bottom"
                 android:textColor="@color/black" />
         </LinearLayout>
     </FrameLayout>

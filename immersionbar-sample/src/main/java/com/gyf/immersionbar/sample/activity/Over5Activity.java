@@ -33,10 +33,7 @@ public class Over5Activity extends BaseActivity {
     @SuppressLint("SetTextI18n")
     @Override
     protected void initView() {
-        binding.text.setText("不需要在xml文件增加view给状态栏预留空间，重点是这个方法titleBar(binding.toolbar)，实现原理：" +
-                "根据状态栏高度动态设置标题栏（demo是ToolBar，也可以是其他的）高度，" +
-                "设置标题栏距离顶部padding值的为状态栏的高度，记住xml标题栏的高度不能指定为wrap_content，" +
-                "不然绘制的高度只有状态栏的高度");
+        binding.text.setText(getString(R.string.text_over5_desc));
     }
     @Override
     protected void initViewBinding() {

@@ -11,7 +11,7 @@
         android:layout_height="?actionBarSize"
         android:background="@color/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:title="界面全是EditText"
+        app:title="@string/text_all_edit"
         app:titleTextColor="@android:color/white" />
 
     <androidx.recyclerview.widget.RecyclerView

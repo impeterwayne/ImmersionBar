@@ -8,8 +8,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 /**
- * Demo 中统一的 Toast 管理类。
- * 弹出新 Toast 前会立即取消上一个 Toast，避免消息排队显示。
+ * Unified Toast manager class in Demo.
+ * Cancels the previous Toast immediately before showing a new Toast to avoid queued display.
  */
 public final class ToastUtils {
 

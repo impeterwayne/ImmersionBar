@@ -19,7 +19,7 @@ import com.gyf.immersionbar.sample.utils.Utils;
 
 
 /**
- * 结合popupWindow使用
+ * Use with PopupWindow
  * The type Popup activity.
  *
  * @author geyifeng
@@ -40,7 +40,7 @@ public class PopupActivity extends BaseActivity {
         super.initImmersionBar();
         ImmersionBar.with(this)
                 .titleBar(R.id.toolbar)
-                //华为手机能手动隐藏导航栏，所以也要做些适配
+                // Huawei phones can manually hide navigation bar, so adapt for it
                 .addOnNavigationBarChangedListener(navigationBar -> updatePopupView())
                 .init();
     }
@@ -48,7 +48,7 @@ public class PopupActivity extends BaseActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        //适配横竖屏切换
+        // Adapt for screen orientation switch
         updatePopupWindow();
         updatePopupView();
     }
@@ -92,7 +92,7 @@ public class PopupActivity extends BaseActivity {
     }
 
     /**
-     * 弹出popupWindow
+     * Pop up PopupWindow
      * Show popup.
      *
      * @param gravity        the gravity
@@ -103,29 +103,29 @@ public class PopupActivity extends BaseActivity {
     private void showPopup(int gravity, int width, int height, int animationStyle) {
         mPopupView = LayoutInflater.from(mActivity).inflate(R.layout.popup_demo, null);
         mPopupWindow = new PopupWindow(mPopupView, width, height);
-        //以下属性响应空白处消失和实体按键返回消失popup
+        // The following attributes respond to click outside or physical back key dismiss
         mPopupWindow.setOutsideTouchable(true);
         mPopupWindow.setFocusable(true);
         mPopupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        //沉浸式模式下，以下两个属性并不起作用
+        // In immersion mode, the following two attributes do not take effect
         mPopupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
         mPopupWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        //重点，此方法可以让布局延伸到状态栏和导航栏
+        // Key method: allows layout to extend to status bar and navigation bar
         mPopupWindow.setClippingEnabled(false);
-        //设置动画
+        // Set animation
         mPopupWindow.setAnimationStyle(animationStyle);
-        //弹出
+        // Show popup
         mPopupWindow.showAtLocation(getWindow().getDecorView(), gravity, 0, 0);
-        //弹出后背景alpha值
+        // Background alpha value after showing
         backgroundAlpha(0.5f);
-        //消失后恢复背景alpha值
+        // Restore background alpha value after dismiss
         mPopupWindow.setOnDismissListener(() -> backgroundAlpha(1f));
-        //适配弹出popup后布局被状态栏和导航栏遮挡问题
+        // Adapt for layout covered by status bar and navigation bar after showing popup
         updatePopupView();
     }
 
     /**
-     * 调整popupWindow位置以及宽高，不然横竖屏切换会导致显示位置改变以及宽高变化
+     * Adjust PopupWindow position and size, otherwise orientation switch alters position and size
      * Update popup window.
      */
     private void updatePopupWindow() {
@@ -145,7 +145,7 @@ public class PopupActivity extends BaseActivity {
     }
 
     /**
-     * 调整popupWindow里view的Margins值来适配布局被导航栏遮挡问题，因为要适配横竖屏切换，所以代码有点多
+     * Adjust Margins of view inside PopupWindow to adapt for layout covered by navigation bar
      * Update popup view.
      */
     private void updatePopupView() {
@@ -226,7 +226,7 @@ public class PopupActivity extends BaseActivity {
     }
 
     /**
-     * 设置弹出popup，背景alpha值
+     * Set background alpha value when showing popup
      *
      * @param bgAlpha 0f - 1f
      */

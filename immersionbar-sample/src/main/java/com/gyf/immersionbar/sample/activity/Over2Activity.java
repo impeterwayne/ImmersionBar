@@ -31,8 +31,7 @@ public class Over2Activity extends BaseActivity {
     @Override
     protected void initView() {
         super.initView();
-        binding.text.setText("使用系统的fitsSystemWindows属性,在布局的根节点，" +
-                "指定fitsSystemWindows为true，然后在代码中使用ImmersionBar指定状态栏的颜色，详情参看此页面的实现");
+        binding.text.setText(getString(R.string.text_over2_desc));
     }
     @Override
     protected void initViewBinding() {

@@ -14,7 +14,7 @@ import android.provider.Settings;
 import java.util.ArrayList;
 
 /**
- * 华为Emui3状态栏监听器
+ * Huawei EMUI 3 navigation bar observer.
  *
  * @author geyifeng
  * @date 2019/4/10 6:02 PM

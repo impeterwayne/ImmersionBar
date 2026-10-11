@@ -3,18 +3,18 @@ package com.gyf.immersionbar;
 import androidx.annotation.NonNull;
 
 /**
- * 软键盘信息。
+ * Soft keyboard state and height information.
  *
  * @author geyifeng
  * @date 2026/7/26
  */
 public class Keyboard {
     /**
-     * 软键盘当前是否弹出。
+     * Whether the soft keyboard is currently visible.
      */
     private final boolean popup;
     /**
-     * 软键盘当前高度。
+     * Current soft keyboard height in pixels.
      */
     private final int height;
 
@@ -24,16 +24,16 @@ public class Keyboard {
     }
 
     /**
-     * 软键盘当前是否弹出。
+     * Whether the soft keyboard is currently visible.
      *
-     * @return true表示软键盘已弹出
+     * @return true if the soft keyboard is shown, false otherwise
      */
     public boolean isPopup() {
         return popup;
     }
 
     /**
-     * 软键盘当前高度，关闭时为0，单位为px。
+     * Current soft keyboard height in pixels, or 0 when hidden.
      *
      * @return the current keyboard height
      */

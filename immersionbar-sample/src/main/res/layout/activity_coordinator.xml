@@ -32,7 +32,7 @@
                 android:layout_below="@+id/view"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:title="结合CoordinatorLayout使用" />
+                app:title="@string/text_coordinator" />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -53,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="向上滑动试试"
+                android:text="@string/text_try_swipe_up"
                 android:textSize="20sp" />
 
             <TextView

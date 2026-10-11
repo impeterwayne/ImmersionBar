@@ -36,7 +36,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="扫一扫"
+                android:text="@string/text_scan"
                 android:textColor="@color/colorBarText"
                 android:textSize="9sp" />
         </LinearLayout>
@@ -53,7 +53,7 @@
             android:cursorVisible="false"
             android:drawablePadding="10dp"
             android:drawableStart="@mipmap/seek"
-            android:hint="搜一搜"
+            android:hint="@string/hint_search"
             android:padding="10dp"
             android:textColor="@color/colorBarText"
             android:textColorHint="@color/colorBarText"
@@ -78,7 +78,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="更多"
+                android:text="@string/text_more"
                 android:textColor="@color/colorBarText"
                 android:textSize="9sp" />
         </LinearLayout>

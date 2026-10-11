@@ -15,11 +15,8 @@ open class BaseKotlinActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         AppManager.getInstance().addActivity(this)
         initImmersionBar()
-        //初始化数据
         initData()
-        //view与数据绑定
         initView()
-        //设置监听
         setListener()
     }
 

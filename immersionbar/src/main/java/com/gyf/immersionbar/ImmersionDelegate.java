@@ -11,6 +11,8 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 /**
+ * ImmersionBar lifecycle delegate.
+ *
  * @author geyifeng
  * @date 2019/4/12 4:01 PM
  */
@@ -20,17 +22,17 @@ class ImmersionDelegate {
     private ImmersionBar mImmersionBar;
     private BarProperties mLastBarProperties;
     /**
-     * 宿主页面是否处于前台。不可见期间不分发回调，也不更新最后一次已分发快照。
+     * Whether the host page is in the foreground. Callbacks are not dispatched and the last dispatched snapshot is not updated while invisible.
      */
     private boolean mResumed;
     /**
-     * Android 15+恢复页面时，WindowInsetsController.hide()的结果可能晚于onResume生效。
-     * 在配置的隐藏状态真正应用前不读取并分发过渡快照。
+     * When resuming on Android 15+, the result of WindowInsetsController.hide() may take effect after onResume.
+     * Intermediate transition snapshots are not read and dispatched before the configured hide state is truly applied.
      */
     private boolean mAwaitingResumeBarState;
     /**
-     * 下一次BarProperties快照的一次性导航栏可见性提示。
-     * 仅属于当前Delegate/Window，跨异步post保存，并在读取时立即清空，不能作为持久可见性状态。
+     * One-time navigation bar visibility hint for the next BarProperties snapshot.
+     * Belongs only to the current Delegate/Window, retained across asynchronous posts and cleared immediately upon read; cannot serve as persistent visibility state.
      */
     private Boolean mPendingNavigationBarVisible;
     private final Runnable mDispatchBarPropertiesRunnable = this::dispatchBarProperties;
@@ -75,7 +77,7 @@ class ImmersionDelegate {
         if (mImmersionBar == null) {
             mImmersionBar = new ImmersionBar(activity, dialog);
         }
-        //回传delegate引用，使运行时系统栏显隐变化能反向触发BarProperties快照刷新
+        // Pass back delegate reference so runtime system bar visibility changes can trigger BarProperties snapshot refreshes
         mImmersionBar.setImmersionDelegate(this);
     }
 
@@ -88,7 +90,7 @@ class ImmersionDelegate {
         if (mImmersionBar != null) {
             mAwaitingResumeBarState = shouldAwaitResumeBarState(mImmersionBar);
             mImmersionBar.onResume();
-            //不可见期间可能发生系统栏变化；恢复后与最后一次已分发快照做差量比较。
+            // System bar changes may have occurred while invisible; perform differential comparison against the last dispatched snapshot upon resume.
             refreshBarProperties();
         }
     }
@@ -120,12 +122,12 @@ class ImmersionDelegate {
     }
 
     /**
-     * 运行时系统栏显隐/导航模式变化时。
+     * Called when runtime system bar visibility or navigation mode changes.
      *
-     * <p>凡是会改变insets的运行时事件（hideBar/showBar、手势临时显隐、三键⇄手势切换）
+     * <p>Handles any runtime events that alter insets (hideBar/showBar, temporary gesture show/hide, 3-button vs gesture navigation switch).
      *
-     * <p>仅在宿主页面处于前台且完成初始化后排队刷新；不可见期间不分发回调、也不推进快照，
-     * 页面恢复时由{@link #onResume()}重新读取当前属性并做差量分发。
+     * <p>Only queues a refresh when the host page is in the foreground and initialized; does not dispatch callbacks or advance snapshots while invisible.
+     * When the page resumes, {@link #onResume()} re-reads current properties and dispatches differences.
      */
     void refreshBarProperties() {
         refreshBarProperties(null);
@@ -143,10 +145,10 @@ class ImmersionDelegate {
         decorView.removeCallbacks(mDispatchBarPropertiesRunnable);
         decorView.removeCallbacks(mDispatchBarPropertiesAfterFrameRunnable);
         if (mAwaitingResumeBarState) {
-            //至少跨过一次完整绘制，再读取Android 15+异步应用后的WindowInsets。
+            // Wait across at least one full draw frame before reading WindowInsets asynchronously applied on Android 15+.
             ViewCompat.postOnAnimation(decorView, mDispatchBarPropertiesAfterFrameRunnable);
         } else {
-            //同一消息循环内的多个变化信号合并为一次快照读取。
+            // Merge multiple change signals within the same message loop into a single snapshot read.
             decorView.post(mDispatchBarPropertiesRunnable);
         }
     }
@@ -194,7 +196,7 @@ class ImmersionDelegate {
 
     void dispatchBarProperties() {
         ImmersionBar immersionBar = mImmersionBar;
-        //post出去后宿主可能已经onPause，执行时必须再次校验，避免旧页面收到回调并推进快照。
+        // The host may have paused after posting; verify again at execution time to prevent paused pages from receiving callbacks and advancing snapshots.
         if (!canDispatchBarProperties(immersionBar)) {
             return;
         }
@@ -205,13 +207,13 @@ class ImmersionDelegate {
                 immersionBar.getWindow(), navigationBarVisibleHint);
         if (mAwaitingResumeBarState) {
             if (!isResumeBarStateApplied(immersionBar, barProperties)) {
-                //仍是Android 15恢复过程中的旧Insets，等待BarVisibilityObserver下一个真实Insets信号。
+                // Stale insets from Android 15 resume in progress; await the next real insets signal from BarVisibilityObserver.
                 return;
             }
             mAwaitingResumeBarState = false;
         }
 
-        //首次快照（无上次快照）时下面三个分发会同时触发，统一打上首次回调标记。
+        // On initial snapshot (no previous snapshot), the three dispatches below fire simultaneously with firstCallback marked true.
         boolean firstCallback = lastBarProperties == null;
         int barPropertiesChanges = barProperties.calculateChanges(lastBarProperties);
         int statusBarChanges = StatusBar.calculateChanges(barPropertiesChanges);

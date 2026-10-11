@@ -9,7 +9,7 @@ import com.gyf.immersionbar.sample.databinding.DialogBinding;
 
 
 /**
- * 全屏DialogFragment
+ * Full screen DialogFragment
  *
  * @author geyifeng
  * @date 2017/7/28

@@ -15,7 +15,7 @@ import com.gyf.immersionbar.NotchCallback
  * @date 2019/3/27 5:45 PM
  */
 
-// 初始化ImmersionBar
+/** Initializes ImmersionBar. */
 @JvmOverloads
 inline fun Activity.immersionBar(isOnly: Boolean = false, block: ImmersionBar.() -> Unit) =
     ImmersionBar.with(this, isOnly).apply { block(this) }.init()
@@ -112,7 +112,7 @@ fun Fragment.immersionBar(dialog: Dialog, isOnly: Boolean = false) = immersionBa
 fun android.app.Fragment.immersionBar(dialog: Dialog, isOnly: Boolean = false) =
     immersionBar(dialog, isOnly) {}
 
-// dialog销毁
+/** Dialog destroy extensions. */
 @Deprecated(
     message = "Dialog ImmersionBar is destroyed automatically when dialog is dismissed. Manual destroy is no longer required."
 )
@@ -134,7 +134,7 @@ fun Fragment.destroyImmersionBar(dialog: Dialog, isOnly: Boolean = false) =
 fun android.app.Fragment.destroyImmersionBar(dialog: Dialog, isOnly: Boolean = false) =
     activity?.run { ImmersionBar.destroy(this, dialog, isOnly) } ?: Unit
 
-// BarProperties扩展
+/** BarProperties extensions. */
 val Activity.barProperties get() = ImmersionBar.getBarProperties(this)
 val Fragment.barProperties get() = ImmersionBar.getBarProperties(this)
 val android.app.Fragment.barProperties get() = ImmersionBar.getBarProperties(this)
@@ -143,7 +143,7 @@ val Window.barProperties get() = ImmersionBar.getBarProperties(this)
 val View.barProperties get() = ImmersionBar.getBarProperties(this)
 val Dialog.barProperties get() = ImmersionBar.getBarProperties(this)
 
-// 状态栏信息扩展
+/** Status bar info extensions. */
 val Activity.statusBar get() = ImmersionBar.getStatusBar(this)
 val Fragment.statusBar get() = ImmersionBar.getStatusBar(this)
 val android.app.Fragment.statusBar get() = ImmersionBar.getStatusBar(this)
@@ -152,7 +152,7 @@ val Window.statusBar get() = ImmersionBar.getStatusBar(this)
 val View.statusBar get() = ImmersionBar.getStatusBar(this)
 val Dialog.statusBar get() = ImmersionBar.getStatusBar(this)
 
-// 导航栏信息扩展
+/** Navigation bar info extensions. */
 val Activity.navigationBar get() = ImmersionBar.getNavigationBar(this)
 val Fragment.navigationBar get() = ImmersionBar.getNavigationBar(this)
 val android.app.Fragment.navigationBar get() = ImmersionBar.getNavigationBar(this)
@@ -161,7 +161,7 @@ val Window.navigationBar get() = ImmersionBar.getNavigationBar(this)
 val View.navigationBar get() = ImmersionBar.getNavigationBar(this)
 val Dialog.navigationBar get() = ImmersionBar.getNavigationBar(this)
 
-// 状态栏扩展
+/** Status bar height extensions. */
 val Activity.statusBarHeight get() = ImmersionBar.getStatusBarHeight(this)
 val Fragment.statusBarHeight get() = ImmersionBar.getStatusBarHeight(this)
 val android.app.Fragment.statusBarHeight get() = ImmersionBar.getStatusBarHeight(this)
@@ -170,7 +170,7 @@ val Window.statusBarHeight get() = ImmersionBar.getStatusBarHeight(this)
 val View.statusBarHeight get() = ImmersionBar.getStatusBarHeight(this)
 val Dialog.statusBarHeight get() = ImmersionBar.getStatusBarHeight(this)
 
-// 导航栏扩展
+/** Navigation bar size extensions. */
 val Activity.navigationBarHeight get() = ImmersionBar.getNavigationBarHeight(this)
 val Fragment.navigationBarHeight get() = ImmersionBar.getNavigationBarHeight(this)
 val android.app.Fragment.navigationBarHeight get() = ImmersionBar.getNavigationBarHeight(this)
@@ -187,7 +187,7 @@ val Window.navigationBarWidth get() = ImmersionBar.getNavigationBarWidth(this)
 val View.navigationBarWidth get() = ImmersionBar.getNavigationBarWidth(this)
 val Dialog.navigationBarWidth get() = ImmersionBar.getNavigationBarWidth(this)
 
-// ActionBar扩展
+/** ActionBar height extensions. */
 val Activity.actionBarHeight get() = ImmersionBar.getActionBarHeight(this)
 val Fragment.actionBarHeight get() = ImmersionBar.getActionBarHeight(this)
 val android.app.Fragment.actionBarHeight get() = ImmersionBar.getActionBarHeight(this)
@@ -196,7 +196,7 @@ val Window.actionBarHeight get() = ImmersionBar.getActionBarHeight(this)
 val View.actionBarHeight get() = ImmersionBar.getActionBarHeight(this)
 val Dialog.actionBarHeight get() = ImmersionBar.getActionBarHeight(this)
 
-// 是否有导航栏
+/** Checks whether navigation bar exists. */
 val Activity.hasNavigationBar get() = ImmersionBar.hasNavigationBar(this)
 val Fragment.hasNavigationBar get() = ImmersionBar.hasNavigationBar(this)
 val android.app.Fragment.hasNavigationBar get() = ImmersionBar.hasNavigationBar(this)
@@ -205,7 +205,7 @@ val Window.hasNavigationBar get() = ImmersionBar.hasNavigationBar(this)
 val View.hasNavigationBar get() = ImmersionBar.hasNavigationBar(this)
 val Dialog.hasNavigationBar get() = ImmersionBar.hasNavigationBar(this)
 
-// 是否有刘海屏
+/** Checks whether notch screen exists. */
 val Activity.hasNotchScreen get() = ImmersionBar.hasNotchScreen(this)
 val Fragment.hasNotchScreen get() = ImmersionBar.hasNotchScreen(this)
 val android.app.Fragment.hasNotchScreen get() = ImmersionBar.hasNotchScreen(this)
@@ -214,7 +214,7 @@ val Window.hasNotchScreen get() = ImmersionBar.hasNotchScreen(this)
 val View.hasNotchScreen get() = ImmersionBar.hasNotchScreen(this)
 val Dialog.hasNotchScreen get() = ImmersionBar.hasNotchScreen(this)
 
-// 获得刘海屏高度
+/** Notch height extensions. */
 val Activity.notchHeight get() = ImmersionBar.getNotchHeight(this)
 val Fragment.notchHeight get() = ImmersionBar.getNotchHeight(this)
 val android.app.Fragment.notchHeight get() = ImmersionBar.getNotchHeight(this)
@@ -233,16 +233,16 @@ fun Window.getNotchHeight(callback: NotchCallback) = ImmersionBar.getNotchHeight
 fun View.getNotchHeight(callback: NotchCallback) = ImmersionBar.getNotchHeight(this, callback)
 fun Dialog.getNotchHeight(callback: NotchCallback) = ImmersionBar.getNotchHeight(this, callback)
 
-// 是否支持状态栏字体变色
+/** Checks whether status bar dark font is supported. */
 val isSupportStatusBarDarkFont get() = ImmersionBar.isSupportStatusBarDarkFont()
 
-// 是否支持导航栏图标
+/** Checks whether navigation bar dark icon is supported. */
 val isSupportNavigationIconDark get() = ImmersionBar.isSupportNavigationIconDark()
 
-// 检查view是否使用了fitsSystemWindows
+/** Checks whether the view uses fitsSystemWindows. */
 val View.checkFitsSystemWindows get() = ImmersionBar.checkFitsSystemWindows(this)
 
-// 导航栏是否在底部
+/** Checks whether navigation bar is at the bottom. */
 val Activity.isNavigationAtBottom get() = ImmersionBar.isNavigationAtBottom(this)
 val Fragment.isNavigationAtBottom get() = ImmersionBar.isNavigationAtBottom(this)
 val android.app.Fragment.isNavigationAtBottom get() = ImmersionBar.isNavigationAtBottom(this)
@@ -251,7 +251,7 @@ val Window.isNavigationAtBottom get() = ImmersionBar.isNavigationAtBottom(this)
 val View.isNavigationAtBottom get() = ImmersionBar.isNavigationAtBottom(this)
 val Dialog.isNavigationAtBottom get() = ImmersionBar.isNavigationAtBottom(this)
 
-// 是否是全面屏手势
+/** Checks whether gesture navigation is active. */
 val Activity.isGesture get() = ImmersionBar.isGesture(this)
 val Fragment.isGesture get() = ImmersionBar.isGesture(this)
 val android.app.Fragment.isGesture get() = ImmersionBar.isGesture(this)
@@ -260,7 +260,7 @@ val Window.isGesture get() = ImmersionBar.isGesture(this)
 val View.isGesture get() = ImmersionBar.isGesture(this)
 val Dialog.isGesture get() = ImmersionBar.isGesture(this)
 
-// statusBarView扩展
+/** Fits statusBarView extensions. */
 fun Activity.fitsStatusBarView(view: View) = ImmersionBar.setStatusBarView(this, view)
 fun Fragment.fitsStatusBarView(view: View) = ImmersionBar.setStatusBarView(this, view)
 fun android.app.Fragment.fitsStatusBarView(view: View) = ImmersionBar.setStatusBarView(this, view)
@@ -269,7 +269,7 @@ fun Window.fitsStatusBarView(view: View) = ImmersionBar.setStatusBarView(this, v
 fun View.fitsStatusBarView(view: View) = ImmersionBar.setStatusBarView(this, view)
 fun Dialog.fitsStatusBarView(view: View) = ImmersionBar.setStatusBarView(this, view)
 
-// titleBar扩展
+/** Fits titleBar extensions. */
 fun Activity.fitsTitleBar(vararg view: View) = ImmersionBar.setTitleBar(this, *view)
 fun Fragment.fitsTitleBar(vararg view: View) = ImmersionBar.setTitleBar(this, *view)
 fun android.app.Fragment.fitsTitleBar(vararg view: View) = ImmersionBar.setTitleBar(this, *view)
@@ -299,7 +299,7 @@ fun View.fitsTitleBarMarginTop(vararg view: View) =
 fun Dialog.fitsTitleBarMarginTop(vararg view: View) =
     ImmersionBar.setTitleBarMarginTop(this, *view)
 
-// 隐藏状态栏
+/** Hides status bar. */
 fun Activity.hideStatusBar() = ImmersionBar.hideStatusBar(this)
 fun Fragment.hideStatusBar() = ImmersionBar.hideStatusBar(this)
 fun android.app.Fragment.hideStatusBar() = ImmersionBar.hideStatusBar(this)
@@ -308,7 +308,7 @@ fun Window.hideStatusBar() = ImmersionBar.hideStatusBar(this)
 fun View.hideStatusBar() = ImmersionBar.hideStatusBar(this)
 fun Dialog.hideStatusBar() = ImmersionBar.hideStatusBar(this)
 
-// 显示状态栏
+/** Shows status bar. */
 fun Activity.showStatusBar() = ImmersionBar.showStatusBar(this)
 fun Fragment.showStatusBar() = ImmersionBar.showStatusBar(this)
 fun android.app.Fragment.showStatusBar() = ImmersionBar.showStatusBar(this)
@@ -317,7 +317,7 @@ fun Window.showStatusBar() = ImmersionBar.showStatusBar(this)
 fun View.showStatusBar() = ImmersionBar.showStatusBar(this)
 fun Dialog.showStatusBar() = ImmersionBar.showStatusBar(this)
 
-// 解决顶部与布局重叠问题，不可逆
+/** Fits system windows to prevent layout overlap with system bars (irreversible). */
 fun Activity.setFitsSystemWindows() = ImmersionBar.setFitsSystemWindows(this)
 fun Fragment.setFitsSystemWindows() = ImmersionBar.setFitsSystemWindows(this)
 fun android.app.Fragment.setFitsSystemWindows() = ImmersionBar.setFitsSystemWindows(this)

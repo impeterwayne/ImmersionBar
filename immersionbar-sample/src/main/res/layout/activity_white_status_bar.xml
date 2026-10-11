@@ -11,13 +11,13 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:background="@android:color/white"
-        app:title="解决白色状态栏问题" />
+        app:title="@string/text_white_bar" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Q：当白色背景状态栏/导航栏或者白色状态栏/导航栏时候，是不是觉得状态栏字体和导航栏图标看不清，影响美观？点击'立即解决'试试看吧！"
+        android:text="@string/text_white_bar_desc"
         android:textSize="18sp" />
 
     <TextView
@@ -33,5 +33,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
-        android:text="立即解决" />
+        android:text="@string/text_fix_now" />
 </LinearLayout>

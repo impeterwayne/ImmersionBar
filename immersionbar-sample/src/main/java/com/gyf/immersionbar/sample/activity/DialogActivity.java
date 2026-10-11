@@ -82,7 +82,7 @@ public class DialogActivity extends BaseActivity implements DialogInterface.OnDi
         });
     }
     public void onClick(View view) {
-        //弹出Dialog
+        // Pop up Dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialog);
         mAlertDialog = builder.create();
         mAlertDialog.setOnDismissListener(this);
@@ -96,11 +96,11 @@ public class DialogActivity extends BaseActivity implements DialogInterface.OnDi
         mAlertDialog.setContentView(dialogView);
         mDialogWindow = mAlertDialog.getWindow();
         if (mDialogWindow != null) {
-            //解决无法弹出输入法的问题
+            // Fix issue where input method cannot pop up
             mDialogWindow.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
                     WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
         }
-        //计算屏幕宽高
+        // Calculate screen width and height
         Integer[] widthAndHeight = Utils.getWidthAndHeight(getWindow());
         if (mDialogWindow != null) {
             mId = view.getId();

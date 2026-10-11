@@ -7,7 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Bar相关信息
+ * System bar properties snapshot.
  *
  * @author geyifeng
  * @date 2019-05-10 18:43
@@ -60,80 +60,80 @@ public class BarProperties {
     }
 
     /**
-     * 是否是竖屏
+     * Whether the orientation is portrait.
      */
     private boolean portrait;
     /**
-     * 是否是左横屏
+     * Whether the orientation is landscape-left (rotated 90 degrees).
      */
     private boolean landscapeLeft;
     /**
-     * 是否是右横屏
+     * Whether the orientation is landscape-right (rotated 270 degrees).
      */
     private boolean landscapeRight;
     /**
-     * 是否是刘海屏
+     * Whether the device has a notch / display cutout.
      */
     private boolean notchScreen;
     /**
-     * 是否有导航栏
+     * Whether the device has a navigation bar.
      */
     private boolean hasNavigationBar;
     /**
-     * 导航栏是否在底部（false表示在侧边，如横屏三键导航在右侧）
+     * Whether the navigation bar is at the bottom (false indicates side placement, e.g. 3-button navigation in landscape).
      */
     private boolean navigationAtBottom;
     /**
-     * 导航栏类型（经典三键/手势/三段式手势/两键/未知）
+     * Navigation bar type (classic 3-button / gestures / 3-stage gestures / 2-button / unknown).
      */
     private NavigationBarType navigationBarType = NavigationBarType.UNKNOWN;
     /**
-     * 是否为手势导航
+     * Whether gesture navigation is enabled.
      */
     private boolean gestureNavigation;
     /**
-     * 状态栏当前是否可见（运行时显隐会实时刷新并通过OnBarPropertiesChangedListener回调）
+     * Whether the status bar is currently visible (updates dynamically at runtime and dispatched via OnBarPropertiesChangedListener).
      */
     private boolean statusBarVisible = true;
     /**
-     * 导航栏当前是否可见（运行时显隐会实时刷新并通过OnBarPropertiesChangedListener回调）
+     * Whether the navigation bar is currently visible (updates dynamically at runtime and dispatched via OnBarPropertiesChangedListener).
      */
     private boolean navigationBarVisible = true;
     /**
-     * 状态栏当前高度，隐藏时为0；刘海屏横竖屏有可能状态栏高度不一样
+     * Current status bar height in pixels, or 0 when hidden; portrait and landscape status bar heights may differ on cutout displays.
      */
     private int statusBarHeight;
     /**
-     * 忽略可见性的状态栏高度（隐藏时也返回其实际尺寸）
+     * Status bar height ignoring visibility (returns actual size even when hidden) in pixels.
      */
     private int statusBarHeightIgnoringVisibility;
     /**
-     * 导航栏高度
+     * Navigation bar height in pixels.
      */
     private int navigationBarHeight;
     /**
-     * 忽略可见性的导航栏高度（隐藏时也返回其实际尺寸）
+     * Navigation bar height ignoring visibility (returns actual size even when hidden) in pixels.
      */
     private int navigationBarHeightIgnoringVisibility;
     /**
-     * 导航栏宽度
+     * Navigation bar width in pixels.
      */
     private int navigationBarWidth;
     /**
-     * 刘海屏高度
+     * Notch / display cutout height in pixels.
      */
     private int notchHeight;
     /**
-     * ActionBar高度
+     * ActionBar height in pixels.
      */
     private int actionBarHeight;
     /**
-     * 是否为首次回调（首次快照派发时为true）。属于派发元数据而非窗口状态：
-     * 不参与equals/hashCode去重比较，也不随拷贝构造复制
+     * Whether this is the first callback dispatched (true on initial dispatch). Belongs to dispatch metadata rather than window state:
+     * Excluded from equals/hashCode deduplication and copy constructor.
      */
     private boolean firstCallback;
     /**
-     * 相对上一次已分发快照发生变化的属性位。属于派发元数据，不参与equals/hashCode或快照复制。
+     * Bitmask flags indicating properties that changed relative to previously dispatched snapshot. Belongs to dispatch metadata; excluded from equals/hashCode or snapshot copying.
      */
     @Change
     private int changedFlags = CHANGE_NONE;
@@ -142,10 +142,10 @@ public class BarProperties {
     }
 
     /**
-     * 拷贝构造，用于留存上一次派发的快照以做去重比较。
-     * 仅复制窗口状态字段；firstCallback是每次派发的元数据，不复制。
+     * Copy constructor for retaining the last dispatched snapshot for deduplication.
+     * Copies window state fields only; firstCallback is per-dispatch metadata and not copied.
      *
-     * @param other 源对象
+     * @param other source object
      */
     BarProperties(BarProperties other) {
         this.portrait = other.portrait;
@@ -248,7 +248,7 @@ public class BarProperties {
     }
 
     /**
-     * 状态栏当前高度，隐藏时为0，单位为px
+     * Current status bar height in pixels, or 0 when hidden.
      *
      * @return the current status bar height
      */
@@ -261,7 +261,7 @@ public class BarProperties {
     }
 
     /**
-     * 状态栏高度（忽略可见性，隐藏时也返回其实际尺寸），单位为px
+     * Status bar height ignoring visibility (returns actual size even when hidden) in pixels.
      *
      * @return the status bar height ignoring visibility
      */
@@ -314,9 +314,9 @@ public class BarProperties {
     }
 
     /**
-     * 是否为首次回调（首次快照派发）
+     * Whether this is the first callback dispatched (initial snapshot dispatch).
      *
-     * @return true表示这是监听器收到的首次回调
+     * @return true if this is the first callback received by the listener
      */
     public boolean isFirstCallback() {
         return firstCallback;
@@ -327,11 +327,12 @@ public class BarProperties {
     }
 
     /**
-     * 判断指定属性是否相对上一次已分发快照发生变化。传入多个常量按位或时，任一属性变化即返回true。
-     * 首次回调没有历史快照，所有属性均视为变化。
+     * Determines whether the specified property changed relative to the previously dispatched snapshot.
+     * When multiple flags are bitwise-ORed, returns true if any property changed.
+     * On the first callback without historical snapshot, all properties are considered changed.
      *
-     * @param change 一个或多个CHANGE_*常量
-     * @return true表示指定属性中至少有一个发生变化
+     * @param change one or more CHANGE_* constants bitwise-ORed
+     * @return true if at least one specified property has changed
      */
     public boolean hasChanged(@Change int change) {
         return (changedFlags & change) != 0;
@@ -342,10 +343,10 @@ public class BarProperties {
     }
 
     /**
-     * 计算当前快照相对上一次已分发快照发生变化的属性位。
+     * Calculates the bitmask of properties changed in current snapshot relative to previously dispatched snapshot.
      *
-     * @param last 上一次已分发快照，null表示首次快照
-     * @return 一个或多个CHANGE_*常量
+     * @param last previously dispatched snapshot, or null for initial snapshot
+     * @return one or more CHANGE_* constants bitwise-ORed
      */
     @Change
     int calculateChanges(BarProperties last) {

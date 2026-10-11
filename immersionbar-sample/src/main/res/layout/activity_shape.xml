@@ -10,6 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:background="@drawable/shape"
-        app:title="仿QQ状态栏和标题栏渐变色"
+        app:title="@string/text_shape"
         app:titleTextColor="@android:color/white" />
 </LinearLayout>

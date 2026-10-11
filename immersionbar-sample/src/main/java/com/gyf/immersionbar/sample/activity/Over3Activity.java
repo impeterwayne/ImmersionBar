@@ -36,8 +36,7 @@ public class Over3Activity extends BaseActivity {
     @SuppressLint("SetTextI18n")
     @Override
     protected void initView() {
-        binding.text.setText("使用ImmersionBar的fitsSystemWindows方法" +
-                "指定fitsSystemWindows为true，然后指定状态栏的颜色，不然状态栏为透明色，很难看，详情参看此页面的实现");
+        binding.text.setText(getString(R.string.text_over3_desc));
     }
 
     @SuppressLint("SetTextI18n")
@@ -52,10 +51,10 @@ public class Over3Activity extends BaseActivity {
                 BarParams barParams = ImmersionBar.with(this).getBarParams();
                 if (barParams.fits) {
                     ImmersionBar.with(this).fitsSystemWindows(false).transparentStatusBar().init();
-                    binding.btn.setText("fitsSystemWindows动态演示:false");
+                    binding.btn.setText(getString(R.string.text_fits_system_windows_demo, false));
                 } else {
                     ImmersionBar.with(this).fitsSystemWindows(true).statusBarColor(R.color.colorPrimary).init();
-                    binding.btn.setText("fitsSystemWindows动态演示:true");
+                    binding.btn.setText(getString(R.string.text_fits_system_windows_demo, true));
                 }
                 break;
             default:

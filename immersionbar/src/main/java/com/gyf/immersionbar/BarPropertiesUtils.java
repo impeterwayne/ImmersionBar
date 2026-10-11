@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 /**
- * BarProperties工具类
+ * Utility class for {@link BarProperties}.
  *
  * @author gyf
  */
@@ -22,10 +22,10 @@ class BarPropertiesUtils {
     }
 
     /**
-     * 获取当前BarProperties快照。
+     * Gets the current {@link BarProperties} snapshot.
      *
      * @param activity the activity
-     * @return BarProperties快照
+     * @return {@link BarProperties} snapshot
      */
     @NonNull
     public static BarProperties getBarProperties(@NonNull Activity activity) {
@@ -33,10 +33,10 @@ class BarPropertiesUtils {
     }
 
     /**
-     * 获取当前BarProperties快照。
+     * Gets the current {@link BarProperties} snapshot.
      *
      * @param fragment the fragment
-     * @return BarProperties快照
+     * @return {@link BarProperties} snapshot
      */
     @NonNull
     public static BarProperties getBarProperties(@NonNull Fragment fragment) {
@@ -48,10 +48,10 @@ class BarPropertiesUtils {
     }
 
     /**
-     * 获取当前BarProperties快照。
+     * Gets the current {@link BarProperties} snapshot.
      *
      * @param fragment the fragment
-     * @return BarProperties快照
+     * @return {@link BarProperties} snapshot
      */
     @NonNull
     public static BarProperties getBarProperties(@NonNull android.app.Fragment fragment) {
@@ -63,10 +63,10 @@ class BarPropertiesUtils {
     }
 
     /**
-     * 获取当前BarProperties快照。
+     * Gets the current {@link BarProperties} snapshot.
      *
      * @param dialog the dialog
-     * @return BarProperties快照
+     * @return {@link BarProperties} snapshot
      */
     @NonNull
     public static BarProperties getBarProperties(@NonNull Dialog dialog) {
@@ -78,10 +78,10 @@ class BarPropertiesUtils {
     }
 
     /**
-     * 获取当前BarProperties快照。
+     * Gets the current {@link BarProperties} snapshot.
      *
      * @param view the view
-     * @return BarProperties快照
+     * @return {@link BarProperties} snapshot
      */
     @NonNull
     public static BarProperties getBarProperties(@NonNull View view) {
@@ -93,10 +93,10 @@ class BarPropertiesUtils {
     }
 
     /**
-     * 获取当前BarProperties快照。
+     * Gets the current {@link BarProperties} snapshot.
      *
      * @param context the context
-     * @return BarProperties快照
+     * @return {@link BarProperties} snapshot
      */
     @NonNull
     public static BarProperties getBarProperties(@NonNull Context context) {
@@ -108,10 +108,10 @@ class BarPropertiesUtils {
     }
 
     /**
-     * 获取当前BarProperties快照。
+     * Gets the current {@link BarProperties} snapshot.
      *
      * @param window the window
-     * @return BarProperties快照
+     * @return {@link BarProperties} snapshot
      */
     @NonNull
     public static BarProperties getBarProperties(@NonNull Window window) {

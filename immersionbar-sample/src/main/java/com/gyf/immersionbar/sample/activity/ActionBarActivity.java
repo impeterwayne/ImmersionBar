@@ -38,9 +38,9 @@ public class ActionBarActivity extends BaseActivity {
     protected void initView() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle("结合actionBar使用");
+            actionBar.setTitle(getString(R.string.title_action_bar));
         }
-        binding.text.setText("上面图片被actionBar遮挡住了,我想使布局从actionBar下面开始绘制，怎么办？");
+        binding.text.setText(getString(R.string.text_action_bar_desc1));
         Glide.with(this).asBitmap().load(Utils.getPic())
                 .apply(new RequestOptions().placeholder(R.mipmap.test))
                 .into(binding.iv);
@@ -54,10 +54,8 @@ public class ActionBarActivity extends BaseActivity {
                     .supportActionBar(true)
                     .statusBarColor(R.color.colorPrimary)
                     .init();
-            binding.text.setText("哈哈哈！解决啦！就问你惊不惊喜，意不意外，刺不刺激！！！" +
-                    "重点是这个方法supportActionBar(true)，实现原理，当为true时，布局距离顶部的" +
-                    "padding值为状态栏的高度+ActionBar的高度");
-            binding.btn.setText("解决啦");
+            binding.text.setText(getString(R.string.text_action_bar_desc2));
+            binding.btn.setText(getString(R.string.text_solved));
         });
     }
     @Override

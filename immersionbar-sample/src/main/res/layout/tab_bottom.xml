@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
-            android:text="微信"
+            android:text="@string/tab_wechat"
             android:textColor="@color/text_color" />
     </LinearLayout>
 
@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
-            android:text="通讯录"
+            android:text="@string/tab_contacts"
             android:textColor="@color/text_color" />
     </LinearLayout>
 
@@ -68,7 +68,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
-            android:text="发现"
+            android:text="@string/tab_discover"
             android:textColor="@color/text_color" />
     </LinearLayout>
 
@@ -90,7 +90,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
-            android:text="我"
+            android:text="@string/tab_me"
             android:textColor="@color/text_color" />
     </LinearLayout>
 </LinearLayout>

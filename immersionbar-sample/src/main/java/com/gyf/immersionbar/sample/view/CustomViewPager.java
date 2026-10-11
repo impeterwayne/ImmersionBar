@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 /**
- * 设置viewpager不可滑动 默认可以滑动
+ * Set ViewPager non-scrollable, default is scrollable
  *
  * @author geyifeng
  * @date 2017/1/14
@@ -24,7 +24,7 @@ public class CustomViewPager extends ViewPager {
     }
 
     /**
-     * Sets scroll. true 可以滑动  false 不可以滑动
+     * Sets scroll. true for scrollable, false for non-scrollable
      *
      * @param isScroll the is scroll
      */

@@ -52,7 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="向上滑动试试"
+                android:text="@string/text_try_swipe_up"
                 android:textSize="20sp" />
 
             <TextView

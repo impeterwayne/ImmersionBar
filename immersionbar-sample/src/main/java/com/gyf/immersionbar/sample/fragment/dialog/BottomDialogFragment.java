@@ -8,7 +8,7 @@ import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.sample.R;
 
 /**
- * 底部DialogFragment
+ * Bottom DialogFragment
  *
  * @author geyifeng
  * @date 2017/7/28

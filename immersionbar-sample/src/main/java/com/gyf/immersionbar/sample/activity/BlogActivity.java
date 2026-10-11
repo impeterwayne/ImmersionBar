@@ -83,7 +83,7 @@ public class BlogActivity extends BaseActivity {
                     ((ViewGroup) parent).removeView(binding.webGit);
                 }
                 binding.webGit.stopLoading();
-                // 退出时调用此方法，移除绑定的服务，否则某些特定系统会报错
+                // Call this method on exit to remove bound services, otherwise certain systems will throw errors
                 binding.webGit.getSettings().setJavaScriptEnabled(false);
                 binding.webGit.clearHistory();
                 binding.webGit.clearView();

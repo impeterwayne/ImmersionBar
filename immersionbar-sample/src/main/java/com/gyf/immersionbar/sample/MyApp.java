@@ -32,10 +32,10 @@ public class MyApp extends Application {
         mContext = getApplicationContext();
         // bugly
         CrashReport.initCrashReport(getApplicationContext(), "31a5f1f394", false);
-        // 网络监听服务
+        // Network listener service
         NetworkService.enqueueWork(this);
         Fragmentation.builder()
-                // 显示悬浮球 ; 其他Mode:SHAKE: 摇一摇唤出   NONE：隐藏
+                // Display floating bubble; Other Modes: SHAKE: shake to show, NONE: hide
                 .stackViewMode(Fragmentation.BUBBLE)
                 .debug(BuildConfig.DEBUG)
                 .install();

@@ -12,7 +12,7 @@ import com.gyf.immersionbar.sample.AppManager;
 import com.gyf.immersionbar.sample.R;
 
 /**
- * Activity基类
+ * Activity base class
  *
  * @author geyifeng
  * @date 2017/5/9
@@ -29,15 +29,15 @@ public abstract class BaseActivity extends AppCompatActivity {
         AppManager.getInstance().addActivity(this);
         mActivity = this;
         setContentView(getLayoutId());
-        //绑定控件
+        // Bind views
         initViewBinding();
-        //初始化沉浸式
+        // Initialize ImmersionBar
         initImmersionBar();
-        //初始化数据
+        // Initialize data
         initData();
-        //view与数据绑定
+        // Bind views and data
         initView();
-        //设置监听
+        // Set listeners
         setListener();
     }
 
@@ -48,7 +48,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 初始化ViewBinding
+     * Initialize ViewBinding
      */
     protected void initViewBinding() {
     }
@@ -59,18 +59,18 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 子类设置布局Id
+     * Subclasses set layout Id
      *
      * @return the layout id
      */
     protected abstract int getLayoutId();
 
     /**
-     * 初始化沉浸式
+     * Initialize ImmersionBar
      * Init immersion bar.
      */
     protected void initImmersionBar() {
-        //设置共同沉浸式样式
+        // Set common ImmersionBar style
         ImmersionBar.with(this).navigationBarColor(R.color.colorPrimary).init();
     }
 

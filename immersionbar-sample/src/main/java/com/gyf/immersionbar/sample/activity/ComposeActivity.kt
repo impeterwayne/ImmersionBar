@@ -40,7 +40,7 @@ import com.gyf.immersionbar.sample.R
 import com.gyf.immersionbar.sample.utils.ToastUtils
 
 /**
- * 结合 Compose 使用
+ * Use with Compose
  */
 class ComposeActivity : ComponentActivity() {
 
@@ -63,7 +63,10 @@ class ComposeActivity : ComponentActivity() {
                 if (it.isFirstCallback.not()) {
                     ToastUtils.show(
                         this@ComposeActivity,
-                        "状态栏${if (it.isVisible) "显示了" else "隐藏了"}"
+                        getString(
+                            R.string.toast_status_bar_state,
+                            if (it.isVisible) getString(R.string.text_state_shown) else getString(R.string.text_state_hidden)
+                        )
                     )
                 }
             }
@@ -71,7 +74,10 @@ class ComposeActivity : ComponentActivity() {
                 if (it.isFirstCallback.not()) {
                     ToastUtils.show(
                         this@ComposeActivity,
-                        "导航栏${if (it.isVisible) "显示了" else "隐藏了"}"
+                        getString(
+                            R.string.toast_nav_bar_state,
+                            if (it.isVisible) getString(R.string.text_state_shown) else getString(R.string.text_state_hidden)
+                        )
                     )
                 }
             }
@@ -156,14 +162,14 @@ class ComposeActivity : ComponentActivity() {
                     .padding(horizontal = 16.dp, vertical = 16.dp)
             ) {
                 Text(
-                    text = "结合 Compose 使用",
+                    text = getString(R.string.text_compose),
                     color = Color.White,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
-                    text = "Compose 页面中同样可以通过 ImmersionBar 配置状态栏和导航栏。",
+                    text = getString(R.string.text_compose_desc),
                     color = Color.White.copy(alpha = 0.85f),
                     fontSize = 14.sp
                 )
@@ -171,27 +177,27 @@ class ComposeActivity : ComponentActivity() {
 
             Column(modifier = Modifier.padding(16.dp)) {
                 InfoCard(
-                    title = "Bar 信息",
+                    title = getString(R.string.text_compose_bar_info),
                     rows = listOf(
-                        "状态栏高度" to "$statusBarHeight px",
-                        "状态栏是否显示" to "${barProperties.isStatusBarVisible}",
-                        "是否有导航栏" to "${barProperties.hasNavigationBar()}",
-                        "导航栏是否显示" to "${barProperties.isNavigationBarVisible}",
-                        "导航栏高度" to "$navigationBarHeight px",
-                        "导航栏位置在底部" to "${barProperties.isNavigationAtBottom}",
-                        "刘海屏" to "${barProperties.isNotchScreen}",
-                        "刘海高度" to "${barProperties.notchHeight} px"
+                        getString(R.string.text_compose_status_bar_height) to "$statusBarHeight px",
+                        getString(R.string.text_compose_is_status_bar_visible) to "${barProperties.isStatusBarVisible}",
+                        getString(R.string.text_compose_has_nav_bar) to "${barProperties.hasNavigationBar()}",
+                        getString(R.string.text_compose_is_nav_bar_visible) to "${barProperties.isNavigationBarVisible}",
+                        getString(R.string.text_compose_nav_bar_height) to "$navigationBarHeight px",
+                        getString(R.string.text_compose_is_nav_at_bottom) to "${barProperties.isNavigationAtBottom}",
+                        getString(R.string.text_compose_is_notch_screen) to "${barProperties.isNotchScreen}",
+                        getString(R.string.text_compose_notch_height) to "${barProperties.notchHeight} px"
                     )
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 InfoCard(
-                    title = "操作演示",
+                    title = getString(R.string.text_compose_action_demo),
                     rows = listOf(
-                        "状态栏" to if (isHideStatusBar) "已隐藏" else "已显示",
-                        "导航栏" to if (isHideNavigationBar) "已隐藏" else "已显示",
-                        "状态栏字体" to if (isDarkFont) "深色" else "亮色"
+                        getString(R.string.text_compose_status_bar) to if (isHideStatusBar) getString(R.string.text_compose_hidden) else getString(R.string.text_compose_shown),
+                        getString(R.string.text_compose_nav_bar) to if (isHideNavigationBar) getString(R.string.text_compose_hidden) else getString(R.string.text_compose_shown),
+                        getString(R.string.text_compose_status_bar_font) to if (isDarkFont) getString(R.string.text_compose_dark) else getString(R.string.text_compose_light)
                     )
                 )
 
@@ -205,7 +211,7 @@ class ComposeActivity : ComponentActivity() {
                         contentColor = Color.White
                     )
                 ) {
-                    Text(text = if (isHideStatusBar) "显示状态栏" else "隐藏状态栏")
+                    Text(text = if (isHideStatusBar) getString(R.string.text_compose_show_status_bar) else getString(R.string.text_compose_hide_status_bar))
                 }
 
                 Button(
@@ -216,7 +222,7 @@ class ComposeActivity : ComponentActivity() {
                         contentColor = Color.White
                     )
                 ) {
-                    Text(text = if (isHideNavigationBar) "显示导航栏" else "隐藏导航栏")
+                    Text(text = if (isHideNavigationBar) getString(R.string.text_compose_show_nav_bar) else getString(R.string.text_compose_hide_nav_bar))
                 }
 
                 Button(
@@ -227,7 +233,7 @@ class ComposeActivity : ComponentActivity() {
                         contentColor = Color.White
                     )
                 ) {
-                    Text(text = if (isDarkFont) "切换为亮色状态栏字体" else "切换为深色状态栏字体")
+                    Text(text = if (isDarkFont) getString(R.string.text_compose_switch_light_font) else getString(R.string.text_compose_switch_dark_font))
                 }
             }
         }

@@ -60,7 +60,7 @@ public class PicAndColorActivity extends BaseActivity implements SeekBar.OnSeekB
                 if (ImmersionBar.hasNavigationBar(this)) {
                     ImmersionBar.with(this).navigationBarColor(R.color.colorAccent).init();
                 } else {
-                    ToastUtils.show(this, "当前设备没有导航栏");
+                    ToastUtils.show(this, getString(R.string.toast_no_nav_bar));
                 }
                 break;
             case R.id.btn_color:
